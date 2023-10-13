@@ -21,8 +21,7 @@ public class Mecanum
     DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     HardwareMap hardwareMap;
     double botHeading, x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
-    BNO055IMU imu;
-    BNO055IMU.Parameters parameters;
+    IMU imu;
 
     public Mecanum(HardwareMap hardwareMap)
     {
@@ -36,25 +35,26 @@ public class Mecanum
         backRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Retrieve the IMU from the hardware map
-        imu = hardwareMap.get(BNO055IMU.class, "cIMU");
+        imu = hardwareMap.get(IMU.class, "cIMU");
         // Makes a new object titled 'parameters' usd to hold the angle of the IMU
-        parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         // Without this, data retrieving from the IMU throws an exception
-        imu.initialize(parameters);
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
     public void resetIMU()
     {
-        imu.initialize(parameters);
+        imu.resetYaw();
     }
 
     public void fieldCentric(GamepadEx gamepad1){
-        y = gamepad1.getLeftY();
-        x = -gamepad1.getLeftX();
+        x = gamepad1.getLeftY();
+        y = -gamepad1.getLeftX();
         rx = -gamepad1.getRightX();
 
-        botHeading = -imu.getAngularOrientation().firstAngle;
+        botHeading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
