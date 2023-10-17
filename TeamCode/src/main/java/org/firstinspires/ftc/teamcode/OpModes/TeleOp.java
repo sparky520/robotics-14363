@@ -21,14 +21,17 @@ public class TeleOp extends OpMode
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         driveTrain = new Mecanum(hardwareMap);
+
     }
     @Override
     public void loop() {
         driver.readButtons();
         operator.readButtons();
-        driveTrain.fieldCentric(driver);
 
-        if(gamepad1.dpad_up) {
+        driveTrain.fieldCentric(driver);
+        driveTrain.rotation();
+
+        if(gamepad1.y) {
             wheels.resetIMU();
         }
 
