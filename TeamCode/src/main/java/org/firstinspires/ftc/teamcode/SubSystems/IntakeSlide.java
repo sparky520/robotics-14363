@@ -19,16 +19,10 @@ public class IntakeSlide {
         //intakeSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void on_off(double power){
-        if (power == 0)
-        {
-            power = 0.5;
+
             intakeMotor.setPower(power);
-        }
-        if (power > 0)
-        {
-            power = 0;
-            intakeMotor.setPower(power);
-        }
+
+
 
     }
 

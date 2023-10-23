@@ -38,7 +38,7 @@ public class TeleOp extends OpMode
             wheels.resetIMU();
         }
         if (gamepad1.dpad_left){
-            intake.on_off(0);
+            intake.on_off(0.5);
         }
 
     }
