@@ -27,7 +27,7 @@ public class Mecanum
     HardwareMap hardwareMap;
     private double botHeading, x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
     IMU imu;
-
+    IMU.Parameters parameters;
     public Mecanum(HardwareMap hardwareMap)
     {
         this.hardwareMap = hardwareMap;
@@ -48,16 +48,13 @@ public class Mecanum
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         // Without this, data retrieving from the IMU throws an exception
         imu.initialize(new IMU.Parameters(orientationOnRobot));
-        imu.resetYaw();
 
 
     }
 
     public void resetIMU()
     {
-
         imu.resetYaw();
-
     }
 
     public void fieldCentric(GamepadEx gamepad1){
@@ -81,11 +78,8 @@ public class Mecanum
         frontRightMotor.setPower(frontRightPower * offset);
         backRightMotor.setPower(backRightPower * offset);
     }
-    public void rotation(){
-        if(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) != 0){
-            resetIMU();
-        }
-    }
+
+
 
 
 
