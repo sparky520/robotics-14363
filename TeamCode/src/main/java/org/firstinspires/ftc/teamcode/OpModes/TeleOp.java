@@ -40,6 +40,9 @@ public class TeleOp extends OpMode
         if (gamepad1.dpad_left){
             intake.on_off(0.5);
         }
+        if(gamepad1.dpad_right){
+            intake.on_off(0);
+        }
 
     }
 }
