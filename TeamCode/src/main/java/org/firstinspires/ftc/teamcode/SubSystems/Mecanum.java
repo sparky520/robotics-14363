@@ -23,10 +23,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class Mecanum
 {
      private DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
-     private double offset = 1.1;
+     private double offset = 1;
     HardwareMap hardwareMap;
-    private double botHeading, x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
-    IMU imu;
+    IMU imu;    private double botHeading, x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
+
 
     public Mecanum(HardwareMap hardwareMap)
     {
