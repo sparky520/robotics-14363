@@ -33,6 +33,7 @@ public class TeleOp extends OpMode
         operator.readButtons();
 
         driveTrain.fieldCentric(driver);
+
         driveTrain.rotation();
 
         if(driver.wasJustPressed(Button.DPAD_UP)) {
