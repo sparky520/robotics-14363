@@ -25,7 +25,10 @@ public class Mecanum
      private DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
      private double offset = 1;
     HardwareMap hardwareMap;
-    IMU imu;    private double botHeading, x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
+    BNO055IMU imu;
+    BNO055IMU.Parameters parameters;
+    private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
+
 
 
     public Mecanum(HardwareMap hardwareMap)
@@ -41,14 +44,12 @@ public class Mecanum
 
         // Retrieve the IMU from the hardware map
 
-        imu = hardwareMap.get(IMU.class, "cIMU");
-        // Makes a new object titled 'parameters' usd to hold the angle of the IMU
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
-        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
-        // Without this, data retrieving from the IMU throws an exception
-        imu.initialize(new IMU.Parameters(orientationOnRobot));
-        imu.resetYaw();
+        imu = hardwareMap.get(BNO055IMU.class, "cIMU");
+        // this is making a new object called 'parameters' that we use to hold the angle the imu is at
+        parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
 
 
     }
@@ -56,7 +57,7 @@ public class Mecanum
     public void resetIMU()
     {
 
-        imu.resetYaw();
+        imu.initialize(parameters);
 
     }
 
@@ -65,7 +66,7 @@ public class Mecanum
         x = gamepad1.getLeftX();
         rx = -gamepad1.getRightX();
 
-        botHeading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double botHeading = -imu.getAngularOrientation().firstAngle;
 
         rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
@@ -81,11 +82,7 @@ public class Mecanum
         frontRightMotor.setPower(frontRightPower * offset);
         backRightMotor.setPower(backRightPower * offset);
     }
-    public void rotation(){
-        if(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) != 0){
-            resetIMU();
-        }
-    }
+
 
 
 

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys.*;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 import org.firstinspires.ftc.teamcode.SubSystems.Mecanum;
@@ -17,7 +18,7 @@ public class TeleOp extends OpMode
     private Mecanum driveTrain;
     private IntakeSlide intake;
     private double intakeSpeed = 0.35;
-    Mecanum wheels;
+
     @Override
     public void init()
     {
@@ -34,10 +35,11 @@ public class TeleOp extends OpMode
 
         driveTrain.fieldCentric(driver);
 
-        driveTrain.rotation();
+        //driveTrain.rotation();
+
 
         if(driver.wasJustPressed(Button.DPAD_UP)) {
-            wheels.resetIMU();
+            driveTrain.resetIMU();
         }
         if (driver.wasJustPressed(Button.DPAD_LEFT)){
             intake.on_off(intakeSpeed);
