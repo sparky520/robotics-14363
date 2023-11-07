@@ -36,9 +36,6 @@ public class TeleOp extends OpMode
 
         driveTrain.fieldCentric(driver);
 
-        //driveTrain.rotation();
-
-
         if(driver.wasJustPressed(Button.DPAD_UP)) {
             driveTrain.resetIMU();
         }
