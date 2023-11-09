@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import org.firstinspires.ftc.teamcode.states.outtakeStates;
 
 
 public class Outtake {
@@ -37,14 +37,14 @@ public class Outtake {
         leftSlide.setTargetPositionTolerance(5);
     }
 
-    public void setSlidePosition(String position, String state){
+    public void setSlidePosition(outtakeStates position, outtakeStates state){
         //change arm position based on the given position
         switch (state) {
-            case "retracted":
+            case retracted:
                 break;
-            case "extending":
+            case etxending:
                 switch (position){
-                    case "high":
+                    case high:
                         leftSlide.setTargetPosition(highLeft);
                         rightSlide.setTargetPosition(highRight);
 
@@ -54,9 +54,9 @@ public class Outtake {
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
 
-                        state = "extended";
+                        state = outtakeStates.extended;
                         break;
-                    case "medium":
+                    case medium:
                         leftSlide.setTargetPosition(mediumLeft);
                         rightSlide.setTargetPosition(mediumRight);
 
@@ -66,9 +66,9 @@ public class Outtake {
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
 
-                        state = "extended";
+                        state = outtakeStates.extended;
                         break;
-                    case "station":
+                    case low:
                         leftSlide.setTargetPosition(stationLeft);
                         leftSlide.setTargetPosition(stationRight);
 
@@ -77,10 +77,10 @@ public class Outtake {
 
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
-                        state = "retracted";
+                        state = outtakeStates.retracted;
                         break;
                 }
-            case "extended":
+            case extended:
                 break;
         }
 

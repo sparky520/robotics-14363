@@ -42,7 +42,7 @@ public class TeleOp extends OpMode
         if(gamepad1.y) {
             wheels.resetIMU();
         }
-
+/*
         if (gamepad1.dpad_up){
             //robot.Arm.setPosition(armState.intaking);
             leftArm.setPosition(-1);
@@ -53,13 +53,14 @@ public class TeleOp extends OpMode
             leftArm.setPosition(1);
             rightArm.setPosition(-1);
         }
-        /*
-        Outtake outtakeSlide = new Outtake(hardwareMap);
-        if (gamepad1.dpad_up){outtakeSlide.setSlidePosition("high","extending");}
-        if (gamepad1.dpad_left){outtakeSlide.setSlidePosition("medium","extending");}
-        if (gamepad1.dpad_down){outtakeSlide.setSlidePosition("station","extending");}
+        */
 
-         */
+        Outtake outtakeSlide = new Outtake(hardwareMap);
+        if (gamepad1.dpad_up){robot.outtake.setSlidePosition(outtakeStates.high,outtakeStates.etxending);}
+        if (gamepad1.dpad_left){outtakeSlide.setSlidePosition(outtakeStates.medium,outtakeStates.etxending);}
+        if (gamepad1.dpad_down){outtakeSlide.setSlidePosition(outtakeStates.low,outtakeStates.etxending);}
+
+
 
     }
 }
