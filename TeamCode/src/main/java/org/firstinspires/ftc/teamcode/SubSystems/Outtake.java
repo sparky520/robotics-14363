@@ -14,10 +14,10 @@ public class Outtake {
     //number is copied, maybe change it?
     double power = 0.9;
     //constants to set the position of the arm
-    public static int highLeft = 0;
-    public static int highRight = 0;
-    public static int mediumLeft = 0;
-    public static int mediumRight = 0;
+    public static int highLeft = 300;
+    public static int highRight = 300;
+    public static int mediumLeft = 200;
+    public static int mediumRight = 200;
     public static int stationLeft = 0;
     public static int stationRight = 0;
 

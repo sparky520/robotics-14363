@@ -26,9 +26,10 @@ public class TeleOp extends OpMode
     {
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
-        robot = new Robot(hardwareMap);
+        robot = new Robot(hardwareMap, telemetry);
 
-
+        telemetry.addLine("works");
+        telemetry.update();
         leftArm = hardwareMap.servo.get("leftArm");
         rightArm = hardwareMap.servo.get("rightArm");
     }
@@ -56,7 +57,11 @@ public class TeleOp extends OpMode
         */
 
         Outtake outtakeSlide = new Outtake(hardwareMap);
-        if (gamepad1.dpad_up){robot.outtake.setSlidePosition(outtakeStates.high,outtakeStates.etxending);}
+        if (gamepad1.dpad_up){
+            telemetry.addLine("upworks");
+            telemetry.update();
+            robot.outtake.setSlidePosition(outtakeStates.high,outtakeStates.etxending);
+        }
         if (gamepad1.dpad_left){outtakeSlide.setSlidePosition(outtakeStates.medium,outtakeStates.etxending);}
         if (gamepad1.dpad_down){outtakeSlide.setSlidePosition(outtakeStates.low,outtakeStates.etxending);}
 
