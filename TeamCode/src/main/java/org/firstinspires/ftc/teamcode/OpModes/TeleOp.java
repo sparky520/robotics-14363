@@ -28,42 +28,42 @@ public class TeleOp extends OpMode
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
 
-        telemetry.addLine("works");
-        telemetry.update();
-        leftArm = hardwareMap.servo.get("leftArm");
-        rightArm = hardwareMap.servo.get("rightArm");
+
     }
     @Override
     public void loop() {
+
         driver.readButtons();
         operator.readButtons();
 
         robot.drivetrain.fieldCentric(driver);
 
-        if(gamepad1.y) {
-            wheels.resetIMU();
-        }
-/*
-        if (gamepad1.dpad_up){
-            //robot.Arm.setPosition(armState.intaking);
-            leftArm.setPosition(-1);
-            rightArm.setPosition(1);
-        }
-        if (gamepad1.dpad_down){
-            //robot.Arm.setPosition(armState.outtaking);
-            leftArm.setPosition(1);
-            rightArm.setPosition(-1);
-        }
-        */
+       if (gamepad1.dpad_up){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+       }
+      if (gamepad1.dpad_left){
+           robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
+      }
+      if (gamepad1.dpad_right){
+           robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+      }
 
-        Outtake outtakeSlide = new Outtake(hardwareMap);
-        if (gamepad1.dpad_up){
-            telemetry.addLine("upworks");
-            telemetry.update();
-            robot.outtake.setSlidePosition(outtakeStates.high,outtakeStates.etxending);
-        }
-        if (gamepad1.dpad_left){outtakeSlide.setSlidePosition(outtakeStates.medium,outtakeStates.etxending);}
-        if (gamepad1.dpad_down){outtakeSlide.setSlidePosition(outtakeStates.low,outtakeStates.etxending);}
+      if (gamepad1.left_bumper){
+            robot.Arm.setPosition(armState.outtaking);
+      }
+      if (gamepad1.right_bumper){
+            robot.Arm.setPosition(armState.intaking);
+      }
+      if (gamepad1.circle){
+          robot.Claw.setPosition(armState.intaking);
+      }
+      if (gamepad1.square){
+          robot.Claw.setPosition(armState.outtaking);
+      }
+
+
+
+
 
 
 

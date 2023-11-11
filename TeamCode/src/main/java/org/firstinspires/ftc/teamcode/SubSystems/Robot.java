@@ -5,10 +5,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Robot {
     public Mecanum drivetrain;
     public arm Arm;
-    public Outtake outtake;
+    public slides slide;
+    public claw Claw;
+    public outtakeStates OuttakeStates;
     public Robot(HardwareMap hardwareMap, Telemetry telemtry){
         drivetrain = new Mecanum(hardwareMap);
-        Arm = new arm(hardwareMap);
-        outtake = new Outtake(hardwareMap);
+        Arm = new arm(hardwareMap, telemtry);
+        slide = new slides(hardwareMap);
+        Claw = new claw(hardwareMap);
     }
+
 }

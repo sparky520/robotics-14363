@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.states;
 
 public enum outtakeStates {
-    high,
-    medium,
-    low,
+    HIGHIN,
+    MEDIUMIN,
+    STATION,
     etxending,
     retracted,
     extended,
