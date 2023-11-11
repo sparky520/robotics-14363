@@ -38,16 +38,18 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-       if (gamepad1.dpad_up){
+       if (gamepad1.dpad_left){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
        }
-      if (gamepad1.dpad_left){
+      if (gamepad1.dpad_up){
            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
       }
       if (gamepad1.dpad_right){
            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
       }
-
+      if (gamepad1.triangle){
+          robot.intaker.on_off(0.35);
+      }
       if (gamepad1.left_bumper){
             robot.Arm.setPosition(armState.outtaking);
       }

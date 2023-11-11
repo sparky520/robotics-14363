@@ -7,12 +7,14 @@ public class Robot {
     public arm Arm;
     public slides slide;
     public claw Claw;
+    public intakeSlide intaker;
     public outtakeStates OuttakeStates;
     public Robot(HardwareMap hardwareMap, Telemetry telemtry){
         drivetrain = new Mecanum(hardwareMap);
         Arm = new arm(hardwareMap, telemtry);
         slide = new slides(hardwareMap);
         Claw = new claw(hardwareMap);
+        intaker = new intakeSlide(hardwareMap);
     }
 
 }
