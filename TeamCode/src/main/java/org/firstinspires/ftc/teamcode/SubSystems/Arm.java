@@ -16,7 +16,7 @@ public class Arm {
     private Servo armRight;
     int armTarget = 0;
     double armSpeed = 0;
-    String armCurrentDirection = "up";
+    String armCurrentDirection = "down";
     public Arm(HardwareMap hardwareMap){
 
         armLeft = hardwareMap.servo.get("armLeft");
@@ -34,7 +34,7 @@ public class Arm {
         armRight.setPosition(0);
 
 
-        public void upanddown(GamepadEx gamepad1)
+        public void upanddown()
         {
             if (driver.wasJustPressed(GamepadKeys.Button.A)){ // Arm UP
                 armTarget = 200;
@@ -50,11 +50,9 @@ public class Arm {
                 armCurrentDirection = "down";
 
                 armLeft.setPower(armSpeed);
-                armLeft.setTargetPosition(armTarget);
+                armLeft.setPosition(armTarget);
             }
         }
-        // Setup Telemetry, will not clear after cycle, setup reusable items for output
     }
-
 }
 
