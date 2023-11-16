@@ -19,6 +19,7 @@ public class TeleOp extends OpMode
     private Robot robot;
     private Mecanum driveTrain;
 
+
     private Servo leftArm, rightArm;
     Mecanum wheels;
     @Override
@@ -28,6 +29,8 @@ public class TeleOp extends OpMode
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
 
+//        leftArm.setPosition(0);
+//        rightArm.setPosition(0);
 
     }
     @Override
@@ -38,28 +41,28 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-       if (gamepad1.dpad_left){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+       if (gamepad2.dpad_left){
+            robot.intaker.on_off(-0.35);
        }
-      if (gamepad1.dpad_up){
+      if (gamepad2.dpad_up){
            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
       }
-      if (gamepad1.dpad_right){
+      if (gamepad2.dpad_right){
            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
       }
-      if (gamepad1.triangle){
+      if (gamepad2.triangle){
           robot.intaker.on_off(0.35);
       }
-      if (gamepad1.left_bumper){
-            robot.Arm.setPosition(armState.outtaking);
+      if (gamepad2.left_bumper){
+          robot.Arm.setPosition(armState.outtaking);
       }
-      if (gamepad1.right_bumper){
-            robot.Arm.setPosition(armState.intaking);
+      if (gamepad2.right_bumper){
+          robot.Arm.setPosition(armState.intaking);
       }
-      if (gamepad1.circle){
+      if (gamepad2.circle){
           robot.Claw.setPosition(armState.intaking);
       }
-      if (gamepad1.square){
+      if (gamepad2.square){
           robot.Claw.setPosition(armState.outtaking);
       }
 
