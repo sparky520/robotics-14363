@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class Mecanum
 {
      private DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
-     private double offset = 1.2;
+     private double offset = 0.78;
     BNO055IMU imu;
     BNO055IMU.Parameters parameters;
     private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
@@ -76,8 +76,8 @@ public class Mecanum
         frontRightPower = 1 * (rotY - rotX - rx) / denominator;
         backRightPower = 1 * (rotY + rotX - rx) / denominator;
 
-        frontLeftMotor.setPower(frontLeftPower * offset);
-        backLeftMotor.setPower(backLeftPower);
+        frontLeftMotor.setPower(frontLeftPower );
+        backLeftMotor.setPower(backLeftPower* offset);
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
     }
