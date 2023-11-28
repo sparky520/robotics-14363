@@ -9,26 +9,30 @@ import org.firstinspires.ftc.teamcode.states.armState;
 
 public class arm {
     private Servo leftArm, rightArm;
-    public arm (HardwareMap hardwareMap, Telemetry telemetry)
+    public Telemetry telem;
+    public arm (HardwareMap hardwareMap, Telemetry telemetryy)
     {
-        Telemetry tel = telemetry;
         leftArm = hardwareMap.servo.get("leftArm");
         rightArm = hardwareMap.servo.get("rightArm");
-
+        telem = telemetryy;
 
 
     }
 
     public void setPosition(armState state){
-
+        telem.addLine("#1");
+        telem.update();
         switch (state){
+
             case intaking:
-                leftArm.setPosition(-0.5);
-                rightArm.setPosition(0.5);
+                telem.addLine("#3");
+                telem.update();
+                leftArm.setPosition(0.8);
+                rightArm.setPosition(1);
                 break;
             case outtaking:
-                leftArm.setPosition(0.8);
-                rightArm.setPosition(-0.8);
+                leftArm.setPosition(-0.8);
+                rightArm.setPosition(-1);
                 break;
         }
     }
