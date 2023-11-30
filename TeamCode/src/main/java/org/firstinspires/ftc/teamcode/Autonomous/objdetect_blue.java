@@ -12,6 +12,13 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class objdetect_blue extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
+    public enum Location {
+        LEFT,
+        RIGHT,
+        NOT_FOUND
+    }
+    private Location location;
+
     static final Rect LEFT_ROI = new Rect(
             new Point(60, 35),
             new Point(120, 75));
@@ -43,5 +50,36 @@ public class objdetect_blue extends OpenCvPipeline {
         telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
         telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
 
+        boolean stoneLeft = leftValue > PERCENT_COLOR_THRESHOLD;
+        boolean stoneRight = rightValue > PERCENT_COLOR_THRESHOLD;
+
+        if(stoneLeft && stoneRight){
+            location = Location.NOT_FOUND;
+            telemetry.addData("TSE Location", "not found");
+            // TSE = team scoring element
+        }
+        if (stoneLeft){
+            location = Location.RIGHT;
+            telemetry.addData("TSE Location", "right");
+        }
+        else{
+            location = Location.LEFT;
+            telemetry.addData("TSE Location", "left");
+        }
+        telemetry.update();
+
+        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
+
+        Scalar colorStone = new Scalar(255, 0, 0);
+        Scalar colorSkystone = new Scalar(0, 255, 0);
+
+        Imgproc.rectangle(mat, LEFT_ROI, location == Location.LEFT? colorSkystone:colorStone);
+        Imgproc.rectangle(mat, RIGHT_ROI, location == Location.RIGHT? colorSkystone:colorStone);
+
+        return mat;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }
