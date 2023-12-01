@@ -114,7 +114,7 @@ public class blueAuto extends LinearOpMode {
         return result;
     }
 
-    public void voltageTelem() {
+    public void voltageTele() {
 
         batteryVoltage = getBatteryVoltage();
         boolean voltNotFound = false;

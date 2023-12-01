@@ -114,7 +114,7 @@ public class blueShortPark extends LinearOpMode {
         return result;
     }
 
-    public void voltageTelem() {
+    public void voltageTele() {
 
         batteryVoltage = getBatteryVoltage();
         boolean voltNotFound = false;
