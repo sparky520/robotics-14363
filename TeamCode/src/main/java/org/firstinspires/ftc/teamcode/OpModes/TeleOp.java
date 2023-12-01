@@ -59,10 +59,12 @@ public class TeleOp extends OpMode
       if (gamepad2.right_bumper){
           robot.Arm.setPosition(armState.intaking);
       }
-      if (gamepad2.left_stick_button){
+      if (gamepad2.square){
+          telemetry.addLine("erge");
+          telemetry.update();
           robot.Claw.setPosition(armState.intaking);
       }
-      if (gamepad2.right_stick_button){
+      if (gamepad2.triangle){
           robot.Claw.setPosition(armState.outtaking);
       }
 
