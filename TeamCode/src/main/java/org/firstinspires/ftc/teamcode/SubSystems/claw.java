@@ -10,18 +10,18 @@ public class claw {
     public claw (HardwareMap hardwareMap)
     {
         leftClaw = hardwareMap.servo.get("leftClaw");
-        //rightClaw = hardwareMap.servo.get("rightClaw");
+        rightClaw = hardwareMap.servo.get("rightClaw");
     }
 
     public void setPosition(armState state){
         switch (state){
             case intaking:
-                leftClaw.setPosition(.5);
-                //rightClaw.setPosition(0.1);
+                leftClaw.setPosition(1);
+                rightClaw.setPosition(1);
                 break;
             case outtaking:
-                leftClaw.setPosition(.6);
-                //rightClaw.setPosition(-0.1);
+                leftClaw.setPosition(.8);
+                rightClaw.setPosition(.8);
                 break;
         }
     }

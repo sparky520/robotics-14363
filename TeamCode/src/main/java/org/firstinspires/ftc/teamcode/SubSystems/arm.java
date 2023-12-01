@@ -27,12 +27,13 @@ public class arm {
             case intaking:
                 telem.addLine("#3");
                 telem.update();
-                leftArm.setPosition(0.8);
-                rightArm.setPosition(1);
+                leftArm.setPosition(-.8);
+                rightArm.setPosition(.8);
                 break;
             case outtaking:
-                leftArm.setPosition(-0.8);
-                rightArm.setPosition(-1);
+                //outtaking
+                leftArm.setPosition(.8);
+                rightArm.setPosition(-.8);
                 break;
         }
     }

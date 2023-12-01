@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class slides {
     DcMotorEx leftSlide, rightSlide;
-    double power = 0.9;
+    double power = 0.2;
     public slides(HardwareMap hardwareMap){
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftOuttakeSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightOuttakeSlide");
@@ -23,8 +23,8 @@ public class slides {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftSlide.setPower(0.3);
-        rightSlide.setPower(0.3);
+        leftSlide.setPower(0.6);
+        rightSlide.setPower(0.6);
 
 
     }
@@ -36,8 +36,8 @@ public class slides {
             case etxending: {
                 switch (outtakeSlidesState) {
                     case HIGHIN:
-                        leftSlide.setTargetPosition(1500);
-                        rightSlide.setTargetPosition(1500);
+                        leftSlide.setTargetPosition(-1100);
+                        rightSlide.setTargetPosition(-1100);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -48,8 +48,19 @@ public class slides {
                         extensionState = extensionState.extended;
                         break;
                     case MEDIUMIN:
-                        leftSlide.setTargetPosition(800);
-                        rightSlide.setTargetPosition(800);
+                        leftSlide.setTargetPosition(-800);
+                        rightSlide.setTargetPosition(-800);
+
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        extensionState = extensionState.extended;
+
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+                        break;
+                    case LOWIN:
+                        leftSlide.setTargetPosition(-300);
+                        rightSlide.setTargetPosition(-300);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
