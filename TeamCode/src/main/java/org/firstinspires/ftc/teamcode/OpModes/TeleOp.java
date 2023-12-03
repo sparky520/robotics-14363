@@ -41,10 +41,10 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-       if (gamepad2.dpad_right){
+       if (gamepad2.dpad_up){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
        }
-      if (gamepad2.dpad_up){
+      if (gamepad2.dpad_right){
            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
       }
       if (gamepad2.dpad_down){
@@ -53,18 +53,26 @@ public class TeleOp extends OpMode
         if (gamepad2.dpad_left){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.LOWIN);
         }
-      if (gamepad2.left_bumper){
+      if (gamepad2.right_bumper){
           robot.Arm.setPosition(armState.outtaking);
       }
-      if (gamepad2.right_bumper){
-          robot.Arm.setPosition(armState.intaking);
+      if (gamepad2.left_bumper){
+
+          robot.Arm.setPosition(armState.intakingHOVERUP);
+
       }
       if (gamepad2.square){
-          telemetry.addLine("erge");
-          telemetry.update();
-          robot.Claw.setPosition(armState.intaking);
+
+          robot.Arm.setPosition(armState.intakingHOVERBOTTOM);
+
       }
-      if (gamepad2.triangle){
+      if (gamepad2.circle){
+          robot.Arm.setPosition(armState.intakingBOTTOM);
+      }
+      if (gamepad1.left_bumper){
+          robot.Claw.setPosition(armState.intakingCLAW);
+      }
+      if (gamepad1.right_bumper){
           robot.Claw.setPosition(armState.outtaking);
       }
 

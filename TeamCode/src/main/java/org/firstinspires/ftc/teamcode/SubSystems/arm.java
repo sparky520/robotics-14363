@@ -15,7 +15,7 @@ public class arm {
         leftArm = hardwareMap.servo.get("leftArm");
         rightArm = hardwareMap.servo.get("rightArm");
         telem = telemetryy;
-
+        leftArm.setDirection(Servo.Direction.REVERSE);
 
     }
 
@@ -24,16 +24,27 @@ public class arm {
         telem.update();
         switch (state){
 
-            case intaking:
+            case intakingBOTTOM:
                 telem.addLine("#3");
                 telem.update();
-                leftArm.setPosition(-1);
+
+                leftArm.setPosition(1);
                 rightArm.setPosition(1);
+                break;
+            case intakingHOVERUP:
+
+                leftArm.setPosition(.9);
+                rightArm.setPosition(.9);
+                break;
+            case intakingHOVERBOTTOM:
+
+                leftArm.setPosition(.97);
+                rightArm.setPosition(.97);
                 break;
             case outtaking:
                 //outtaking
-                leftArm.setPosition(1);
-                rightArm.setPosition(-1);
+                leftArm.setPosition(.2);
+                rightArm.setPosition(.2);
                 break;
         }
     }

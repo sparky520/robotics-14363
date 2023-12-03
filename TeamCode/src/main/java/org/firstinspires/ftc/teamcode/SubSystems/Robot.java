@@ -11,7 +11,7 @@ public class Robot {
         drivetrain = new Mecanum(hardwareMap);
         Arm = new arm(hardwareMap, telemtry);
         slide = new slides(hardwareMap);
-        Claw = new claw(hardwareMap);
+        Claw = new claw(hardwareMap, telemtry);
     }
 
 }

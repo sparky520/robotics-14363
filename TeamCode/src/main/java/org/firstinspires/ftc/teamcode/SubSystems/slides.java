@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class slides {
     DcMotorEx leftSlide, rightSlide;
-    double power = 0.2;
+    double power = 0.65;
     public slides(HardwareMap hardwareMap){
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftOuttakeSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightOuttakeSlide");
@@ -36,8 +36,8 @@ public class slides {
             case etxending: {
                 switch (outtakeSlidesState) {
                     case HIGHIN:
-                        leftSlide.setTargetPosition(-1100);
-                        rightSlide.setTargetPosition(-1100);
+                        leftSlide.setTargetPosition(-1200);
+                        rightSlide.setTargetPosition(-1200);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.states;
 
 public enum armState {
-    intaking,
+    intakingBOTTOM,
+    intakingHOVERUP,
+    intakingHOVERBOTTOM,
     outtaking,
+    intakingCLAW,
 }
