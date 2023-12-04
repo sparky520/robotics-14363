@@ -77,9 +77,23 @@ public class Mecanum
         backRightPower = 1 * (rotY + rotX - rx) / denominator;
 
         frontLeftMotor.setPower(frontLeftPower );
-        backLeftMotor.setPower(backLeftPower* offset);
+        backLeftMotor.setPower(backLeftPower * offset);
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
+    }
+
+    public void slowDown(GamepadEx driver){
+        frontLeftMotor.setPower(frontLeftPower / 1.5);
+        backLeftMotor.setPower(backLeftPower* offset / 1.5);
+        frontRightMotor.setPower(frontRightPower / 1.5);
+        backRightMotor.setPower(backRightPower / 1.5);
+    }
+    public void speedUp(GamepadEx driver){
+        double mult = 1.5;
+        frontLeftMotor.setPower(frontLeftPower * mult);
+        backLeftMotor.setPower(backLeftPower* offset * mult);
+        frontRightMotor.setPower(frontRightPower * mult);
+        backRightMotor.setPower(backRightPower * mult);
     }
 
 
