@@ -16,8 +16,6 @@ public class TeleOp extends OpMode
     private GamepadEx driver, operator;
 
     private Mecanum driveTrain;
-    private IntakeSlide intake;
-    private double intakeSpeed = 0.35;
 
     @Override
     public void init()
@@ -26,7 +24,6 @@ public class TeleOp extends OpMode
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         driveTrain = new Mecanum(hardwareMap);
-        intake = new IntakeSlide(hardwareMap);
 
     }
     @Override
@@ -36,15 +33,15 @@ public class TeleOp extends OpMode
 
         driveTrain.fieldCentric(driver);
 
-        if(driver.wasJustPressed(Button.DPAD_UP)) {
+        if(driver.wasJustPressed(Button.Y)) {
             driveTrain.resetIMU();
         }
-        if (driver.wasJustPressed(Button.DPAD_LEFT)){
-            intake.on_off(intakeSpeed);
-            }
 
-        if(driver.wasJustPressed(Button.DPAD_RIGHT)){
-            intake.on_off(0);
+        if(driver.wasJustPressed(Button.DPAD_DOWN)){
+            driveTrain.slowDown();
+        }
+        if(driver.wasJustPressed(Button.DPAD_UP)){
+            driveTrain.speedUp();
         }
 
     }

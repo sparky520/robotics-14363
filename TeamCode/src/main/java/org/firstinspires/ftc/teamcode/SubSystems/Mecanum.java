@@ -82,13 +82,13 @@ public class Mecanum
         backRightMotor.setPower(backRightPower);
     }
 
-    public void slowDown(GamepadEx driver){
+    public void slowDown(){
         frontLeftMotor.setPower(frontLeftPower / 1.5);
         backLeftMotor.setPower(backLeftPower* offset / 1.5);
         frontRightMotor.setPower(frontRightPower / 1.5);
         backRightMotor.setPower(backRightPower / 1.5);
     }
-    public void speedUp(GamepadEx driver){
+    public void speedUp(){
         double mult = 1.5;
         frontLeftMotor.setPower(frontLeftPower * mult);
         backLeftMotor.setPower(backLeftPower* offset * mult);
