@@ -75,6 +75,10 @@ public class TeleOp extends OpMode
       if (gamepad1.right_bumper){
           robot.Claw.setPosition(armState.outtaking);
       }
+      if (gamepad2.triangle)
+      {
+          //robot.Airplane.launchAirplane();
+      }
 
 
 
