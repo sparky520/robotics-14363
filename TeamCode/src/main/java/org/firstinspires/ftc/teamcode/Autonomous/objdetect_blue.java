@@ -58,7 +58,7 @@ public class objdetect_blue extends OpenCvPipeline {
             telemetry.addData("TSE Location", "not found");
             // TSE = team scoring element
         }
-        if (TSELeft){
+        else if (TSELeft){
             location = Location.MIDDLE;
             telemetry.addData("TSE Location", "MIDDLE");
         }
