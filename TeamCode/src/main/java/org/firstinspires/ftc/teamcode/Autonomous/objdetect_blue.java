@@ -15,9 +15,9 @@ public class objdetect_blue extends OpenCvPipeline {
     public enum Location {
         LEFT,
         MIDDLE,
-        NOT_FOUND
+        RIGHT
     }
-    private Location location;
+    private Location location = Location.RIGHT;
 
     static final Rect LEFT_ROI = new Rect(
             new Point(60, 35),
@@ -31,8 +31,9 @@ public class objdetect_blue extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(23, 50, 70);
-        Scalar highHSV = new Scalar(32, 255, 255);
+        Scalar lowHSV = new Scalar(220, 30, 30);
+        Scalar highHSV = new Scalar(240, 100,100);
+
 
         Core.inRange(mat, lowHSV, highHSV, mat);
 
@@ -53,18 +54,14 @@ public class objdetect_blue extends OpenCvPipeline {
         boolean TSELeft = leftValue > PERCENT_COLOR_THRESHOLD;
         boolean TSEMiddle = middleValue > PERCENT_COLOR_THRESHOLD;
 
-        if(TSELeft && TSEMiddle){
-            location = Location.NOT_FOUND;
-            telemetry.addData("TSE Location", "not found");
+        if(TSEMiddle){
+            location = Location.MIDDLE;
+            telemetry.addData("TSE Location", "MIDDLE");
             // TSE = team scoring element
         }
         else if (TSELeft){
-            location = Location.MIDDLE;
-            telemetry.addData("TSE Location", "MIDDLE");
-        }
-        else{
             location = Location.LEFT;
-            telemetry.addData("TSE Location", "left");
+            telemetry.addData("TSE Location", "LEFT");
         }
         telemetry.update();
 
