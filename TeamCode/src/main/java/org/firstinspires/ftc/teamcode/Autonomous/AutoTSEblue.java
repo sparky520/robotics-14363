@@ -9,7 +9,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous(name = "TSE Detector", group = "Auto")
-public class AutoTSE extends LinearOpMode {
+public class AutoTSEblue extends LinearOpMode {
     OpenCvCamera roboCam;
     String webcamName;
     @Override
@@ -20,7 +20,7 @@ public class AutoTSE extends LinearOpMode {
                         "id", hardwareMap.appContext.getPackageName());
         roboCam = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-        objdetect_red detector = new objdetect_red(telemetry);
+        objdetect_blue detector = new objdetect_blue(telemetry);
         roboCam.setPipeline(detector);
         roboCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
