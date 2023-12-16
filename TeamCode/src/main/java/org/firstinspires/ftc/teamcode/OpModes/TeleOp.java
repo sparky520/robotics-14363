@@ -77,7 +77,7 @@ public class TeleOp extends OpMode
       }
       if (gamepad2.triangle)
       {
-          //robot.Airplane.launchAirplane();
+          robot.Airplane.launchAirplane();
       }
 
 

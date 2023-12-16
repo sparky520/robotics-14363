@@ -10,6 +10,6 @@ public class airplane {
 
     public void launchAirplane()
     {
-        airplane.setPosition(-1);
+        airplane.setPosition(1);
     }
 }
