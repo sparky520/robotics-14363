@@ -31,8 +31,8 @@ public class objdetect_red extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(100, 150, 0);
-        Scalar highHSV = new Scalar(140, 255,255);
+        Scalar lowHSV = new Scalar(10, 255, 255);
+        Scalar highHSV = new Scalar(179, 255,255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);

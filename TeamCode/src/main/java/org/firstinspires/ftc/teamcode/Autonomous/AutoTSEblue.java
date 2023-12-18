@@ -8,7 +8,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name = "TSE Detector", group = "Auto")
+@Autonomous(name = "TSE blue Detector", group = "Auto")
 public class AutoTSEblue extends LinearOpMode {
     OpenCvCamera roboCam;
     String webcamName;
