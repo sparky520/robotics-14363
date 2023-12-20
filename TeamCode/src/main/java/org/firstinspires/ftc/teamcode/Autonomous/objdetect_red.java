@@ -70,7 +70,7 @@ public class objdetect_red extends OpenCvPipeline {
         Scalar noTSE = new Scalar(255, 0, 0);
         Scalar yesTSE = new Scalar(0, 255, 0);
 
-        Imgproc.rectangle(mat, LEFT_ROI, location == Location.RIGHT? yesTSE:noTSE);
+        Imgproc.rectangle(mat, LEFT_ROI, location == Location.LEFT? yesTSE:noTSE);
         Imgproc.rectangle(mat, MIDDLE_ROI, location == Location.MIDDLE? yesTSE:noTSE);
 
         return mat;
