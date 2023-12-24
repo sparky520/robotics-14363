@@ -71,7 +71,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
+    private DcMotorEx frontLeft, frontRight, backRight, backLeft;
     private List<DcMotorEx> motors;
 
     private BNO055IMU imu;
@@ -102,15 +102,15 @@ public class SampleMecanumDrive extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
-        backRightMotor = hardwareMap.get(DcMotorEx.class,"backRightMotor");
+        backRight = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
+        frontRight = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
+        backLeft = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
+        frontLeft = hardwareMap.get(DcMotorEx.class,"backRightMotor");
 
-        frontRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
-        motors = Arrays.asList(frontLeftMotor, backLeftMotor, backRightMotor, frontRightMotor);
+        motors = Arrays.asList(frontRight, frontLeft, backLeft, backRight);
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -289,10 +289,11 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        frontLeftMotor.setPower(v);
-        backLeftMotor.setPower(v1);
-        backRightMotor.setPower(v2);
-        frontRightMotor.setPower(v3);
+        //OG order: v,v1,v2,v3
+        backRight.setPower(v2);
+        frontRight.setPower(v3);
+        frontLeft.setPower(v);
+        backLeft.setPower(v1);
     }
 
     @Override
