@@ -1,6 +1,4 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
-
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -25,7 +23,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.arm;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
-public class leftBluePark extends LinearOpMode
+public class longBluePark extends LinearOpMode
 {
     Robot robot;
     @Override
@@ -35,34 +33,36 @@ public class leftBluePark extends LinearOpMode
 
         Pose2d newStart = new Pose2d();
         TrajectorySequence center = drive.trajectorySequenceBuilder(newStart)
-                .lineToConstantHeading(new Vector2d(26,0))
+
+                .lineTo(new Vector2d(22,0))
+
                 .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(23,38,Math.toRadians(-90)))
+                .turn(Math.toRadians(-90))
+                .lineToConstantHeading(new Vector2d(23,38))
+
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(0,38))
                 .build();
         TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
-                .lineToLinearHeading(new Pose2d(31,0,Math.toRadians(90)))
+                .lineTo(new Vector2d(27,0))
+                .turn(Math.toRadians(270))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(31,-4))
-                .lineToConstantHeading(new Vector2d(5,-4))
-                .lineToLinearHeading(new Pose2d(15,25,Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(23,34,Math.toRadians(-90)))
+                .lineToConstantHeading(new Vector2d(17,38))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(0,38))
+                .lineToConstantHeading(new Vector2d(3,38))
                 .build();
         TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
-                .lineToLinearHeading(new Pose2d(31,6,Math.toRadians(-90)))
-                .lineToConstantHeading(new Vector2d(31,-6))
+                .lineTo(new Vector2d(17,0))
+                .turn(Math.toRadians(-90))
                 .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(31,36,Math.toRadians(-90)))
+                .lineToConstantHeading(new Vector2d(29,38))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(0,34))
+                .lineToConstantHeading(new Vector2d(0,38))
                 .build();
         waitForStart();
 
         if(isStopRequested()) return;
-        drive.followTrajectorySequence(right);
+        drive.followTrajectorySequence(center);
 
 
 

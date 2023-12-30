@@ -11,9 +11,9 @@ public class Robot {
     //public airplane Airplane;
     public Robot(HardwareMap hardwareMap, Telemetry telemtry){
         drivetrain = new Mecanum(hardwareMap);
-        //Arm = new arm(hardwareMap, telemtry);
+        Arm = new arm(hardwareMap, telemtry);
         //slide = new slides(hardwareMap);
-        //Claw = new claw(hardwareMap, telemtry);
+        Claw = new claw(hardwareMap, telemtry);
         //Airplane = new airplane(hardwareMap);
     }
 

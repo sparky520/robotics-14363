@@ -55,8 +55,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -73,6 +73,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private DcMotorEx frontLeft, frontRight, backRight, backLeft;
     private List<DcMotorEx> motors;
+    BNO055IMU.Parameters parameters;
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -98,9 +99,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU.class, "cIMU");
         // this is making a new object called 'parameters' that we use to hold the angle the imu is at
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+
 
         backRight = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
         frontRight = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
@@ -303,7 +305,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) -imu.getAngularVelocity().yRotationRate;
+        return (double) -imu.getAngularVelocity().zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

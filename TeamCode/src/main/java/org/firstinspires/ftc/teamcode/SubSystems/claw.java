@@ -22,14 +22,14 @@ public class claw {
             case intakingCLAW:
                 tel.addLine("bobross");
                 tel.update();
-                leftClaw.setPosition(.58);
+                leftClaw.setPosition(.82);
 
-                rightClaw.setPosition(.65);
+                rightClaw.setPosition(.82);
                 break;
             case outtaking:
-                leftClaw.setPosition(.475);
+                leftClaw.setPosition(.93);
                 //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
-                rightClaw.setPosition(.53);
+                rightClaw.setPosition(.93);
                 break;
         }
     }

@@ -32,6 +32,7 @@ public class Mecanum
 
     public Mecanum(HardwareMap hardwareMap)
     {
+
         frontLeftMotor = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
         backLeftMotor = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
@@ -39,6 +40,8 @@ public class Mecanum
 
         frontRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
+
+
 
         // Retrieve the IMU from the hardware map
 
