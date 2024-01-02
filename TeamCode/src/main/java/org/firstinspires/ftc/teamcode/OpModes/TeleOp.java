@@ -28,11 +28,6 @@ public class TeleOp extends OpMode
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
-        leftArm = hardwareMap.servo.get("leftArm");
-
-//        leftArm.setPosition(0);
-//        rightArm.setPosition(0);
-
     }
     @Override
     public void loop() {
@@ -42,39 +37,37 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-       if (gamepad2.dpad_up){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-       }
+
       if (gamepad2.dpad_right){
-           robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
+          //leftArm.setPosition(-1);
+          robot.Arm.setPosition(armState.outtaking);
       }
-      if (gamepad2.dpad_down){
-           robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+      if (gamepad2.dpad_left){
+          //leftArm.setPosition(1);
+
+          robot.Arm.setPosition(armState.low);
+
       }
-        if (gamepad2.dpad_left){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.LOWIN);
+        if (gamepad2.dpad_up){
+            //leftArm.setPosition(1);
+
+            robot.Arm.setPosition(armState.medium);
+
         }
-      if (gamepad2.right_bumper){
-          leftArm.setPosition(-1);
-          //robot.Arm.setPosition(armState.outtaking);
-      }
-      if (gamepad2.left_bumper){
-          leftArm.setPosition(1);
+        if (gamepad2.right_bumper){
+            //leftArm.setPosition(1);
 
-          //robot.Arm.setPosition(armState.intakingBOTTOM);
+            robot.Claw.setPosition(armState.intakingCLAW);
 
-      }
+        }
+        if (gamepad2.left_bumper){
+            //leftArm.setPosition(1);
 
-      if (gamepad1.left_bumper){
-          robot.Claw.setPosition(armState.intakingCLAW);
-      }
-      if (gamepad1.right_bumper){
-          robot.Claw.setPosition(armState.outtaking);
-      }
-      if (gamepad2.triangle)
-      {
-          //robot.Airplane.launchAirplane();
-      }
+            robot.Claw.setPosition(armState.outtaking);
+
+        }
+
+
 
 
 

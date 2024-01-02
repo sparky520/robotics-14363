@@ -27,9 +27,9 @@ public class claw {
                 rightClaw.setPosition(.82);
                 break;
             case outtaking:
-                leftClaw.setPosition(.93);
+                leftClaw.setPosition(.91);
                 //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
-                rightClaw.setPosition(.93);
+                rightClaw.setPosition(.91);
                 break;
         }
     }

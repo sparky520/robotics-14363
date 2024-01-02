@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -23,7 +24,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.arm;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
-public class longBluePark extends LinearOpMode
+public class longRedPark extends LinearOpMode
 {
     Robot robot;
     @Override
@@ -37,19 +38,13 @@ public class longBluePark extends LinearOpMode
                 .lineTo(new Vector2d(26,0))
 
                 .waitSeconds(1)
-                .addSpatialMarker(new Vector2d(20, 20), () -> {
-                    robot.leftClaw.setPosition(armState.outtaking);
-                })
                 .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(26,85))
-                .addSpatialMarker(new Vector2d(20, 20), () -> {
-
-                })
 
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(5,85))
                 .build();
-        TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
+        TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
                 .lineToLinearHeading(new Pose2d(26,-4,Math.toRadians(-90)))
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(26,85))
@@ -58,7 +53,7 @@ public class longBluePark extends LinearOpMode
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(3,85))
                 .build();
-        TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
+        TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
                 .lineToLinearHeading(new Pose2d(28,0,Math.toRadians(90)))
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(28,-4))
@@ -81,3 +76,4 @@ public class longBluePark extends LinearOpMode
 
     }
 }
+
