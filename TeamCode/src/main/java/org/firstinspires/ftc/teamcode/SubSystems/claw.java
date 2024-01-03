@@ -23,7 +23,6 @@ public class claw {
                 tel.addLine("bobross");
                 tel.update();
                 leftClaw.setPosition(.82);
-
                 rightClaw.setPosition(.82);
                 break;
             case outtaking:
@@ -34,5 +33,11 @@ public class claw {
         }
     }
 
+    public void setTape(){
+        leftClaw.setPosition(.91);
+    }
+    public void dropBoard(){
+        rightClaw.setPosition(.91);
+    }
 
 }

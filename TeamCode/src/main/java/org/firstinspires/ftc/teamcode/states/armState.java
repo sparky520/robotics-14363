@@ -4,5 +4,6 @@ public enum armState {
     low,
     medium,
     outtaking,
+    outtakingAuto,
     intakingCLAW,
 }

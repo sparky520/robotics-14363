@@ -32,36 +32,61 @@ public class shortRedAuto extends LinearOpMode
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
         Pose2d newStart = new Pose2d();
         TrajectorySequence center = drive.trajectorySequenceBuilder(newStart)
-                .lineToConstantHeading(new Vector2d(25,0))
-                .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(23,-38,Math.toRadians(90)))
-                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.Claw.setPosition(armState.intakingCLAW);
+                })
+                .lineToConstantHeading(new Vector2d(27,0))
+                .addDisplacementMarker(() -> {
+                    robot.Claw.setTape();
+                })
+                .waitSeconds(2)
+                .addDisplacementMarker(() -> {
+                    robot.Arm.setPosition(armState.outtaking);
+                })
+                .lineToLinearHeading(new Pose2d(19,-34,Math.toRadians(90)))
+                .addDisplacementMarker(() -> {
+                    robot.Claw.setPosition(armState.outtaking);
+                })
+                .addDisplacementMarker(() -> {
+                    robot.Arm.setPosition(armState.medium);
+                })
+                .waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(-5,-38))
                 .build();
         TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
+                .addDisplacementMarker(() -> {
+                    robot.Claw.setPosition(armState.intakingCLAW);
+                })
                 .lineToLinearHeading(new Pose2d(28,-4,Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(28,2,Math.toRadians(90)))
+                .addDisplacementMarker(() -> {
+                    robot.Claw.setTape();
+                })
                 .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.Arm.setPosition(armState.outtaking);
+                })
                 .lineToConstantHeading(new Vector2d(23,-42))
+                .addDisplacementMarker(() -> {
+                    robot.Claw.setTape();
+                })
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(0,-42))
                 .build();
         TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
                 .lineToLinearHeading(new Pose2d(31,0,Math.toRadians(-90)))
-                .lineToConstantHeading(new Vector2d(31,-5))
                 .waitSeconds(1)
                 .lineToLinearHeading(new Pose2d(2,-10,Math.toRadians(90)))
-                .lineToConstantHeading(new Vector2d(23,-42))
+                .lineToConstantHeading(new Vector2d(23,-39))
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(0,-42))
                 .build();
         waitForStart();
 
         if(isStopRequested()) return;
-        drive.followTrajectorySequence(right);
+        drive.followTrajectorySequence(center);
 
 
 
