@@ -20,27 +20,26 @@ public class arm {
     }
 
     public void setPosition(armState state){
-        telem.addLine("#1");
-        telem.update();
-        switch (state){
-
+        switch(state) {
             case low:
-                leftArm.setPosition(.974);
-                rightArm.setPosition(.955);
+                leftArm.setPosition(.17);
+                rightArm.setPosition(.17);
                 break;
             case medium:
-                leftArm.setPosition(.869);
-                rightArm.setPosition(.85);
+                leftArm.setPosition(.24);
+                rightArm.setPosition(.24);
+                break;
+            case high:
+                leftArm.setPosition(.33);
+                rightArm.setPosition(.33);
                 break;
             case outtaking:
-                leftArm.setPosition(.419);
-                rightArm.setPosition(.4);
+                leftArm.setPosition(.685);
+                rightArm.setPosition(.685);
                 break;
-            case outtakingAuto:
-                leftArm.setPosition(.389);
-                rightArm.setPosition(.37);
         }
     }
+
 
 
 }

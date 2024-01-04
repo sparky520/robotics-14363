@@ -45,14 +45,14 @@ public class longBluePark extends LinearOpMode
                 .waitSeconds(.5)
                 .lineToConstantHeading(new Vector2d(26,70))
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.outtaking);
+                    //robot.Arm.setPosition(armState.outtaking);
                 })
                 .lineToConstantHeading(new Vector2d(26,85))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
+                    //robot.Arm.setPosition(armState.medium);
                 })
                 .waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(5,85))
@@ -68,7 +68,7 @@ public class longBluePark extends LinearOpMode
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(26,70))
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.outtaking);
+                    //robot.Arm.setPosition(armState.outtaking);
                 })
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(33,85))
@@ -76,7 +76,7 @@ public class longBluePark extends LinearOpMode
                     robot.Claw.dropBoard();
                 })
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
+                    //robot.Arm.setPosition(armState.medium);
                 })
                 .waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(3,85))
@@ -97,7 +97,7 @@ public class longBluePark extends LinearOpMode
                 .turn(Math.toRadians(-180))
                 .lineToConstantHeading(new Vector2d(45,75))
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.outtaking);
+                    //robot.Arm.setPosition(armState.outtaking);
                 })
                 .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(27,85))
@@ -105,7 +105,7 @@ public class longBluePark extends LinearOpMode
                     robot.Claw.dropBoard();
                 })
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
+                    //robot.Arm.setPosition(armState.medium);
                 })
                 .waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(5,85))

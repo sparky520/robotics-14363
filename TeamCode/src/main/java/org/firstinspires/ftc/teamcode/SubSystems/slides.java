@@ -33,10 +33,11 @@ public class slides {
         switch (extensionState) {
             case retracted:
                 break;
+                //positive goes up for left slide
             case etxending: {
                 switch (outtakeSlidesState) {
                     case HIGHIN:
-                        leftSlide.setTargetPosition(-1200);
+                        leftSlide.setTargetPosition(1200);
                         rightSlide.setTargetPosition(-1200);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -48,8 +49,8 @@ public class slides {
                         extensionState = extensionState.extended;
                         break;
                     case MEDIUMIN:
-                        leftSlide.setTargetPosition(-800);
-                        rightSlide.setTargetPosition(-800);
+                        leftSlide.setTargetPosition(600);
+                        rightSlide.setTargetPosition(-600);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -59,7 +60,7 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case LOWIN:
-                        leftSlide.setTargetPosition(-300);
+                        leftSlide.setTargetPosition(300);
                         rightSlide.setTargetPosition(-300);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

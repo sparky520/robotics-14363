@@ -43,14 +43,14 @@ public class shortRedAuto extends LinearOpMode
                 })
                 .waitSeconds(2)
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.outtaking);
+                    //robot.Arm.setPosition(armState.outtaking);
                 })
                 .lineToLinearHeading(new Pose2d(19,-34,Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.outtaking);
                 })
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
+                    //robot.Arm.setPosition(armState.medium);
                 })
                 .waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(-5,-38))
@@ -66,7 +66,7 @@ public class shortRedAuto extends LinearOpMode
                 })
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.outtaking);
+                    //robot.Arm.setPosition(armState.outtaking);
                 })
                 .lineToConstantHeading(new Vector2d(23,-42))
                 .addDisplacementMarker(() -> {

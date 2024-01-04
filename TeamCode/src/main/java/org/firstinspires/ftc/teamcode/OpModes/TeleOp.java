@@ -18,13 +18,14 @@ public class TeleOp extends OpMode
     private GamepadEx driver, operator;
     private Robot robot;
     private Mecanum driveTrain;
-
+    double lastPos;
 
     private Servo leftArm, rightArm;
     Mecanum wheels;
     @Override
     public void init()
     {
+        lastPos = 0;
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
@@ -39,32 +40,23 @@ public class TeleOp extends OpMode
 
 
       if (gamepad2.dpad_right){
-          //leftArm.setPosition(-1);
-          robot.Arm.setPosition(armState.outtaking);
+          robot.Arm.setPosition(armState.high);
       }
+        if (gamepad2.dpad_down){
+            robot.Arm.setPosition(armState.outtaking);
+        }
       if (gamepad2.dpad_left){
           //leftArm.setPosition(1);
-
           robot.Arm.setPosition(armState.low);
 
       }
         if (gamepad2.dpad_up){
             //leftArm.setPosition(1);
-
             robot.Arm.setPosition(armState.medium);
 
         }
-        if (gamepad2.dpad_down){
-            //leftArm.setPosition(1);
-
-            robot.Arm.setPosition(armState.outtakingAuto);
-
-        }
         if (gamepad2.right_bumper){
-            //leftArm.setPosition(1);
-
             robot.Claw.setPosition(armState.intakingCLAW);
-
         }
         if (gamepad2.left_bumper){
             //leftArm.setPosition(1);
@@ -72,6 +64,19 @@ public class TeleOp extends OpMode
             robot.Claw.setPosition(armState.outtaking);
 
         }
+        /*
+        if (gamepad1.dpad_down){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+        }
+        if (gamepad1.dpad_left){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.LOWIN);
+        }
+        if (gamepad1.dpad_up){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
+        }
+        if (gamepad1.dpad_right){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+        }*/
 
 
 

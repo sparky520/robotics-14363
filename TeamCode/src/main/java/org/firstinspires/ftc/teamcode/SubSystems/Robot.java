@@ -5,7 +5,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Robot {
     public Mecanum drivetrain;
     public arm Arm;
-    public slides slide;
+    //public slides slide;
     public claw Claw;
 
     //public airplane Airplane;
