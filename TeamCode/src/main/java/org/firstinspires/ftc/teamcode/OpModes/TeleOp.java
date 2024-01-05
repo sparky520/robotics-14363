@@ -43,7 +43,7 @@ public class TeleOp extends OpMode
           robot.Arm.setPosition(armState.high);
       }
         if (gamepad2.dpad_down){
-            robot.Arm.setPosition(armState.outtaking);
+            robot.slide.setPosition(armState.outtaking);
         }
       if (gamepad2.dpad_left){
           //leftArm.setPosition(1);
