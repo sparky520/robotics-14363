@@ -33,10 +33,10 @@ public class Mecanum
     public Mecanum(HardwareMap hardwareMap)
     {
 
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
-        backRightMotor = hardwareMap.get(DcMotorEx.class,"backRightMotor");
+        backRightMotor = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class,"backRightMotor");
 
         frontRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorEx.Direction.REVERSE);

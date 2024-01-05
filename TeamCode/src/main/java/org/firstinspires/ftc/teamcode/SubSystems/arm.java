@@ -22,20 +22,20 @@ public class arm {
     public void setPosition(armState state){
         switch(state) {
             case low:
-                leftArm.setPosition(.17);
-                rightArm.setPosition(.17);
+                leftArm.setPosition(1.05);
+                rightArm.setPosition(1.05);
                 break;
             case medium:
-                leftArm.setPosition(.24);
-                rightArm.setPosition(.24);
+                leftArm.setPosition(.93);
+                rightArm.setPosition(.93);
                 break;
             case high:
-                leftArm.setPosition(.33);
-                rightArm.setPosition(.33);
+                leftArm.setPosition(.11);
+                rightArm.setPosition(.11);
                 break;
             case outtaking:
-                leftArm.setPosition(.685);
-                rightArm.setPosition(.685);
+                leftArm.setPosition(.48);
+                rightArm.setPosition(.48);
                 break;
         }
     }

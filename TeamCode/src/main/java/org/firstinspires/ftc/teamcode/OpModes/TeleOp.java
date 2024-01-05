@@ -64,7 +64,7 @@ public class TeleOp extends OpMode
             robot.Claw.setPosition(armState.outtaking);
 
         }
-        /*
+
         if (gamepad1.dpad_down){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
         }
@@ -76,7 +76,7 @@ public class TeleOp extends OpMode
         }
         if (gamepad1.dpad_right){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-        }*/
+        }
 
 
 
