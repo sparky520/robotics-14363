@@ -26,13 +26,13 @@ public class Mecanum
     private double offset = 1;
     BNO055IMU imu;
     BNO055IMU.Parameters parameters;
-    private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
+    private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower, slow_mode;
 
 
 
     public Mecanum(HardwareMap hardwareMap)
     {
-
+        slow_mode = 1;
         backRightMotor = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
         backLeftMotor = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
@@ -56,6 +56,14 @@ public class Mecanum
 
     }
 
+    public void slowSwitch(){
+        if (slow_mode == 1){
+            slow_mode = .25;
+        }else{
+            slow_mode = 1;
+        }
+
+    }
     public void resetIMU()
     {
 
@@ -79,10 +87,10 @@ public class Mecanum
         frontRightPower = 1 * (rotY - rotX - rx) / denominator;
         backRightPower = 1 * (rotY + rotX - rx) / denominator;
 
-        frontLeftMotor.setPower(frontLeftPower );
-        backLeftMotor.setPower(backLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        backRightMotor.setPower(backRightPower*.885);
+        frontLeftMotor.setPower(frontLeftPower*slow_mode);
+        backLeftMotor.setPower(backLeftPower*slow_mode);
+        frontRightMotor.setPower(frontRightPower*slow_mode);
+        backRightMotor.setPower(backRightPower*.885*slow_mode);
     }
 
 

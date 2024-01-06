@@ -22,8 +22,8 @@ public class arm {
     public void setPosition(armState state){
         switch(state) {
             case low:
-                leftArm.setPosition(1.05);
-                rightArm.setPosition(1.05);
+                leftArm.setPosition(1.2);
+                rightArm.setPosition(1.2);
                 break;
             case medium:
                 leftArm.setPosition(.93);
@@ -34,8 +34,8 @@ public class arm {
                 rightArm.setPosition(.11);
                 break;
             case outtaking:
-                leftArm.setPosition(.48);
-                rightArm.setPosition(.48);
+                leftArm.setPosition(.47);
+                rightArm.setPosition(.47);
                 break;
         }
     }

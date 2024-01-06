@@ -39,42 +39,45 @@ public class TeleOp extends OpMode
         robot.drivetrain.fieldCentric(driver);
 
 
-      if (gamepad2.dpad_right){
-          robot.Arm.setPosition(armState.high);
-      }
-        if (gamepad2.dpad_down){
-            robot.slide.setPosition(armState.outtaking);
+        //if (gamepad2.dpad_right){
+            //robot.Arm.setPosition(armState.high);
+        //}
+        if (gamepad1.circle){
+            robot.drivetrain.slowSwitch();
         }
-      if (gamepad2.dpad_left){
-          //leftArm.setPosition(1);
-          robot.Arm.setPosition(armState.low);
+        if (gamepad2.circle){
+            robot.Arm.setPosition(armState.outtaking);
+        }
+        if (gamepad2.square){
+            //leftArm.setPosition(1);
+            robot.Arm.setPosition(armState.low);
 
-      }
-        if (gamepad2.dpad_up){
+        }
+        if (gamepad2.triangle){
             //leftArm.setPosition(1);
             robot.Arm.setPosition(armState.medium);
 
         }
-        if (gamepad2.right_bumper){
+        if (gamepad1.right_bumper){
             robot.Claw.setPosition(armState.intakingCLAW);
         }
-        if (gamepad2.left_bumper){
+        if (gamepad1.left_bumper){
             //leftArm.setPosition(1);
 
             robot.Claw.setPosition(armState.outtaking);
 
         }
 
-        if (gamepad1.dpad_down){
+        if (gamepad2.dpad_down){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
         }
-        if (gamepad1.dpad_left){
+        if (gamepad2.dpad_left){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.LOWIN);
         }
-        if (gamepad1.dpad_up){
+        if (gamepad2.dpad_up){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
         }
-        if (gamepad1.dpad_right){
+        if (gamepad2.dpad_right){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
         }
 
