@@ -35,17 +35,16 @@ import java.util.List;
  */
 public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 0.6889764; // in
+    public static double WHEEL_RADIUS = .689; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
-
+    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1.02;
     public static double PARALLEL_X = 2.75; // X is the up and down direction
     public static double PARALLEL_Y = -5.75; // Y is the strafe direction
 
     public static double PERPENDICULAR_X = -6.25;
     public static double PERPENDICULAR_Y = -.5;
 
-    public static double X_MULTIPLIER = 1.037; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.03; // Multiplier in the Y direction
 
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
@@ -63,8 +62,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         this.drive = drive;
 
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "perp"));
-        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backLeftMotor"));
-        //perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
+        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontRightMotor"));
+
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
 
@@ -86,8 +85,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                encoderTicksToInches(parallelEncoder.getCurrentPosition() * X_MULTIPLIER),
-                encoderTicksToInches(perpendicularEncoder.getCurrentPosition() * Y_MULTIPLIER)
+                encoderTicksToInches(parallelEncoder.getCurrentPosition()*X_MULTIPLIER),
+                encoderTicksToInches(perpendicularEncoder.getCurrentPosition()*Y_MULTIPLIER)
         );
     }
 
@@ -99,8 +98,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(parallelEncoder.getCorrectedVelocity() * X_MULTIPLIER),
-                encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity() * Y_MULTIPLIER)
+                encoderTicksToInches(parallelEncoder.getCorrectedVelocity()),
+                encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity())
         );
     }
 }

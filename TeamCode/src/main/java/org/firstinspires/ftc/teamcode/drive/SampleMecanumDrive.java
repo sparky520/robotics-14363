@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
-
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -71,11 +71,11 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx frontLeft, frontRight, backRight, backLeft;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-    BNO055IMU.Parameters parameters;
 
     private BNO055IMU imu;
+    BNO055IMU.Parameters parameters;
     private VoltageSensor batteryVoltageSensor;
 
     private List<Integer> lastEncPositions = new ArrayList<>();
@@ -83,7 +83,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -103,16 +102,15 @@ public class SampleMecanumDrive extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
+        rightRear = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
+        rightFront = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
+        leftRear = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
+        leftFront = hardwareMap.get(DcMotorEx.class,"backRightMotor");
 
-        backRight = hardwareMap.get(DcMotorEx.class,"frontLeftMotor");
-        frontRight = hardwareMap.get(DcMotorEx.class,"backLeftMotor");
-        backLeft = hardwareMap.get(DcMotorEx.class,"frontRightMotor");
-        frontLeft = hardwareMap.get(DcMotorEx.class,"backRightMotor");
+        rightRear.setDirection(DcMotorEx.Direction.REVERSE);
+        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
 
-        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
-        backRight.setDirection(DcMotorEx.Direction.REVERSE);
-
-        motors = Arrays.asList(frontRight, frontLeft, backLeft, backRight);
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -136,7 +134,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(
@@ -291,11 +288,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        //OG order: v,v1,v2,v3
-        backRight.setPower(v2);
-        frontRight.setPower(v3);
-        frontLeft.setPower(v);
-        backLeft.setPower(v1);
+        rightRear.setPower(v);
+        rightFront.setPower(v1);
+        leftFront.setPower(v2);
+        leftRear.setPower(v3);
     }
 
     @Override

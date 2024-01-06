@@ -26,8 +26,8 @@ public class Mecanum
     private double offset = 1;
     BNO055IMU imu;
     BNO055IMU.Parameters parameters;
-    private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower, slow_mode;
-
+    private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
+    public double slow_mode;
 
 
     public Mecanum(HardwareMap hardwareMap)
@@ -56,14 +56,9 @@ public class Mecanum
 
     }
 
-    public void slowSwitch(){
-        if (slow_mode == 1){
-            slow_mode = .25;
-        }else{
-            slow_mode = 1;
-        }
 
-    }
+
+
     public void resetIMU()
     {
 

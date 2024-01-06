@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.drive.auto;
 
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -84,9 +84,7 @@ public class shortRedAuto extends LinearOpMode
                 .lineToConstantHeading(new Vector2d(0,-42))
                 .build();
         waitForStart();
-        TrajectorySequence test = drive.trajectorySequenceBuilder(newStart)
-                .turn(Math.toRadians(90))
-                .build();
+
         if(isStopRequested()) return;
         drive.followTrajectorySequence(center);
 

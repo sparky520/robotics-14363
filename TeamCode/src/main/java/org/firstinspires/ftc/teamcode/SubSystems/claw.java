@@ -33,9 +33,11 @@ public class claw {
         }
     }
 
+    //auto
     public void setTape(){
         leftClaw.setPosition(.91);
     }
+    //auto
     public void dropBoard(){
         rightClaw.setPosition(.91);
     }

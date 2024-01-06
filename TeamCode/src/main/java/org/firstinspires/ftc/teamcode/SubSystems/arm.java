@@ -29,7 +29,9 @@ public class arm {
                 leftArm.setPosition(.93);
                 rightArm.setPosition(.93);
                 break;
+
             case high:
+                //for auto
                 leftArm.setPosition(.11);
                 rightArm.setPosition(.11);
                 break;

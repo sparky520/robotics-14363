@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
-import org.firstinspires.ftc.teamcode.robotConstants.slideConstants;
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -37,6 +36,7 @@ public class slides {
             case etxending: {
                 switch (outtakeSlidesState) {
                     case HIGHIN:
+                        //for auto
                         leftSlide.setTargetPosition(1200);
                         rightSlide.setTargetPosition(-1200);
 
