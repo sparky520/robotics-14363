@@ -38,10 +38,6 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-
-        //if (gamepad2.dpad_right){
-            //robot.Arm.setPosition(armState.high);
-        //}
         if (gamepad1.right_trigger > 0){
             robot.drivetrain.slow_mode = .2;
         }
@@ -49,15 +45,14 @@ public class TeleOp extends OpMode
             robot.drivetrain.slow_mode = 1;
         }
         if (gamepad2.circle){
-            robot.Arm.setPosition(armState.outtaking);
+            robot.Arm.longAuto();
+            //robot.Arm.setPosition(armState.outtaking);
         }
         if (gamepad2.square){
-            //leftArm.setPosition(1);
             robot.Arm.setPosition(armState.low);
 
         }
         if (gamepad2.triangle){
-            //leftArm.setPosition(1);
             robot.Arm.setPosition(armState.medium);
 
         }
@@ -65,8 +60,6 @@ public class TeleOp extends OpMode
             robot.Claw.setPosition(armState.intakingCLAW);
         }
         if (gamepad1.left_bumper){
-            //leftArm.setPosition(1);
-
             robot.Claw.setPosition(armState.outtaking);
 
         }
@@ -81,7 +74,7 @@ public class TeleOp extends OpMode
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.MEDIUMIN);
         }
         if (gamepad2.dpad_right){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
         }
 
 

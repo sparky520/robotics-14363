@@ -42,6 +42,10 @@ public class arm {
         }
     }
 
+    public void longAuto(){
+        leftArm.setPosition(.2);
+        rightArm.setPosition(.2);
+    }
 
 
 }

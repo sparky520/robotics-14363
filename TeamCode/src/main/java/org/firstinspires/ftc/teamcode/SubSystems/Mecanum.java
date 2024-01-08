@@ -27,7 +27,8 @@ public class Mecanum
     BNO055IMU imu;
     BNO055IMU.Parameters parameters;
     private double x, y, rx, rotX, rotY, denominator, frontLeftPower, backLeftPower, frontRightPower, backRightPower;
-    public double slow_mode;
+    public double slow_mode, botHeading ;
+
 
 
     public Mecanum(HardwareMap hardwareMap)
@@ -51,7 +52,7 @@ public class Mecanum
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-
+        botHeading = -imu.getAngularOrientation().firstAngle;
 
 
     }
@@ -70,8 +71,6 @@ public class Mecanum
         y = driver.getLeftY();
         x = driver.getLeftX();
         rx = -driver.getRightX();
-
-        double botHeading = -imu.getAngularOrientation().firstAngle;
 
         rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
         rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);

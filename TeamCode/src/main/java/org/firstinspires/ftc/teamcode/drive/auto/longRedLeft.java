@@ -37,32 +37,30 @@ public class longRedLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .lineToConstantHeading(new Vector2d(33,19))
-                .turn(Math.toRadians(180))
+                .lineToLinearHeading(new Pose2d(33,11.5,Math.toRadians(180)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                     robot.Arm.setPosition(armState.medium);
                 })
-                .lineToConstantHeading(new Vector2d(45, 19))
-                .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(45,-64))
+                .lineToConstantHeading(new Vector2d(47, 0))
+                .lineToConstantHeading(new Vector2d(47,-64))
                 .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
+                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
+                    robot.Arm.longAuto();
                 })
-                .lineToConstantHeading(new Vector2d(16,-64))
-                .lineToConstantHeading(new Vector2d(17,-78.3))
+                .lineToLinearHeading(new Pose2d(16,-64,Math.toRadians(90)))
+                //.lineToConstantHeading(new Vector2d(17,-78.3))
+                .lineToConstantHeading(new Vector2d(19.5,-82))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
-                .lineToConstantHeading(new Vector2d(18,-60))
-                .waitSeconds(1)
+                .lineToConstantHeading(new Vector2d(18,-65))
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.medium);
                     robot.Claw.setPosition(armState.intakingCLAW);
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                 })
-                .lineToConstantHeading(new Vector2d(-12,-72))
+                .lineToConstantHeading(new Vector2d(-8,-86))
                 .build();
         waitForStart();
 

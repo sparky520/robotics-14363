@@ -47,6 +47,7 @@ public class shortRedRight extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
+                    robot.Claw.afterTape();
                 })
                 .lineToConstantHeading(new Vector2d(25,-15.02))
                 .waitSeconds(1)

@@ -43,20 +43,19 @@ public class longBlueLeft extends LinearOpMode
                     robot.Arm.setPosition(armState.medium);
                 })
                 .lineToConstantHeading(new Vector2d(26,-4))
-                .lineToConstantHeading(new Vector2d(48,-4))
-                .lineToConstantHeading(new Vector2d(48,45))
+                .lineToLinearHeading(new Pose2d(48,-4,Math.toRadians(-90)))
+                .lineToConstantHeading(new Vector2d(48,55))
                 .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
+                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
+                    robot.Arm.longAuto();
                 })
-                .turn(Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(26.5,45))
-                .lineToConstantHeading(new Vector2d(26.5,62.5))
+                .lineToConstantHeading(new Vector2d(48,55.01))
+                .waitSeconds(.75)
+                .lineToConstantHeading(new Vector2d(25,72))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
-                .lineToConstantHeading(new Vector2d(26.5,50))
-                .waitSeconds(1)
+                .lineToConstantHeading(new Vector2d(26,50))
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.medium);
                     robot.Claw.setPosition(armState.intakingCLAW);
@@ -66,7 +65,7 @@ public class longBlueLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.low);
                 })
-                .lineToConstantHeading(new Vector2d(4,66))
+                .lineToConstantHeading(new Vector2d(4,76))
                 .build();
         waitForStart();
 

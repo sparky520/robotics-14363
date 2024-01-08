@@ -37,6 +37,8 @@ public class claw {
     public void setTape(){
         leftClaw.setPosition(.91);
     }
+    public void afterTape(){leftClaw.setPosition(.7);}
+    public void openCenter(){leftClaw.setPosition(1);}
     //auto
     public void dropBoard(){
         rightClaw.setPosition(.91);

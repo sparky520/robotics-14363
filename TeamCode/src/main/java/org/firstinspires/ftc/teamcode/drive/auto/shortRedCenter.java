@@ -37,19 +37,17 @@ public class shortRedCenter extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .lineToConstantHeading(new Vector2d(27,0))
+                .lineToLinearHeading(new Pose2d(38.5,-3,Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                     robot.Arm.setPosition(armState.medium);
                 })
-                .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(18,0))
+                .lineToConstantHeading(new Vector2d(38.5, -3.01))
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
                 })
-                .turn(Math.toRadians(90))
-                .lineToConstantHeading(new Vector2d(22,-32))
+                .lineToConstantHeading(new Vector2d(21,-36))
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.outtaking);
@@ -58,7 +56,6 @@ public class shortRedCenter extends LinearOpMode
                     robot.Claw.dropBoard();
                 })
                 .lineToConstantHeading(new Vector2d(22,-18))
-                .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.medium);
                     robot.Claw.setPosition(armState.intakingCLAW);
