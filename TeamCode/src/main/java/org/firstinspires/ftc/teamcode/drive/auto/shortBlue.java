@@ -24,39 +24,14 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.arm;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class shortBlue extends LinearOpMode
 {
     Robot robot;
-    OpenCvCamera roboCam;
-    String webcamName;
     objdetect_blue blueTSE;
     @Override
     public void runOpMode() {
-        webcamName = "Webcam 1";
-        int cameraMonitorViewId = hardwareMap.appContext
-                .getResources().getIdentifier("cameraMonitorViewId",
-                        "id", hardwareMap.appContext.getPackageName());
-        roboCam = OpenCvCameraFactory.getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-        objdetect_blue detector = new objdetect_blue(telemetry);
-        roboCam.setPipeline(detector);
-        roboCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                roboCam.startStreaming(320, 240, OpenCvCameraRotation.SENSOR_NATIVE);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                telemetry.addLine("error opening cam");
-                telemetry.update();
-            }
-        });
-
-        waitForStart();
-        if(blueTSE.getLocation() == objdetect_blue.Location.MIDDLE){
-
+        if (blueTSE.getLocation()== objdetect_blue.Location.MIDDLE){
             robot = new Robot(hardwareMap, telemetry);
             SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -129,97 +104,8 @@ public class shortBlue extends LinearOpMode
             drive.followTrajectorySequence(center);
         }
 
-        if(blueTSE.getLocation() == objdetect_blue.Location.LEFT){
-            robot = new Robot(hardwareMap, telemetry);
-            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-            Pose2d newStart = new Pose2d();
-            TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
-                    .addDisplacementMarker(() -> {
-                        robot.Claw.setPosition(armState.intakingCLAW);
-                    })
-                    .lineToLinearHeading(new Pose2d(31,9,Math.toRadians(-90)))
-                    .addDisplacementMarker(() -> {
-                        robot.Claw.setTape();
-                        robot.Arm.setPosition(armState.medium);
-                    })
-                    .lineToConstantHeading(new Vector2d(31,9.01))
-                    .waitSeconds(.25)
-                    .addDisplacementMarker(() -> {
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                        robot.Arm.setPosition(armState.high);
-                    })
-                    .lineToConstantHeading(new Vector2d(31,9.02))
-                    .waitSeconds(1)
-                    .lineToConstantHeading(new Vector2d(23,29.25))
-                    .addDisplacementMarker(() -> {
-                        robot.Claw.dropBoard();
-                    })
-                    .lineToConstantHeading(new Vector2d(20,18))
-                    //.waitSeconds(1)
-                    .addDisplacementMarker(() -> {
-                        robot.Arm.setPosition(armState.medium);
-                        robot.Claw.setPosition(armState.intakingCLAW);
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                    })
-                    .lineToConstantHeading(new Vector2d(0,23))
-                    .addDisplacementMarker(() -> {
-                        robot.Arm.setPosition(armState.low);
-                    })
-                    .lineToConstantHeading(new Vector2d(0,30))
-                    .build();
-            waitForStart();
 
-            if(isStopRequested()) return;
-            drive.followTrajectorySequence(left);
 
-        }
-        if(blueTSE.getLocation()== objdetect_blue.Location.RIGHT){
-
-            robot = new Robot(hardwareMap, telemetry);
-            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-            Pose2d newStart = new Pose2d();
-            TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
-                    .addDisplacementMarker(() -> {
-                        robot.Claw.setPosition(armState.intakingCLAW);
-                    })
-                    .lineToLinearHeading(new Pose2d(28,6,Math.toRadians(-90)))
-                    .lineToConstantHeading(new Vector2d(28,-11))
-                    .addDisplacementMarker(() -> {
-                        robot.Claw.setTape();
-                        robot.Arm.setPosition(armState.medium);
-                    })
-                    .lineToConstantHeading(new Vector2d(28,-10.99))
-                    .waitSeconds(.25)
-                    .addDisplacementMarker(() -> {
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                        robot.Arm.setPosition(armState.high);
-                        robot.Claw.setPosition(armState.intakingCLAW);
-                    })
-                    //.lineToConstantHeading(new Vector2d(31,9.02))
-                    //.waitSeconds(1)
-                    .lineToConstantHeading(new Vector2d(33.75,30.75))
-                    .addDisplacementMarker(() -> {
-                        robot.Claw.dropBoard();
-                    })
-                    .lineToConstantHeading(new Vector2d(33,18))
-                    //.waitSeconds(1)
-                    .addDisplacementMarker(() -> {
-                        robot.Arm.setPosition(armState.medium);
-                        robot.Claw.setPosition(armState.intakingCLAW);
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                    })
-                    .lineToConstantHeading(new Vector2d(0,23))
-                    .addDisplacementMarker(() -> {
-                        robot.Arm.setPosition(armState.low);
-                    })
-                    .lineToConstantHeading(new Vector2d(0,30))
-                    .build();
-            waitForStart();
-
-            if(isStopRequested()) return;
-            drive.followTrajectorySequence(right);
-        }
     }
 }
