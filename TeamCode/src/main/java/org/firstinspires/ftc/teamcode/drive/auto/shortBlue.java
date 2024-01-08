@@ -24,34 +24,87 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.arm;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class shortBlue extends LinearOpMode
 {
     Robot robot;
+    OpenCvCamera roboCam;
+    String webcamName;
+    objdetect_blue blueTSE;
     @Override
     public void runOpMode() {
-        robot = new Robot(hardwareMap, telemetry);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        webcamName = "Webcam 1";
+        int cameraMonitorViewId = hardwareMap.appContext
+                .getResources().getIdentifier("cameraMonitorViewId",
+                        "id", hardwareMap.appContext.getPackageName());
+        roboCam = OpenCvCameraFactory.getInstance()
+                .createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
+        objdetect_blue detector = new objdetect_blue(telemetry);
+        roboCam.setPipeline(detector);
+        roboCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                roboCam.startStreaming(320, 240, OpenCvCameraRotation.SENSOR_NATIVE);
+            }
 
-        Pose2d newStart = new Pose2d();
-        TrajectorySequence center = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToConstantHeading(new Vector2d(27.25,-5))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addLine("error opening cam");
+                telemetry.update();
+            }
+        });
+
+        waitForStart();
+        if(blueTSE.getLocation() == objdetect_blue.Location.MIDDLE){
+
+            robot = new Robot(hardwareMap, telemetry);
+            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+            Pose2d newStart = new Pose2d();
+            TrajectorySequence center = drive.trajectorySequenceBuilder(newStart)
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                    })
+                    .lineToLinearHeading(new Pose2d(36.25,0,Math.toRadians(-90)))
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.setTape();
+                        robot.Arm.setPosition(armState.medium);
+                    })
+                    .lineToConstantHeading(new Vector2d(36,9.01))
+                    .waitSeconds(.25)
+                    .addDisplacementMarker(() -> {
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+                        robot.Arm.setPosition(armState.high);
+                    })
+                    .lineToConstantHeading(new Vector2d(31,9.02))
+                    .waitSeconds(1)
+                    .lineToConstantHeading(new Vector2d(28,30))
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.dropBoard();
+                    })
+                    .lineToConstantHeading(new Vector2d(20,18))
+                    //.waitSeconds(1)
+                    .addDisplacementMarker(() -> {
+                        robot.Arm.setPosition(armState.medium);
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                    })
+                    .lineToConstantHeading(new Vector2d(0,23))
+                    .addDisplacementMarker(() -> {
+                        robot.Arm.setPosition(armState.low);
+                    })
+                    .lineToConstantHeading(new Vector2d(0,30))
+                    .build();
+        /*
                 .lineToLinearHeading(new Pose2d(13,15,Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
                 })
                 .lineToConstantHeading(new Vector2d(13,14))
-                .waitSeconds(2)
+                //.waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(28,29.5))//this one
-                .waitSeconds(1)
+                //.waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
@@ -68,79 +121,105 @@ public class shortBlue extends LinearOpMode
                 })
                 .lineToConstantHeading(new Vector2d(0,30))
                 .build();
-        TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(31,-4,Math.toRadians(90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToLinearHeading(new Pose2d(10,10,270))
-                .lineToLinearHeading(new Pose2d(11,10,-90))
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToConstantHeading(new Vector2d(10,11))
-                .waitSeconds(2)
-                .lineToLinearHeading(new Pose2d(23,26,Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(20,18))
-                .waitSeconds(1)
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,23))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .lineToConstantHeading(new Vector2d(0,30))
-                .build();
-        //Robot.slides.setOuttakeSlidePosition(outtakeStates.extending, outtakeStates.HIGHIN)
-        TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(28,6,Math.toRadians(-90)))
-                .lineToConstantHeading(new Vector2d(28,-11))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(28,-10))
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToLinearHeading(new Pose2d(33.5,29,Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(34,20))
-                .waitSeconds(1)
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,23))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .lineToConstantHeading(new Vector2d(0,30))
-                .build();
-        waitForStart();
+                */
 
-        if(isStopRequested()) return;
-        drive.followTrajectorySequence(center);
+            waitForStart();
 
+            if(isStopRequested()) return;
+            drive.followTrajectorySequence(center);
+        }
 
+        if(blueTSE.getLocation() == objdetect_blue.Location.LEFT){
+            robot = new Robot(hardwareMap, telemetry);
+            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+            Pose2d newStart = new Pose2d();
+            TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                    })
+                    .lineToLinearHeading(new Pose2d(31,9,Math.toRadians(-90)))
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.setTape();
+                        robot.Arm.setPosition(armState.medium);
+                    })
+                    .lineToConstantHeading(new Vector2d(31,9.01))
+                    .waitSeconds(.25)
+                    .addDisplacementMarker(() -> {
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+                        robot.Arm.setPosition(armState.high);
+                    })
+                    .lineToConstantHeading(new Vector2d(31,9.02))
+                    .waitSeconds(1)
+                    .lineToConstantHeading(new Vector2d(23,29.25))
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.dropBoard();
+                    })
+                    .lineToConstantHeading(new Vector2d(20,18))
+                    //.waitSeconds(1)
+                    .addDisplacementMarker(() -> {
+                        robot.Arm.setPosition(armState.medium);
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                    })
+                    .lineToConstantHeading(new Vector2d(0,23))
+                    .addDisplacementMarker(() -> {
+                        robot.Arm.setPosition(armState.low);
+                    })
+                    .lineToConstantHeading(new Vector2d(0,30))
+                    .build();
+            waitForStart();
+
+            if(isStopRequested()) return;
+            drive.followTrajectorySequence(left);
+
+        }
+        if(blueTSE.getLocation()== objdetect_blue.Location.RIGHT){
+
+            robot = new Robot(hardwareMap, telemetry);
+            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+            Pose2d newStart = new Pose2d();
+            TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                    })
+                    .lineToLinearHeading(new Pose2d(28,6,Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(28,-11))
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.setTape();
+                        robot.Arm.setPosition(armState.medium);
+                    })
+                    .lineToConstantHeading(new Vector2d(28,-10.99))
+                    .waitSeconds(.25)
+                    .addDisplacementMarker(() -> {
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+                        robot.Arm.setPosition(armState.high);
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                    })
+                    //.lineToConstantHeading(new Vector2d(31,9.02))
+                    //.waitSeconds(1)
+                    .lineToConstantHeading(new Vector2d(33.75,30.75))
+                    .addDisplacementMarker(() -> {
+                        robot.Claw.dropBoard();
+                    })
+                    .lineToConstantHeading(new Vector2d(33,18))
+                    //.waitSeconds(1)
+                    .addDisplacementMarker(() -> {
+                        robot.Arm.setPosition(armState.medium);
+                        robot.Claw.setPosition(armState.intakingCLAW);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                    })
+                    .lineToConstantHeading(new Vector2d(0,23))
+                    .addDisplacementMarker(() -> {
+                        robot.Arm.setPosition(armState.low);
+                    })
+                    .lineToConstantHeading(new Vector2d(0,30))
+                    .build();
+            waitForStart();
+
+            if(isStopRequested()) return;
+            drive.followTrajectorySequence(right);
+        }
     }
 }
