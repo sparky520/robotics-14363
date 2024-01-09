@@ -16,8 +16,8 @@ public class longRedObjectDetect extends OpenCvPipeline {
     private String location = "LEFT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(260, 30),
-            new Point(320, 70));
+            new Point(230, 30),
+            new Point(290, 70));
 
     /*static final Rect MIDDLE_ROI = new Rect(
             new Point(0, 110),
@@ -25,15 +25,15 @@ public class longRedObjectDetect extends OpenCvPipeline {
     static final Rect RIGHT_ROI = new Rect(
             new Point(40, 0),
             new Point(100, 40));
-    static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
-    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.2;
+    static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.05;
+    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.05;
     public longRedObjectDetect(Telemetry t) { telemetry = t; }
 
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(100, 150, 0);
-        Scalar highHSV = new Scalar(140, 255,255);
+        Scalar lowHSV = new Scalar(175, 78, 78);
+        Scalar highHSV = new Scalar(179, 255, 255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);
