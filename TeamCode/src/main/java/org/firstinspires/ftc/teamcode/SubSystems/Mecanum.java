@@ -52,7 +52,7 @@ public class Mecanum
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-        botHeading = -imu.getAngularOrientation().firstAngle;
+
 
 
     }
@@ -71,6 +71,7 @@ public class Mecanum
         y = driver.getLeftY();
         x = driver.getLeftX();
         rx = -driver.getRightX();
+        botHeading = -imu.getAngularOrientation().firstAngle;
 
         rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
         rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);

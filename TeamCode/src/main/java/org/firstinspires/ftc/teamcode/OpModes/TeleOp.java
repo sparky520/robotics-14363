@@ -45,8 +45,8 @@ public class TeleOp extends OpMode
             robot.drivetrain.slow_mode = 1;
         }
         if (gamepad2.circle){
-            robot.Arm.longAuto();
-            //robot.Arm.setPosition(armState.outtaking);
+           // robot.Arm.longAuto();
+            robot.Arm.setPosition(armState.outtaking);
         }
         if (gamepad2.square){
             robot.Arm.setPosition(armState.low);
