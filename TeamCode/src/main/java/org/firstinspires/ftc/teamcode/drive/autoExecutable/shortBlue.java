@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.teamcode.drive.auto.objdetect_blue;
+import org.firstinspires.ftc.teamcode.drive.autoExecutable.blueObjectDetect;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.arm;
 @Autonomous(name = "short Blue", group = "Auto")
 public class shortBlue extends LinearOpMode {
     OpenCvCamera camera;
-    objdetect_blue blueDetection;
+    blueObjectDetect blueDetection;
     String webcamName;
     Robot robot;
     public void runOpMode() {
@@ -174,7 +174,7 @@ public class shortBlue extends LinearOpMode {
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
 
         // initializing our Detection class (details on how it works at the top)
-        blueDetection = new objdetect_blue(telemetry);
+        blueDetection = new blueObjectDetect(telemetry);
 
         // yeah what this does is it gets the thing which uses the thing so we can get the thing
         /*
