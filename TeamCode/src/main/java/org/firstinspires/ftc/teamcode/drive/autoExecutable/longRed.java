@@ -38,13 +38,13 @@ public class longRed extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(47, 0))
                 .lineToConstantHeading(new Vector2d(47,-64))
+                .lineToLinearHeading(new Pose2d(16,-64,Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
                     robot.Arm.longAuto();
                 })
-                .lineToLinearHeading(new Pose2d(16,-64,Math.toRadians(90)))
-                //.lineToConstantHeading(new Vector2d(17,-78.3))
-                .lineToConstantHeading(new Vector2d(19.5,-82))
+                .lineToConstantHeading(new Vector2d(16,-64.01))
+                .lineToConstantHeading(new Vector2d(26.5,-81))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
@@ -54,6 +54,7 @@ public class longRed extends LinearOpMode {
                     robot.Claw.setPosition(armState.intakingCLAW);
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                 })
+                .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(-8,-86))
                 .build();
         TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
@@ -75,7 +76,7 @@ public class longRed extends LinearOpMode {
                     robot.Claw.afterTape();
                 })
                 .lineToConstantHeading(new Vector2d(16,-65))
-                .lineToConstantHeading(new Vector2d(4,-72))
+                .lineToConstantHeading(new Vector2d(11,-74.5))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
@@ -85,7 +86,8 @@ public class longRed extends LinearOpMode {
                     robot.Claw.setPosition(armState.intakingCLAW);
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                 })
-                .lineToConstantHeading(new Vector2d(-10,-70))
+                .turn(Math.toRadians(-90))
+                .lineToConstantHeading(new Vector2d(-8,-75))
                 .build();
         TrajectorySequence centerLeftSlot = drive.trajectorySequenceBuilder(newStart)
                 .addDisplacementMarker(() -> {
@@ -97,15 +99,15 @@ public class longRed extends LinearOpMode {
                     robot.Arm.setPosition(armState.medium);
                 })
                 .lineToConstantHeading(new Vector2d(48,0))
-                .lineToConstantHeading(new Vector2d(42, -70))
+                .lineToConstantHeading(new Vector2d(48, -70))
                 .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
+                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
+                    robot.Arm.longAuto();
                     robot.Claw.openCenter();
                 })
                 .lineToLinearHeading(new Pose2d(16,-70, Math.toRadians(90)))
                 //.lineToConstantHeading(new Vector2d(17,-78.3))
-                .lineToConstantHeading(new Vector2d(16.25,-85.5))
+                .lineToConstantHeading(new Vector2d(19.25,-80.5))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
@@ -115,6 +117,7 @@ public class longRed extends LinearOpMode {
                     robot.Claw.setPosition(armState.intakingCLAW);
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                 })
+                .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(-8,-86))
                 .build();
 

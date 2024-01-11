@@ -9,25 +9,25 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class longRedObjectDetect extends OpenCvPipeline {
+public class shortRedObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
     private String location = "LEFT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(230, 30),
-            new Point(290, 70));
+            new Point(255, 30),
+            new Point(315, 70));
 
     /*static final Rect MIDDLE_ROI = new Rect(
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(40, 0),
-            new Point(100, 40));
+            new Point(90, 0),
+            new Point(150, 40));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
-    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.14;
-    public longRedObjectDetect(Telemetry t) { telemetry = t; }
+    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.12;
+    public shortRedObjectDetect(Telemetry t) { telemetry = t; }
 
     @Override
     public Mat processFrame(Mat input){

@@ -43,5 +43,6 @@ public class claw {
     public void dropBoard(){
         rightClaw.setPosition(.91);
     }
+    public void stack(){leftClaw.setPosition(1);}
 
 }

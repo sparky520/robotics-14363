@@ -59,6 +59,7 @@ public class shortBlue extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.low);
                 })
+                .turn(Math.toRadians(90))
                 .lineToConstantHeading(new Vector2d(0,36))
                 .build();
         TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
@@ -93,6 +94,7 @@ public class shortBlue extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.low);
                 })
+                .turn(Math.toRadians(90))
                 .lineToConstantHeading(new Vector2d(0,36))
                 .build();
         TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
@@ -129,6 +131,7 @@ public class shortBlue extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.low);
                 })
+                .turn(Math.toRadians(90))
                 .lineToConstantHeading(new Vector2d(0,33))
                 .build();
         initCam();

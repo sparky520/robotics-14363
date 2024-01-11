@@ -22,8 +22,8 @@ public class arm {
     public void setPosition(armState state){
         switch(state) {
             case low:
-                leftArm.setPosition(1.2);
-                rightArm.setPosition(1.2);
+                leftArm.setPosition(1);
+                rightArm.setPosition(1);
                 break;
             case medium:
                 leftArm.setPosition(.93);
@@ -45,6 +45,10 @@ public class arm {
     public void longAuto(){
         leftArm.setPosition(.2);
         rightArm.setPosition(.2);
+    }
+    public void topStack(){
+        leftArm.setPosition(.97);
+        rightArm.setPosition(.97);
     }
 
 
