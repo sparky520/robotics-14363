@@ -41,6 +41,9 @@ public class TeleOp extends OpMode
         if (gamepad1.right_trigger > 0){
             robot.drivetrain.slow_mode = .2;
         }
+        else if (gamepad1.left_trigger > 0){
+            robot.drivetrain.slow_mode=.1;
+        }
         else{
             robot.drivetrain.slow_mode = 1;
         }
