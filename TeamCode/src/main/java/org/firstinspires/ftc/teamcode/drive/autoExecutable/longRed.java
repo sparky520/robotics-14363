@@ -76,7 +76,7 @@ public class longRed extends LinearOpMode {
                     robot.Claw.afterTape();
                 })
                 .lineToConstantHeading(new Vector2d(16,-65))
-                .lineToConstantHeading(new Vector2d(11,-74.5))
+                .lineToConstantHeading(new Vector2d(10,-74.5))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })

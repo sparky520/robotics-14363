@@ -23,17 +23,17 @@ public class shortRedObjectDetect extends OpenCvPipeline {
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(90, 0),
-            new Point(150, 40));
+            new Point(90, 40),
+            new Point(150, 80));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
-    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.12;
+    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.25;
     public shortRedObjectDetect(Telemetry t) { telemetry = t; }
 
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(175, 78, 78);
-        Scalar highHSV = new Scalar(179, 255, 255);
+        Scalar lowHSV = new Scalar(165, 78, 78);
+        Scalar highHSV = new Scalar(180, 255, 255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);

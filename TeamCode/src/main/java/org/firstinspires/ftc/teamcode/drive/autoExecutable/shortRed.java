@@ -41,7 +41,7 @@ public class shortRed extends LinearOpMode {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
                 })
-                .lineToConstantHeading(new Vector2d(21,-36))
+                .lineToConstantHeading(new Vector2d(20,-36))
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.outtaking);
@@ -60,7 +60,7 @@ public class shortRed extends LinearOpMode {
                     robot.Arm.setPosition(armState.low);
                 })
                 .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(0,-30))
+                .lineToConstantHeading(new Vector2d(0,-33))
                 .build();
         TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
                 .addDisplacementMarker(() -> {
