@@ -54,6 +54,7 @@ public class longRed extends LinearOpMode {
                     robot.Claw.setPosition(armState.intakingCLAW);
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                 })
+                .lineToConstantHeading(new Vector2d(18,-65.01))
                 .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(-8,-86))
                 .build();
@@ -86,6 +87,7 @@ public class longRed extends LinearOpMode {
                     robot.Claw.setPosition(armState.intakingCLAW);
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                 })
+                .lineToConstantHeading(new Vector2d(2,-55.01))
                 .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(-8,-75))
                 .build();

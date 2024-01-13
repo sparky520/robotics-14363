@@ -38,6 +38,9 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
+        if (gamepad1.square){
+            robot.Arm.setPosition(armState.outtaking2);
+        }
         if (gamepad1.right_trigger > 0){
             robot.drivetrain.slow_mode = .2;
         }

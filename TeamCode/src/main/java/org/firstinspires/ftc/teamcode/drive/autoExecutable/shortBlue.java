@@ -44,11 +44,11 @@ public class shortBlue extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(31,15.02))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(28,37))
+                .lineToConstantHeading(new Vector2d(24,37))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
-                .lineToConstantHeading(new Vector2d(28,24))
+                .lineToConstantHeading(new Vector2d(26,24))
                 //.waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.Arm.setPosition(armState.medium);
@@ -66,20 +66,20 @@ public class shortBlue extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .lineToLinearHeading(new Pose2d(31,13.5,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(31,17.5,Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                     robot.Arm.setPosition(armState.medium);
                 })
-                .lineToConstantHeading(new Vector2d(31,15.01))
+                .lineToConstantHeading(new Vector2d(31,17.51))
                 .waitSeconds(.25)
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
                 })
-                .lineToConstantHeading(new Vector2d(31,15.02))
+                .lineToConstantHeading(new Vector2d(31,17.52))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(24,35.25))
+                .lineToConstantHeading(new Vector2d(24,36.75))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
