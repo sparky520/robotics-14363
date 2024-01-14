@@ -41,7 +41,7 @@ public class shortRed extends LinearOpMode {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
                 })
-                .lineToConstantHeading(new Vector2d(20,-36))
+                .lineToConstantHeading(new Vector2d(20,-32))
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.outtaking);
@@ -80,7 +80,7 @@ public class shortRed extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(25,-15.02))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(17,-33.5))
+                .lineToConstantHeading(new Vector2d(15.5,-33.5))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })

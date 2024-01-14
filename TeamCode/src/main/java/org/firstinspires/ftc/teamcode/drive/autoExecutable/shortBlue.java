@@ -31,7 +31,7 @@ public class shortBlue extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .lineToLinearHeading(new Pose2d(37,11,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(37,7,Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                     robot.Arm.setPosition(armState.medium);
@@ -44,7 +44,7 @@ public class shortBlue extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(31,15.02))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(24,37))
+                .lineToConstantHeading(new Vector2d(24,34.5))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })
@@ -79,7 +79,7 @@ public class shortBlue extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(31,17.52))
                 .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(24,36.75))
+                .lineToConstantHeading(new Vector2d(22.5,36.75))
                 .addDisplacementMarker(() -> {
                     robot.Claw.dropBoard();
                 })

@@ -26,6 +26,9 @@ public class TeleOp extends OpMode
         operator.readButtons();
 
         robot.drivetrain.fieldCentric(driver);
+        if (gamepad1.dpad_up){
+            robot.drivetrain.resetIMU();
+        }
         if (gamepad1.triangle){
             robot.Airplane.setPosition(armState.airplaneInit);
         }

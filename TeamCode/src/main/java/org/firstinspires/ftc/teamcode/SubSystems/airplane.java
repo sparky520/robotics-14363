@@ -14,7 +14,7 @@ public class airplane {
     public void setPosition(armState state){
         switch (state){
             case airplaneInit:
-                airplane.setPosition(.2);
+                airplane.setPosition(.22);
                 break;
             case airplaneLaunch:
                 airplane.setPosition(.6);
