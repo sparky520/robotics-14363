@@ -57,10 +57,7 @@ public class shortRedCenter extends LinearOpMode
 
         if(isStopRequested()) return;
         drive.followTrajectorySequence(center1);
-        while (distanceSensor.getDistance(DistanceUnit.INCH) > 10){
-            telemetry.addLine("too far");
-        }
-        telemetry.addLine("There u go");
+
 
 
 

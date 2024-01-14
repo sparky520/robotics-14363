@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Robot;
 import org.firstinspires.ftc.teamcode.states.armState;
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
@@ -13,10 +16,12 @@ public class TeleOp extends OpMode
     private GamepadEx driver, operator;
     private Robot robot;
     TouchSensor touchSensor;
+    DistanceSensor distanceSensor;
     @Override
     public void init()
     {
-        touchSensor = hardwareMap.get(TouchSensor.class, "touchsensor");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
+        //touchSensor = hardwareMap.get(TouchSensor.class, "touchsensor");
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
@@ -28,9 +33,7 @@ public class TeleOp extends OpMode
         operator.readButtons();
 
         robot.drivetrain.fieldCentric(driver);
-        if (touchSensor.isPressed()){
-            robot.Claw.setPosition(armState.intakingCLAW);
-        }
+        telemetry.addLine("" + distanceSensor.getDistance(DistanceUnit.INCH));
         if (gamepad1.triangle){
             robot.Airplane.setPosition(armState.airplaneInit);
         }
