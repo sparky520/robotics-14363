@@ -29,55 +29,27 @@ public class shortRedCenter extends LinearOpMode
         IDLE,
     }
     state currentState = state.IDLE;
+    Pose2d start = new Pose2d();
+    ElapsedTime timer = new ElapsedTime();
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException  {
         DistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        ElapsedTime timer = new ElapsedTime();
-
-        Pose2d start = new Pose2d();
-        TrajectorySequence center1 = drive.trajectorySequenceBuilder(start)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(38.5,-3,Math.toRadians(90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(38.5, -3.01))
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToConstantHeading(new Vector2d(21,-36))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(21,-35.51))
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                    robot.Arm.topStack();
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToConstantHeading(new Vector2d(23,47))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.topStack();
-                    robot.Claw.stack();
-                })
-                .build();
+        drive.setPoseEstimate(start);
 
         Trajectory center = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(38.5,-3,Math.toRadians(90))).build();
         Trajectory board = drive.trajectoryBuilder(center.end()).lineToConstantHeading(new Vector2d(21,-36)).build();
         Trajectory moveAwayFromBoard = drive.trajectoryBuilder(board.end()).lineToConstantHeading(new Vector2d(21,-29)).build();
-        waitForStart();
 
+        waitForStart();
         if(isStopRequested()) return;
 
+        telemetry.addLine("1");
         currentState = state.toCenter;
         drive.followTrajectoryAsync(center);
-
+        telemetry.addLine("2");
+        telemetry.update();
         while (opModeIsActive() && !isStopRequested()) {
             switch(currentState){
                 case toCenter:
