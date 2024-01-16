@@ -1,15 +1,22 @@
 package org.firstinspires.ftc.teamcode.drive.autoExecutable;
 
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drive.autoTests.shortRedCenter;
+import org.firstinspires.ftc.teamcode.drive.autoTests.shortRedLeft;
+import org.firstinspires.ftc.teamcode.drive.autoTests.shortRedRight;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.states.*;
@@ -18,170 +25,297 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous(name = "short Red", group = "Auto")
 public class shortRed extends LinearOpMode {
+    enum state{
+        toTape,
+        wait1,
+        wait2,
+        toBoard,
+        wait3,
+        moveAwayFromBoard,
+        retractArm,
+        toStack,
+        toStack2,
+        wait4,
+        IDLE,
+    }
+    Robot robot;
+    state currentState = state.IDLE;
+    ElapsedTime timer = new ElapsedTime();
+    DistanceSensor distanceSensor;
+    Pose2d start = new Pose2d(0, 0, Math.toRadians(0));
+    SampleMecanumDrive drive;
     OpenCvCamera camera;
     shortRedObjectDetect blueDetection;
     String webcamName;
-    Robot robot;
     public void runOpMode() {
+        drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(start);
         robot = new Robot(hardwareMap, telemetry);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
 
-        Pose2d newStart = new Pose2d();
-        TrajectorySequence center = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(36,-3,Math.toRadians(90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(36, -3.01))
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToConstantHeading(new Vector2d(20,-32))
-                .waitSeconds(1)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.outtaking);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(22,-18))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,-18))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(0,-33))
-                .build();
-        TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(32,-15,Math.toRadians(90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(25,-15.01))
-                .waitSeconds(.25)
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                    robot.Claw.afterTape();
-                })
-                .lineToConstantHeading(new Vector2d(25,-15.02))
-                .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(15.5,-33.5))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(13,-18))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.Arm.setPosition(armState.medium);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,-18))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(0,-30))
-                .build();
-        TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(25,0,Math.toRadians(90)))
-                .lineToConstantHeading(new Vector2d(28,6))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(18,0))
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToConstantHeading(new Vector2d(29.5,-34.75))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(22,-18))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,-18))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(0,-30))
-                .build();
         initCam();
         waitForStart();
         camera.stopStreaming();
         if (isStopRequested()) return;
-        if (blueDetection.getLocation().equals("LEFT")){
-            drive.followTrajectorySequence(left);
-        }else if(blueDetection.getLocation().equals("MIDDLE")){
-            drive.followTrajectorySequence(center);
-        }else if(blueDetection.getLocation().equals("RIGHT")){
-            drive.followTrajectorySequence(right);
+
+        while (opModeIsActive() && !isStopRequested()) {
+            if (blueDetection.getLocation().equals("LEFT")){
+                TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
+                        .lineToLinearHeading(new Pose2d(25,0,Math.toRadians(90)))
+                        .lineToConstantHeading(new Vector2d(28,6))
+                        .build();
+                Trajectory board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(29.5,-30)).build();
+                Trajectory moveAwayFromBoard = drive.trajectoryBuilder(board.end()).lineToConstantHeading(new Vector2d(35,-23)).build();
+                //Trajectory toStack = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(19.5,15)).build();
+                //Trajectory toStack2 = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(18.7,19)).build();
+
+                currentState = state.toTape;
+                robot.Claw.setPosition(armState.intakingCLAW);
+                drive.followTrajectorySequenceAsync(tape);
+                switch(currentState){
+                    case toTape:
+                        if (!drive.isBusy()){
+                            currentState = state.wait1;
+                            robot.Claw.setTape();
+                            timer.reset();
+                        }
+                        break;
+                    case wait1:
+                        if (timer.seconds() > .3){
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            drive.followTrajectoryAsync(board);
+                            currentState = state.toBoard;
+                        }
+                        break;
+                    case toBoard:
+                        if (!drive.isBusy()){
+                            drive.followTrajectory(toBoard(board));
+                            telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.INCH));
+                            telemetry.update();
+                        }
+                    case wait3:
+                        if (!drive.isBusy()){
+                            robot.Claw.dropBoard();
+                            currentState = state.moveAwayFromBoard;
+                            timer.reset();
+                        }
+                        break;
+                    case moveAwayFromBoard:
+                        if (timer.seconds() > .3) {
+                            drive.followTrajectoryAsync(moveAwayFromBoard);
+                            currentState = state.retractArm;
+                            timer.reset();
+                        }
+                        break;
+                    case retractArm:
+                        if (timer.seconds() > .5){
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                            robot.Arm.setPosition(armState.medium);
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = state.toStack;
+                        }
+                        break;
+                    case toStack:
+                        if (!drive.isBusy()){
+                            //drive.followTrajectoryAsync(toTape);
+                            robot.Arm.topStack();
+                            currentState = state.toStack2;
+                        }
+                    case toStack2:
+                        if (!drive.isBusy()){
+                            //drive.followTrajectoryAsync(toTape2);
+                            currentState = state.wait4;
+                        }
+                    case wait4:
+                        if (!drive.isBusy()){
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = state.IDLE;
+                        }
+                    case IDLE:
+                        break;
+                }
+            }else if(blueDetection.getLocation().equals("MIDDLE")){
+                Trajectory tape = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(31.5,-6,Math.toRadians(90))).build();
+                Trajectory board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(19.5,-25)).build();
+                Trajectory moveAwayFromBoard = drive.trajectoryBuilder(board.end()).lineToConstantHeading(new Vector2d(19.5,-23)).build();
+                Trajectory toStack = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(19.5,15)).build();
+                Trajectory toStack2 = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(18.7,19)).build();
+
+                currentState = state.toTape;
+                robot.Claw.setPosition(armState.intakingCLAW);
+                drive.followTrajectoryAsync(tape);
+                switch(currentState){
+                    case toTape:
+                        if (!drive.isBusy()){
+                            currentState = state.wait1;
+                            robot.Claw.setTape();
+                            timer.reset();
+                        }
+                        break;
+                    case wait1:
+                        if (timer.seconds() > .3){
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            drive.followTrajectoryAsync(board);
+                            currentState = state.toBoard;
+                        }
+                        break;
+                    case toBoard:
+                        if (!drive.isBusy()){
+                            drive.followTrajectory(toBoard(board));
+                            telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.INCH));
+                            telemetry.update();
+                        }
+                    case wait3:
+                        if (!drive.isBusy()){
+                            robot.Claw.dropBoard();
+                            currentState = state.moveAwayFromBoard;
+                            timer.reset();
+                        }
+                        break;
+                    case moveAwayFromBoard:
+                        if (timer.seconds() > .3) {
+                            drive.followTrajectoryAsync(moveAwayFromBoard);
+                            currentState = state.retractArm;
+                            timer.reset();
+                        }
+                        break;
+                    case retractArm:
+                        if (timer.seconds() > .5){
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                            robot.Arm.setPosition(armState.medium);
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = state.toStack;
+                        }
+                        break;
+                    case toStack:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toStack);
+                            robot.Arm.topStack();
+                            currentState = state.toStack2;
+                        }
+                    case toStack2:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toStack2);
+                            currentState = state.wait4;
+                        }
+                    case wait4:
+                        if (!drive.isBusy()){
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = state.IDLE;
+                        }
+                    case IDLE:
+                        break;
+                }
+            }else if(blueDetection.getLocation().equals("RIGHT")){
+                Trajectory tape = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(32,-15,Math.toRadians(90))).build();
+                Trajectory board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(15.5,-29)).build();
+                Trajectory moveAwayFromBoard = drive.trajectoryBuilder(board.end()).lineToConstantHeading(new Vector2d(35,-23)).build();
+                //Trajectory toStack = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(19.5,15)).build();
+                //Trajectory toStack2 = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(18.7,19)).build();
+
+                currentState = state.toTape;
+                robot.Claw.setPosition(armState.intakingCLAW);
+                drive.followTrajectoryAsync(tape);
+                switch(currentState){
+                    case toTape:
+                        if (!drive.isBusy()){
+                            currentState = state.wait1;
+                            robot.Claw.setTape();
+                            timer.reset();
+                        }
+                        break;
+                    case wait1:
+                        if (timer.seconds() > .3){
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            robot.Claw.afterTape();
+                            drive.followTrajectoryAsync(board);
+                            currentState = state.toBoard;
+                        }
+                        break;
+                    case toBoard:
+                        if (!drive.isBusy()){
+                            drive.followTrajectory(toBoard(board));
+                            telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.INCH));
+                            telemetry.update();
+                        }
+                    case wait3:
+                        if (!drive.isBusy()){
+                            robot.Claw.dropBoard();
+                            currentState = state.moveAwayFromBoard;
+                            timer.reset();
+                        }
+                        break;
+                    case moveAwayFromBoard:
+                        if (timer.seconds() > .3) {
+                            drive.followTrajectoryAsync(moveAwayFromBoard);
+                            currentState = state.retractArm;
+                            timer.reset();
+                        }
+                        break;
+                    case retractArm:
+                        if (timer.seconds() > .5){
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                            robot.Arm.setPosition(armState.medium);
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = state.toStack;
+                        }
+                        break;
+                    case toStack:
+                        if (!drive.isBusy()){
+                            //drive.followTrajectoryAsync(toTape);
+                            robot.Arm.topStack();
+                            currentState = state.toStack2;
+                        }
+                    case toStack2:
+                        if (!drive.isBusy()){
+                            //drive.followTrajectoryAsync(toTape2);
+                            currentState = state.wait4;
+                        }
+                    case wait4:
+                        if (!drive.isBusy()){
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = state.IDLE;
+                        }
+                    case IDLE:
+                        break;
+                }
+            }
+            drive.update();
         }
-        else{
-            telemetry.addLine("wrong" + blueDetection.getLocation());
-        }
-        telemetry.update();
     }
     private void initCam() {
-
-        //This line retrieves the resource identifier for the camera monitor view. The camera monitor view is typically used to display the camera feed
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
         webcamName = "Webcam 1";
-
-        // This line creates a webcam instance using the OpenCvCameraFactor with the webcam name (webcamName) and the camera monitor view ID.
-        // The camera instance is stored in the camera variable that we can use later
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-
-        // initializing our Detection class (details on how it works at the top)
         blueDetection = new shortRedObjectDetect(telemetry);
-
-        // yeah what this does is it gets the thing which uses the thing so we can get the thing
-        /*
-        (fr tho idk what pipeline does, but from what I gathered,
-         we basically passthrough our detection into the camera
-         and we feed the streaming camera frames into our Detection algorithm)
-         */
         camera.setPipeline(blueDetection);
-
-        /*
-        this starts the camera streaming, with 2 possible combinations
-        it starts streaming at a chosen res, or if something goes wrong it throws an error
-         */
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
                 camera.showFpsMeterOnViewport(true);
                 camera.startStreaming(320, 240, OpenCvCameraRotation.SENSOR_NATIVE);
             }
-
             @Override
             public void onError(int errorCode) {
                 telemetry.addLine("Unspecified Error Occurred; Camera Opening");
             }
         });
+    }
+    public void outtakeAfterMedium(){
+        ElapsedTime timer1 = new ElapsedTime();
+        while (timer1.seconds() < .6){
+            continue;
+        }
+        robot.Arm.setPosition(armState.high);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+    }
+    public Trajectory toBoard(Trajectory end){
+        double distance = distanceSensor.getDistance(DistanceUnit.INCH);
+        double y = distance - 3.5;
+        Trajectory x = drive.trajectoryBuilder(end.end()).forward(-y).build();
+        return x;
     }
 }

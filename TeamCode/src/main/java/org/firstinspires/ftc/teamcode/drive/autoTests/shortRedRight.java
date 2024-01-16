@@ -10,11 +10,12 @@ import org.firstinspires.ftc.teamcode.SubSystems.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.states.armState;
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
-public class shortRedCenter extends LinearOpMode {
+public class shortRedRight extends LinearOpMode {
     enum state{
         toTape,
         wait1,
@@ -41,17 +42,17 @@ public class shortRedCenter extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
 
-        Trajectory center = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(31.5,-6,Math.toRadians(90))).build();
-        Trajectory board = drive.trajectoryBuilder(center.end()).lineToConstantHeading(new Vector2d(19.5,-25)).build();
-        Trajectory moveAwayFromBoard = drive.trajectoryBuilder(board.end()).lineToConstantHeading(new Vector2d(19.5,-23)).build();
-        Trajectory toTape = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(19.5,15)).build();
-        Trajectory toTape2 = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(18.7,19)).build();
+        Trajectory tape = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(32,-15,Math.toRadians(90))).build();
+        Trajectory board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(15.5,-29)).build();
+        Trajectory moveAwayFromBoard = drive.trajectoryBuilder(board.end()).lineToConstantHeading(new Vector2d(35,-23)).build();
+        //Trajectory toTape = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(19.5,15)).build();
+        //Trajectory toTape2 = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(18.7,19)).build();
         waitForStart();
 
         if (isStopRequested()) return;
         currentState = state.toTape;
         robot.Claw.setPosition(armState.intakingCLAW);
-        drive.followTrajectoryAsync(center);
+        drive.followTrajectoryAsync(tape);
 
         while (opModeIsActive() && !isStopRequested()) {
             switch(currentState){
@@ -66,6 +67,7 @@ public class shortRedCenter extends LinearOpMode {
                     if (timer.seconds() > .3){
                         robot.Arm.setPosition(armState.medium);
                         outtakeAfterMedium();
+                        robot.Claw.afterTape();
                         drive.followTrajectoryAsync(board);
                         currentState = state.toBoard;
                     }
@@ -100,13 +102,13 @@ public class shortRedCenter extends LinearOpMode {
                     break;
                 case toStack:
                     if (!drive.isBusy()){
-                        drive.followTrajectoryAsync(toTape);
+                        //drive.followTrajectoryAsync(toTape);
                         robot.Arm.topStack();
                         currentState = state.toStack2;
                     }
                 case toStack2:
                     if (!drive.isBusy()){
-                        drive.followTrajectoryAsync(toTape2);
+                        //drive.followTrajectoryAsync(toTape2);
                         currentState = state.wait4;
                     }
                 case wait4:

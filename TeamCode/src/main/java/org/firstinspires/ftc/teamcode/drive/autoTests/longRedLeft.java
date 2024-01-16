@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.states.outtakeStates;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
-public class shortRedCenter extends LinearOpMode {
+public class longRedLeft extends LinearOpMode {
     enum state{
         toTape,
         wait1,
