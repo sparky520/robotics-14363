@@ -10,10 +10,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.states.armState;
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
-import java.util.ArrayList;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-
-import java.util.List;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class shortRedCenter extends LinearOpMode {
@@ -77,7 +74,7 @@ public class shortRedCenter extends LinearOpMode {
                 case toBoard:
                     if (timer.seconds() > .5){
                         activeDistanceSensor = false;
-                        telemetry.addLine("3");
+                        telemetry.addLine("5");
                         drive.followTrajectoryAsync(createPathToBoard(board.end()));
                         currentState = state.wait3;
                     }
@@ -147,7 +144,6 @@ public class shortRedCenter extends LinearOpMode {
         robot.Arm.setPosition(armState.high);
         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
     }
-
     public Trajectory createPathToBoard(Pose2d endPose){
         double averageDistance = distanceSums/totalDistanceRecordings;
         double finalDistance = averageDistance - boardOffset;
