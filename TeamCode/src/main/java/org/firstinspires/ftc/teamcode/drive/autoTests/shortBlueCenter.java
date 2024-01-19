@@ -125,7 +125,8 @@ public class shortBlueCenter extends LinearOpMode {
                     }
                     break;
                 case toStack:
-                    if (!drive.isBusy()){
+
+                    if (!drive .isBusy()){
                         cycle+=1;
                         if (cycle == 1){
                             drive.followTrajectoryAsync(toStack);
