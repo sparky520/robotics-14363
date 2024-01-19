@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.drive.autoTests.shortRedCenter;
-import org.firstinspires.ftc.teamcode.drive.autoTests.shortRedLeft;
-import org.firstinspires.ftc.teamcode.drive.autoTests.shortRedRight;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
