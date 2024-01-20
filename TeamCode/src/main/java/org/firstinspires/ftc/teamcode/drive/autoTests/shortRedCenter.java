@@ -13,10 +13,10 @@ import org.firstinspires.ftc.teamcode.states.outtakeStates;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
-public class shortBlueRight extends LinearOpMode {
+public class shortRedCenter extends LinearOpMode {
     int cycle = 0;
     enum state{
-        toTape, toTape2, intaking1, intaking2, wait1, toBoard, wait3, moveAwayFromBoard, retractArm, toStack, toBoardFromStack1, toBoardFromStack2, IDLE, toBoardFromStack_,toBoardFromStack2_,
+        toTape, intaking1, intaking2, wait1, toBoard, wait3, moveAwayFromBoard, retractArm, toStack, toBoardFromStack1, toBoardFromStack2, IDLE, toBoardFromStack_,toBoardFromStack2_,
     }
     Robot robot;
     state currentState = state.IDLE;
@@ -34,19 +34,18 @@ public class shortBlueRight extends LinearOpMode {
         drive.setPoseEstimate(start);
         robot = new Robot(hardwareMap, telemetry);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
-        Trajectory tape = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(28,10,Math.toRadians(-90))).build();
-        Trajectory tape2 = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(28,-5)).build();
-        Trajectory board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(28,36)).build();
-        Trajectory sensorToBoard = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(28,36)).build();
-        Trajectory moveAwayFromBoard = drive.trajectoryBuilder(sensorToBoard.end()).lineToConstantHeading(new Vector2d(40,5)).build();
-        Trajectory toStack = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(40,-48)).build();
-        Trajectory toBoardFromStack_ = drive.trajectoryBuilder(toStack.end()).lineToConstantHeading(new Vector2d(40,20)).build();
-        Trajectory toBoardFromStack = drive.trajectoryBuilder(toBoardFromStack_.end()).lineToConstantHeading(new Vector2d(40,50)).build();
-        Trajectory moveAwayFromBoard1 = drive.trajectoryBuilder(toBoardFromStack.end()).lineToConstantHeading(new Vector2d(40,35)).build();
-        Trajectory toStack2 = drive.trajectoryBuilder(toBoardFromStack.end()).lineToConstantHeading(new Vector2d(40,-20)).build();
-        Trajectory toBoardFromStack2_ = drive.trajectoryBuilder(toStack2.end()).lineToConstantHeading(new Vector2d(40,50)).build();
-        Trajectory toBoardFromStack2 = drive.trajectoryBuilder(toBoardFromStack2_.end()).lineToConstantHeading(new Vector2d(40,80)).build();
-        Trajectory moveAwayFromBoard2 = drive.trajectoryBuilder(toBoardFromStack2.end()).lineToConstantHeading(new Vector2d(40,65)).build();
+        Trajectory tape = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(31,-17.5,Math.toRadians(-90))).build();
+        Trajectory board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(24,-36)).build();
+        Trajectory sensorToBoard = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(24,-36)).build();
+        Trajectory moveAwayFromBoard = drive.trajectoryBuilder(sensorToBoard.end()).lineToConstantHeading(new Vector2d(24,-5)).build();
+        Trajectory toStack = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(26.5,48)).build();
+        Trajectory toBoardFromStack_ = drive.trajectoryBuilder(toStack.end()).lineToConstantHeading(new Vector2d(24,-20)).build();
+        Trajectory toBoardFromStack = drive.trajectoryBuilder(toBoardFromStack_.end()).lineToConstantHeading(new Vector2d(24,-50)).build();
+        Trajectory moveAwayFromBoard1 = drive.trajectoryBuilder(toBoardFromStack.end()).lineToConstantHeading(new Vector2d(24,-35)).build();
+        Trajectory toStack2 = drive.trajectoryBuilder(toBoardFromStack.end()).lineToConstantHeading(new Vector2d(26.5,20)).build();
+        Trajectory toBoardFromStack2_ = drive.trajectoryBuilder(toStack2.end()).lineToConstantHeading(new Vector2d(40,-50)).build();
+        Trajectory toBoardFromStack2 = drive.trajectoryBuilder(toBoardFromStack2_.end()).lineToConstantHeading(new Vector2d(24,-80)).build();
+        Trajectory moveAwayFromBoard2 = drive.trajectoryBuilder(toBoardFromStack2.end()).lineToConstantHeading(new Vector2d(24,-65)).build();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -57,12 +56,6 @@ public class shortBlueRight extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             switch(currentState){
                 case toTape:
-                    if (!drive.isBusy()){
-                        drive.followTrajectoryAsync(tape2);
-                        currentState = state.toTape2;
-                    }
-                    break;
-                case toTape2:
                     if (!drive.isBusy()){
                         currentState = state.wait1;
                         robot.Claw.setTape();
@@ -150,7 +143,7 @@ public class shortBlueRight extends LinearOpMode {
                     if (timer.seconds() > .5){
                         robot.Claw.setPosition(armState.intakingCLAW);
                         currentState = state.toBoardFromStack1;
-                }
+                    }
                 case intaking2:
                     if (timer.seconds() > .5){
                         robot.Claw.setPosition(armState.intakingCLAW);
