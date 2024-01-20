@@ -1,192 +1,364 @@
+/*
+ * Copyright (c) 2021 OpenFTC Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.firstinspires.ftc.teamcode.drive.autoTests;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.states.*;
-import org.firstinspires.ftc.teamcode.SubSystems.*;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.SubSystems.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.autoExecutable.shortBlueObjectDetect;
+import org.firstinspires.ftc.teamcode.states.armState;
+import org.firstinspires.ftc.teamcode.states.outtakeStates;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name = "short Blue", group = "Auto")
-public class aprilTagTest extends LinearOpMode {
-    OpenCvCamera camera;
-    aprilTagDetection blueDetection;
-    String webcamName;
+import java.util.ArrayList;
+
+@TeleOp
+public class aprilTagTest extends LinearOpMode{
+        double distanceSums = 0;
+        int totalDistanceRecordings = 0;
+        double boardOffset = 6.5;
+
+    int cycle = 0;
+    enum state{
+        toTape, wait1, toBoard, wait3, moveAwayFromBoard, retractArm, toStack, toBoardFromStack1, toBoardFromStack2, IDLE, toBoardFromStack_,toBoardFromStack2_,
+    }
+    Trajectory tape, board, sensorToBoard, moveAwayFromBoard, toStack, toBoardFromStack, toStack2, toBoardFromStack_, toBoardFromStack2_, toBoardFromStack2, moveAwayFromBoard1, moveAwayFromBoard2;
     Robot robot;
-    public void runOpMode() {
-        robot = new Robot(hardwareMap, telemetry);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    shortBlueCenter.state currentState = shortBlueCenter.state.IDLE;
+    ElapsedTime timer = new ElapsedTime();
+    DistanceSensor distanceSensor;
+    Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
+    SampleMecanumDrive drive;
+    OpenCvCamera camera;
+    aprilTagDetection aprilTagDetectionPipeline;
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+    double tagsize = 0.166;
+    shortBlueObjectDetectTest blueDetect;
+    int left = 4;
+    int middle = 5;
+    int right = 6;
+    AprilTagDetection tagOfInterest = null;
 
-        Pose2d newStart = new Pose2d();
-        TrajectorySequence center = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(37,7,Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(36,15.01))
-                .waitSeconds(.25)
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToConstantHeading(new Vector2d(31,15.02))
-                .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(24,34.5))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(26,24))
-                //.waitSeconds(1)
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,29))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .turn(Math.toRadians(90))
-                .lineToConstantHeading(new Vector2d(0,36))
-                .build();
-        TrajectorySequence left = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(31,17.5,Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(31,17.51))
-                .waitSeconds(.25)
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                })
-                .lineToConstantHeading(new Vector2d(31,17.52))
-                .waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(22.5,36.75))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(20,24))
-                //.waitSeconds(1)
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,29))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .turn(Math.toRadians(90))
-                .lineToConstantHeading(new Vector2d(0,36))
-                .build();
-        TrajectorySequence right = drive.trajectorySequenceBuilder(newStart)
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                .lineToLinearHeading(new Pose2d(28,10,Math.toRadians(-90)))
-                .lineToConstantHeading(new Vector2d(28,-5))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.setTape();
-                    robot.Arm.setPosition(armState.medium);
-                })
-                .lineToConstantHeading(new Vector2d(28,-4.99))
-                .waitSeconds(.25)
-                .addDisplacementMarker(() -> {
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-                    robot.Arm.setPosition(armState.high);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                })
-                //.lineToConstantHeading(new Vector2d(31,9.02))
-                //.waitSeconds(1)
-                .lineToConstantHeading(new Vector2d(33.75,36.75))
-                .addDisplacementMarker(() -> {
-                    robot.Claw.dropBoard();
-                })
-                .lineToConstantHeading(new Vector2d(33,24))
-                //.waitSeconds(1)
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.medium);
-                    robot.Claw.setPosition(armState.intakingCLAW);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                })
-                .lineToConstantHeading(new Vector2d(0,23))
-                .addDisplacementMarker(() -> {
-                    robot.Arm.setPosition(armState.low);
-                })
-                .turn(Math.toRadians(90))
-                .lineToConstantHeading(new Vector2d(0,33))
-                .build();
-        initCam();
+    @Override
+    public void runOpMode()
+    {
+        initColorDetection();
+
+        /* Actually do something useful */
         waitForStart();
         camera.stopStreaming();
-        if (isStopRequested()) return;
-        if (blueDetection.getLocation().equals("LEFT")){
-            drive.followTrajectorySequence(left);
-        }else if(blueDetection.getLocation().equals("MIDDLE")){
-            drive.followTrajectorySequence(center);
-        }else if(blueDetection.getLocation().equals("RIGHT")){
-            drive.followTrajectorySequence(right);
+        initAprilTagDetect();
+
+        initPaths(blueDetect.getLocation());
+        currentState = shortBlueCenter.state.toTape;
+        robot.Claw.setPosition(armState.intakingCLAW);
+        drive.followTrajectoryAsync(tape);
+        while (opModeIsActive() && !isStopRequested()){
+            if (blueDetect.getLocation().equals("LEFT")){
+                detectTags();
+            }else if(blueDetect.getLocation().equals("MIDDLE")){
+                switch(currentState){
+                    case toTape:
+                        if (!drive.isBusy()){
+                            currentState = shortBlueCenter.state.wait1;
+                            robot.Claw.setTape();
+                            timer.reset();
+                        }
+                        break;
+                    case wait1:
+                        if (timer.seconds() > .3){
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            drive.followTrajectoryAsync(board);
+                            currentState = shortBlueCenter.state.toBoard;
+                        }
+                        break;
+                    case toBoard:
+                        if (!drive.isBusy()){
+                            ElapsedTime timer2 = new ElapsedTime();
+                            timer2.reset();
+                            double distance = distanceSensor.getDistance(DistanceUnit.INCH);
+                            while (timer2.seconds()<.6){
+                                if (distance < 20){
+                                    totalDistanceRecordings +=1;
+                                    distanceSums += distanceSensor.getDistance(DistanceUnit.INCH);
+                                }
+                            }
+                            if (timer2.seconds() > .6){
+                                if (cycle == 0){
+                                    sensorToBoard = createPathToBoard(board.end());
+                                }else if (cycle == 1){
+                                    sensorToBoard = createPathToBoard(toBoardFromStack.end());
+                                }else if (cycle == 2){
+                                    sensorToBoard = createPathToBoard(toBoardFromStack2.end());
+                                }
+                                drive.followTrajectoryAsync(sensorToBoard);
+                                currentState = shortBlueCenter.state.wait3;
+                            }
+                        }
+                    case wait3:
+                        if (!drive.isBusy()){
+                            robot.Claw.dropBoard();
+                            currentState = shortBlueCenter.state.moveAwayFromBoard;
+                            timer.reset();
+                        }
+                        break;
+                    case moveAwayFromBoard:
+                        if (timer.seconds() > .3) {
+                            if (cycle == 0){
+                                drive.followTrajectoryAsync(moveAwayFromBoard);
+                            }else if (cycle == 1){
+                                drive.followTrajectoryAsync(moveAwayFromBoard1);
+                            }else if (cycle == 2){
+                                drive.followTrajectoryAsync(moveAwayFromBoard2);
+                            }
+                            currentState = shortBlueCenter.state.retractArm;
+                            timer.reset();
+                        }
+                        break;
+                    case retractArm:
+                        if (timer.seconds() > .5){
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                            robot.Arm.setPosition(armState.medium);
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = shortBlueCenter.state.toStack;
+                        }
+                        break;
+                    case toStack:
+
+                        if (!drive .isBusy()){
+                            cycle+=1;
+                            if (cycle == 1){
+                                drive.followTrajectoryAsync(toStack);
+                                robot.Arm.topStack();
+                                robot.Claw.setPosition(armState.outtaking);
+                                currentState = shortBlueCenter.state.toBoardFromStack1;
+                            }else if (cycle == 2){
+                                drive.followTrajectoryAsync(toStack2);
+                                robot.Arm.topStack();
+                                robot.Claw.setPosition(armState.outtaking);
+                                currentState = shortBlueCenter.state.toBoardFromStack2;
+                            }else{
+                                currentState = shortBlueCenter.state.IDLE;
+                            }
+                        }
+                    case toBoardFromStack1:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toBoardFromStack_);
+                            currentState = shortBlueCenter.state.toBoardFromStack_;
+                        }
+                    case toBoardFromStack_:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toBoardFromStack);
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            currentState = shortBlueCenter.state.toBoard;
+                        }
+                    case toBoardFromStack2:
+                        if (!drive.isBusy()){;
+                            drive.followTrajectoryAsync(toBoardFromStack2_);
+                            currentState = shortBlueCenter.state.toBoardFromStack2_;
+                        }
+                    case toBoardFromStack2_:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toBoardFromStack2);
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            currentState = shortBlueCenter.state.toBoard;
+                        }
+                    case IDLE:
+                        break;
+                }
+
+                drive.update();
+                detectTags();
+            }else if(blueDetect.getLocation().equals("RIGHT")){
+
+            }
         }
-        else{
-            telemetry.addLine("wrong" + blueDetection.getLocation());
-        }
-        telemetry.update();
     }
-    private void initCam() {
+    void initPaths(String tapeLocation){
+        drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(start);
+        robot = new Robot(hardwareMap, telemetry);
+        if (tapeLocation.equals("LEFT")){
 
-        //This line retrieves the resource identifier for the camera monitor view. The camera monitor view is typically used to display the camera feed
+        }else if (tapeLocation.equals("MIDDLE")){
+            tape = drive.trajectoryBuilder(start).lineToLinearHeading(new Pose2d(37,7,Math.toRadians(-90))).build();
+            board = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(24,32)).build();
+             sensorToBoard = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(24,32)).build();
+             moveAwayFromBoard = drive.trajectoryBuilder(sensorToBoard.end()).lineToConstantHeading(new Vector2d(24,5)).build();
+             toStack = drive.trajectoryBuilder(moveAwayFromBoard.end()).lineToConstantHeading(new Vector2d(26.5,-48)).build();
+             toBoardFromStack_ = drive.trajectoryBuilder(toStack.end()).lineToConstantHeading(new Vector2d(24,20)).build();
+             toBoardFromStack = drive.trajectoryBuilder(toBoardFromStack_.end()).lineToConstantHeading(new Vector2d(24,50)).build();
+             moveAwayFromBoard1 = drive.trajectoryBuilder(toBoardFromStack.end()).lineToConstantHeading(new Vector2d(24,35)).build();
+             toStack2 = drive.trajectoryBuilder(toBoardFromStack.end()).lineToConstantHeading(new Vector2d(26.5,-20)).build();
+             toBoardFromStack2_ = drive.trajectoryBuilder(toStack2.end()).lineToConstantHeading(new Vector2d(24,50)).build();
+             toBoardFromStack2 = drive.trajectoryBuilder(toBoardFromStack2_.end()).lineToConstantHeading(new Vector2d(24,80)).build();
+             moveAwayFromBoard2 = drive.trajectoryBuilder(toBoardFromStack2.end()).lineToConstantHeading(new Vector2d(24,65)).build();
+        }
+        else if (tapeLocation.equals("RIGHT")){
+
+        }
+    }
+    void detectTags(){
+        ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+        if(currentDetections.size() != 0)
+        {
+            boolean tagFound = false;
+            for(AprilTagDetection tag : currentDetections)
+            {
+                if(tag.id == middle || tag.id == right || tag.id == left)
+                {
+                    tagOfInterest = tag;
+                    tagFound = true;
+                    break;
+                }
+            }
+            if(tagFound)
+            {
+                telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+                tagToTelemetry(tagOfInterest);
+            }
+            else
+            {
+                telemetry.addLine("Don't see tag of interest :(");
+
+                if(tagOfInterest == null)
+                {
+                    telemetry.addLine("(The tag has never been seen)");
+                }
+                else
+                {
+                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                    tagToTelemetry(tagOfInterest);
+                }
+            }
+
+        }
+        else
+        {
+            telemetry.addLine("Don't see tag of interest :(");
+
+            if(tagOfInterest == null)
+            {
+                telemetry.addLine("(The tag has never been seen)");
+            }
+            else
+            {
+                telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                tagToTelemetry(tagOfInterest);
+            }
+
+        }
+
+        telemetry.update();
+        sleep(20);
+    }
+    void initAprilTagDetect(){
+        aprilTagDetectionPipeline = new aprilTagDetection(tagsize, fx, fy, cx, cy);
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+        telemetry.setMsTransmissionInterval(50);
+    }
+    void tagToTelemetry(AprilTagDetection detection)
+    {
+        Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
+
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x/6));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y/6));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z/6));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
+    }
+    private void initColorDetection() {
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        blueDetect = new shortBlueObjectDetectTest(telemetry);
 
-        webcamName = "Webcam 1";
-
-        // This line creates a webcam instance using the OpenCvCameraFactor with the webcam name (webcamName) and the camera monitor view ID.
-        // The camera instance is stored in the camera variable that we can use later
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-
-        // initializing our Detection class (details on how it works at the top)
-        blueDetection = new aprilTagDetection(telemetry);
-
-        // yeah what this does is it gets the thing which uses the thing so we can get the thing
-        /*
-        (fr tho idk what pipeline does, but from what I gathered,
-         we basically passthrough our detection into the camera
-         and we feed the streaming camera frames into our Detection algorithm)
-         */
-        camera.setPipeline(blueDetection);
-
-        /*
-        this starts the camera streaming, with 2 possible combinations
-        it starts streaming at a chosen res, or if something goes wrong it throws an error
-         */
+        camera.setPipeline(blueDetect);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
                 camera.showFpsMeterOnViewport(true);
                 camera.startStreaming(320, 240, OpenCvCameraRotation.SENSOR_NATIVE);
             }
-
             @Override
             public void onError(int errorCode) {
                 telemetry.addLine("Unspecified Error Occurred; Camera Opening");
             }
         });
+    }
+    public void outtakeAfterMedium(){
+        ElapsedTime timer1 = new ElapsedTime();
+        while (timer1.seconds() < .6){
+            continue;
+        }
+        robot.Arm.setPosition(armState.high);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
+    }
+    public Trajectory createPathToBoard(Pose2d endPose){
+        Trajectory createdPath;
+        double averageDistance = distanceSums/totalDistanceRecordings;
+        double finalDistance = averageDistance - boardOffset;
+        createdPath = drive.trajectoryBuilder(endPose).forward(-finalDistance).build();
+        telemetry.addData("final", finalDistance);
+        telemetry.update();
+        return createdPath;
     }
 }

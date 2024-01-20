@@ -21,7 +21,6 @@ public class shortBlueCenter extends LinearOpMode {
     Robot robot;
     state currentState = state.IDLE;
     ElapsedTime timer = new ElapsedTime();
-    ElapsedTime timer2 = new ElapsedTime();
     DistanceSensor distanceSensor;
     Pose2d start = new Pose2d(0, 0, Math.toRadians(0));
     SampleMecanumDrive drive;
