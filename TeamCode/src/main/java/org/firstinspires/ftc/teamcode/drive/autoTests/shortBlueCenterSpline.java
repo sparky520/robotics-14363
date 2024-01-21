@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Robot;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.states.armState;
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -27,7 +28,8 @@ import java.util.ArrayList;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class shortBlueCenterSpline extends LinearOpMode {
-    double boardOffset = 9;
+    boolean leftTag = false;
+    double boardOffset = 4;
 
     int cycle = 0;
 
@@ -69,13 +71,13 @@ public class shortBlueCenterSpline extends LinearOpMode {
                     //robot.Arm.setPosition(armState.low);
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .splineToLinearHeading(new Pose2d(37,7, Math.toRadians(-90)),Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(37,7, Math.toRadians(-70)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                 }).build();
-        Trajectory boardStack1 = drive.trajectoryBuilder(tape.end()).build();
-        Trajectory boardStack2 = drive.trajectoryBuilder(boardStack1.end()).build();
-        Trajectory boardStack3 = drive.trajectoryBuilder(boardStack2.end()).build();
+        TrajectorySequence boardStack1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
+        TrajectorySequence boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end()).lineToConstantHeading(new Vector2d(0,2)).build();
+        TrajectorySequence boardStack3 = drive.trajectorySequenceBuilder(boardStack2.end()).lineToConstantHeading(new Vector2d(0,3)).build();
 
         initColorDetection();
 
@@ -94,77 +96,48 @@ public class shortBlueCenterSpline extends LinearOpMode {
                 case tape:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX()-(tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()+(tagOfInterest.pose.y/6);
-                        boardStack1 = drive.trajectoryBuilder(tape.end())
-                                .addDisplacementMarker(() -> {
-                                    robot.Arm.setPosition(armState.outtaking);
-                                    robot.Claw.setPosition(armState.intakingCLAW);
-                                })
-                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Claw.setPosition(armState.outtaking);
-                                })
-                                .splineToConstantHeading(new Vector2d(24,5),Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    toStack(1);
-                                })
-                                .splineToConstantHeading(new Vector2d(26.5,-48),Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Claw.setPosition(armState.intakingCLAW);
-                                })
-                                .splineToConstantHeading(new Vector2d(24,20),Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Arm.setPosition(armState.outtaking);
-                                }).build();
+                        telemetry.addLine("  " + tagOfInterest.id);
+                        telemetry.addLine(toBoardEnd.getX()-(100*tagOfInterest.pose.x/6/1.41) + "");
+                        boardX = toBoardEnd.getX()-14 - (100*tagOfInterest.pose.x/6/1.41);
+                        boardY = toBoardEnd.getY()+(100*tagOfInterest.pose.z/6);
+                        telemetry.addLine(boardX + "  " + boardY );
+                        telemetry.update();
+                        boardStack1 = drive.trajectorySequenceBuilder(tape.end())
+                                .lineToLinearHeading(new Pose2d(boardX,boardY-6,Math.toRadians(-90)))
+                                .lineToConstantHeading(new Vector2d(26.5,-20))
+                                .lineToConstantHeading(new Vector2d(24,30)).build();
                         caseTagFound = true;
                     }
-                    if (!drive.isBusy()){
-                        drive.followTrajectoryAsync(boardStack1);
+                    if (!drive.isBusy() && caseTagFound == true){
+                        drive.followTrajectorySequenceAsync(boardStack1);
                         caseTagFound = false;
                         currentState = state.stack1;
                     }
                 case stack1:
                     if (tagOfInterest != null && caseTagFound == false) {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX() - (tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() + (tagOfInterest.pose.y / 6);
-                        boardStack2 = drive.trajectoryBuilder(boardStack1.end())
-                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Claw.setPosition(armState.outtaking);
-                                })
-                                .splineToConstantHeading(new Vector2d(24,35),Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    toStack(2);
-                                })
-                                .splineToConstantHeading(new Vector2d(26.5,-20),Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Claw.setPosition(armState.intakingCLAW);
-                                })
-                                .splineToConstantHeading(new Vector2d(24,50),Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Arm.setPosition(armState.outtaking);
-                                }).build();
+                        boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x / 6 / 1.41);
+                        boardY = toBoardEnd.getY() + (100*tagOfInterest.pose.z / 6);
+                        boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end())
+                                .splineToConstantHeading(new Vector2d(boardX,boardY-boardOffset),0)
+                                .lineToConstantHeading(new Vector2d(26.5,20))
+                                .lineToConstantHeading(new Vector2d(24,60)).build();
                     }
                     if (!drive.isBusy()){
-                        drive.followTrajectoryAsync(boardStack2);
+                        drive.followTrajectorySequenceAsync(boardStack2);
                         caseTagFound = false;
                         currentState = state.stack2;
                     }
                 case stack2:
                     if (tagOfInterest != null && caseTagFound == false) {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX() - (tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() + (tagOfInterest.pose.y / 6);
-                        boardStack3 = drive.trajectoryBuilder(boardStack1.end())
-                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
-                                    robot.Claw.setPosition(armState.outtaking);
-                                }).build();
+                        boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x / 6 / 1.41);
+                        boardY = toBoardEnd.getY() + (100*tagOfInterest.pose.z / 6);
+                        boardStack3 = drive.trajectorySequenceBuilder(boardStack2.end())
+                                .lineToConstantHeading(new Vector2d(boardX,boardY-boardOffset)).build();
                     }
                     if (!drive.isBusy()){
-                        drive.followTrajectoryAsync(boardStack3);
+                        drive.followTrajectorySequenceAsync(boardStack3);
                         caseTagFound = false;
                         currentState = state.IDLE;
                     }
@@ -179,59 +152,18 @@ public class shortBlueCenterSpline extends LinearOpMode {
         }
     }
 
-    public void toStack(int cycle) {
-        ElapsedTime timer1 = new ElapsedTime();
-        robot.Arm.setPosition(armState.medium);
-        while (timer1.seconds() < .5) {
-            continue;
-        }
-        if (cycle == 1){
-            robot.Arm.topStack();
-        }else if (cycle == 2){
-            robot.Arm.topStack();
-        }
-
-    }
-
     void detectTags() {
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
         if (currentDetections.size() != 0) {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == middle || tag.id == right || tag.id == left) {
+                if (tag.id == middle || tag.id == middle || tag.id == middle) {
                     tagOfInterest = tag;
                     tagFound = true;
                     break;
                 }
             }
-            if (tagFound) {
-                telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                tagToTelemetry(tagOfInterest);
-            } else {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if (tagOfInterest == null) {
-                    telemetry.addLine("(The tag has never been seen)");
-                } else {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
-            }
-
-        } else {
-            telemetry.addLine("Don't see tag of interest :(");
-
-            if (tagOfInterest == null) {
-                telemetry.addLine("(The tag has never been seen)");
-            } else {
-                telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                tagToTelemetry(tagOfInterest);
-            }
-
         }
-
-        telemetry.update();
-        sleep(20);
     }
     private void initColorDetection() {
 
