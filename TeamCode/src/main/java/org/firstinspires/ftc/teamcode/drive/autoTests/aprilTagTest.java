@@ -52,12 +52,13 @@ import java.util.ArrayList;
 public class aprilTagTest extends LinearOpMode{
         double distanceSums = 0;
         int totalDistanceRecordings = 0;
-        double boardOffset = 6.5;
+        double boardOffset = 9;
 
     int cycle = 0;
     enum state{
         toTape, wait1, toBoard, wait3, moveAwayFromBoard, retractArm, toStack, toBoardFromStack1, toBoardFromStack2, IDLE, toBoardFromStack_,toBoardFromStack2_,
     }
+    boolean tagFound = false;
     Trajectory tape, board, sensorToBoard, moveAwayFromBoard, toStack, toBoardFromStack, toStack2, toBoardFromStack_, toBoardFromStack2_, toBoardFromStack2, moveAwayFromBoard1, moveAwayFromBoard2;
     Robot robot;
     shortBlueCenter.state currentState = shortBlueCenter.state.IDLE;
@@ -66,6 +67,7 @@ public class aprilTagTest extends LinearOpMode{
     Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
     SampleMecanumDrive drive;
     OpenCvCamera camera;
+    double boardX, boardY;
     aprilTagDetection aprilTagDetectionPipeline;
     double fx = 578.272;
     double fy = 578.272;
@@ -88,6 +90,8 @@ public class aprilTagTest extends LinearOpMode{
         camera.stopStreaming();
         initAprilTagDetect();
 
+        while (opModeIsActive() && !isStopRequested()){detectTags();}
+
         initPaths(blueDetect.getLocation());
         currentState = shortBlueCenter.state.toTape;
         robot.Claw.setPosition(armState.intakingCLAW);
@@ -96,6 +100,7 @@ public class aprilTagTest extends LinearOpMode{
             if (blueDetect.getLocation().equals("LEFT")){
                 detectTags();
             }else if(blueDetect.getLocation().equals("MIDDLE")){
+                /*
                 switch(currentState){
                     case toTape:
                         if (!drive.isBusy()){
@@ -211,11 +216,137 @@ public class aprilTagTest extends LinearOpMode{
 
                 drive.update();
                 detectTags();
+                */
+                switch(currentState){
+                    case toTape:
+                        if (!drive.isBusy()){
+                            currentState = shortBlueCenter.state.wait1;
+                            robot.Claw.setTape();
+                            detectTags();
+                            Pose2d end = tape.end();
+                            board = drive.trajectoryBuilder(end).lineToConstantHeading(new Vector2d(end.getX()-(tagOfInterest.pose.x/6/1.41), end.getY()+(tagOfInterest.pose.y/6))).build();
+                            timer.reset();
+                        }
+                        break;
+                    case wait1:
+                        if (timer.seconds() > .3){
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            drive.followTrajectoryAsync(board);
+                            currentState = shortBlueCenter.state.toBoard;
+                        }
+                        break;
+                    case toBoard:
+                        if (!drive.isBusy()){
+                            ElapsedTime timer2 = new ElapsedTime();
+                            timer2.reset();
+                            double distance = distanceSensor.getDistance(DistanceUnit.INCH);
+                            while (timer2.seconds()<.6){
+                                if (distance < 20){
+                                    totalDistanceRecordings +=1;
+                                    distanceSums += distanceSensor.getDistance(DistanceUnit.INCH);
+                                }
+                            }
+                            if (timer2.seconds() > .6){
+                                if (cycle == 0){
+                                    sensorToBoard = createPathToBoard(board.end());
+                                }else if (cycle == 1){
+                                    sensorToBoard = createPathToBoard(toBoardFromStack.end());
+                                }else if (cycle == 2){
+                                    sensorToBoard = createPathToBoard(toBoardFromStack2.end());
+                                }
+                                drive.followTrajectoryAsync(sensorToBoard);
+                                currentState = shortBlueCenter.state.wait3;
+                            }
+                        }
+                    case wait3:
+                        if (!drive.isBusy()){
+                            robot.Claw.dropBoard();
+                            currentState = shortBlueCenter.state.moveAwayFromBoard;
+                            timer.reset();
+                        }
+                        break;
+                    case moveAwayFromBoard:
+                        if (timer.seconds() > .3) {
+                            if (cycle == 0){
+                                drive.followTrajectoryAsync(moveAwayFromBoard);
+                            }else if (cycle == 1){
+                                drive.followTrajectoryAsync(moveAwayFromBoard1);
+                            }else if (cycle == 2){
+                                drive.followTrajectoryAsync(moveAwayFromBoard2);
+                            }
+                            currentState = shortBlueCenter.state.retractArm;
+                            timer.reset();
+                        }
+                        break;
+                    case retractArm:
+                        if (timer.seconds() > .5){
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+                            robot.Arm.setPosition(armState.medium);
+                            robot.Claw.setPosition(armState.intakingCLAW);
+                            currentState = shortBlueCenter.state.toStack;
+                        }
+                        break;
+                    case toStack:
+
+                        if (!drive .isBusy()){
+                            cycle+=1;
+                            tagFound = false;
+                            if (cycle == 1){
+                                drive.followTrajectoryAsync(toStack);
+                                robot.Arm.topStack();
+                                robot.Claw.setPosition(armState.outtaking);
+                                currentState = shortBlueCenter.state.toBoardFromStack1;
+                            }else if (cycle == 2){
+                                drive.followTrajectoryAsync(toStack2);
+                                robot.Arm.topStack();
+                                robot.Claw.setPosition(armState.outtaking);
+                                currentState = shortBlueCenter.state.toBoardFromStack2;
+                            }else{
+                                currentState = shortBlueCenter.state.IDLE;
+                            }
+                        }
+                    case toBoardFromStack1:
+                        if (tagOfInterest != null){
+                            Pose2d toBoardEnd = drive.getPoseEstimate();
+                            boardX = toBoardEnd.getX()-(tagOfInterest.pose.x/6/1.41);
+                            boardY = toBoardEnd.getY()+(tagOfInterest.pose.y/6);
+                        }
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toBoardFromStack_);
+                            currentState = shortBlueCenter.state.toBoardFromStack_;
+                        }
+                    case toBoardFromStack_:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toBoardFromStack);
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            currentState = shortBlueCenter.state.toBoard;
+                        }
+                    case toBoardFromStack2:
+                        if (!drive.isBusy()){;
+                            drive.followTrajectoryAsync(toBoardFromStack2_);
+                            currentState = shortBlueCenter.state.toBoardFromStack2_;
+                        }
+                    case toBoardFromStack2_:
+                        if (!drive.isBusy()){
+                            drive.followTrajectoryAsync(toBoardFromStack2);
+                            robot.Arm.setPosition(armState.medium);
+                            outtakeAfterMedium();
+                            currentState = shortBlueCenter.state.toBoard;
+                        }
+                    case IDLE:
+                        break;
+                }
+
+                drive.update();
+                detectTags();
             }else if(blueDetect.getLocation().equals("RIGHT")){
 
             }
         }
     }
+
     void initPaths(String tapeLocation){
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(start);
@@ -244,7 +375,7 @@ public class aprilTagTest extends LinearOpMode{
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
         if(currentDetections.size() != 0)
         {
-            boolean tagFound = false;
+            tagFound = false;
             for(AprilTagDetection tag : currentDetections)
             {
                 if(tag.id == middle || tag.id == right || tag.id == left)
@@ -318,8 +449,8 @@ public class aprilTagTest extends LinearOpMode{
         Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
 
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x/6));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y/6));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x/6/1.41));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z/6));
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
