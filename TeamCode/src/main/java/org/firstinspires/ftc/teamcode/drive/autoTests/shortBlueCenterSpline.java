@@ -41,7 +41,6 @@ public class shortBlueCenterSpline extends LinearOpMode {
     state currentState = state.IDLE;
     ElapsedTime timer = new ElapsedTime();
     DistanceSensor distanceSensor;
-    Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
     SampleMecanumDrive drive;
     OpenCvCamera camera;
     double boardX, boardY;
@@ -60,22 +59,21 @@ public class shortBlueCenterSpline extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(start);
         robot = new Robot(hardwareMap, telemetry);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
-        Trajectory tape = drive.trajectoryBuilder(start)
+        Trajectory tape = drive.trajectoryBuilder(new Pose2d(0,0))
                 .addDisplacementMarker(() -> {
                     //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                     //robot.Arm.setPosition(armState.low);
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .splineToLinearHeading(new Pose2d(37,7, Math.toRadians(-90)),Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-37,-7, Math.toRadians(90)),0)
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                 }).build();
-        Trajectory boardStack1 = drive.trajectoryBuilder(tape.end()).build();
-        Trajectory boardStack2 = drive.trajectoryBuilder(boardStack1.end()).build();
-        Trajectory boardStack3 = drive.trajectoryBuilder(boardStack2.end()).build();
+        Trajectory boardStack1 = drive.trajectoryBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
+        Trajectory boardStack2 = drive.trajectoryBuilder(boardStack1.end()).lineToConstantHeading(new Vector2d(0,2)).build();
+        Trajectory boardStack3 = drive.trajectoryBuilder(boardStack2.end()).lineToConstantHeading(new Vector2d(0,3)).build();
 
         initColorDetection();
 
@@ -94,26 +92,30 @@ public class shortBlueCenterSpline extends LinearOpMode {
                 case tape:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX()-(tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()+(tagOfInterest.pose.y/6);
+                        boardX = toBoardEnd.getX()-(100*tagOfInterest.pose.x/6/1.41);
+                        boardY = toBoardEnd.getY()-(100*tagOfInterest.pose.z/6);
+                        telemetry.addLine(tagOfInterest.pose.x/6/1.41 + " cam " + tagOfInterest.pose.z/6);
+                        telemetry.addLine(toBoardEnd.getX() + " pose "+ toBoardEnd.getY());
+                        telemetry.addData("Traj", boardY);
+                        telemetry.update();
                         boardStack1 = drive.trajectoryBuilder(tape.end())
                                 .addDisplacementMarker(() -> {
                                     robot.Arm.setPosition(armState.outtaking);
                                     robot.Claw.setPosition(armState.intakingCLAW);
                                 })
-                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(-90))
+                                .splineTo(new Vector2d(boardX,boardY), Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Claw.setPosition(armState.outtaking);
                                 })
-                                .splineToConstantHeading(new Vector2d(24,5),Math.toRadians(-90))
+                                .splineTo(new Vector2d(-24,-5),Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     toStack(1);
                                 })
-                                .splineToConstantHeading(new Vector2d(26.5,-48),Math.toRadians(-90))
+                                .splineTo(new Vector2d(-26.5,48),Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Claw.setPosition(armState.intakingCLAW);
                                 })
-                                .splineToConstantHeading(new Vector2d(24,20),Math.toRadians(-90))
+                                .splineTo(new Vector2d(-24,-20),Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Arm.setPosition(armState.outtaking);
                                 }).build();
@@ -127,22 +129,22 @@ public class shortBlueCenterSpline extends LinearOpMode {
                 case stack1:
                     if (tagOfInterest != null && caseTagFound == false) {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX() - (tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() + (tagOfInterest.pose.y / 6);
+                        boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x / 6 / 1.41);
+                        boardY = toBoardEnd.getY() - (100*tagOfInterest.pose.z / 6);
                         boardStack2 = drive.trajectoryBuilder(boardStack1.end())
-                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(-90))
+                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Claw.setPosition(armState.outtaking);
                                 })
-                                .splineToConstantHeading(new Vector2d(24,35),Math.toRadians(-90))
+                                .splineToConstantHeading(new Vector2d(-24,-35),Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     toStack(2);
                                 })
-                                .splineToConstantHeading(new Vector2d(26.5,-20),Math.toRadians(-90))
+                                .splineToConstantHeading(new Vector2d(-26.5,20),Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Claw.setPosition(armState.intakingCLAW);
                                 })
-                                .splineToConstantHeading(new Vector2d(24,50),Math.toRadians(-90))
+                                .splineToConstantHeading(new Vector2d(-24,-50),Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Arm.setPosition(armState.outtaking);
                                 }).build();
@@ -155,10 +157,10 @@ public class shortBlueCenterSpline extends LinearOpMode {
                 case stack2:
                     if (tagOfInterest != null && caseTagFound == false) {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX() - (tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() + (tagOfInterest.pose.y / 6);
+                        boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x / 6 / 1.41);
+                        boardY = toBoardEnd.getY() - (100*tagOfInterest.pose.z / 6);
                         boardStack3 = drive.trajectoryBuilder(boardStack1.end())
-                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(-90))
+                                .splineToConstantHeading(new Vector2d(boardX,boardY), Math.toRadians(90))
                                 .addDisplacementMarker(() -> {
                                     robot.Claw.setPosition(armState.outtaking);
                                 }).build();
@@ -195,35 +197,49 @@ public class shortBlueCenterSpline extends LinearOpMode {
 
     void detectTags() {
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-        if (currentDetections.size() != 0) {
+        if(currentDetections.size() != 0)
+        {
             tagFound = false;
-            for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == middle || tag.id == right || tag.id == left) {
+            for(AprilTagDetection tag : currentDetections)
+            {
+                if(tag.id == middle || tag.id == right || tag.id == left)
+                {
                     tagOfInterest = tag;
                     tagFound = true;
                     break;
                 }
             }
-            if (tagFound) {
+            if(tagFound)
+            {
                 telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                 tagToTelemetry(tagOfInterest);
-            } else {
+            }
+            else
+            {
                 telemetry.addLine("Don't see tag of interest :(");
 
-                if (tagOfInterest == null) {
+                if(tagOfInterest == null)
+                {
                     telemetry.addLine("(The tag has never been seen)");
-                } else {
+                }
+                else
+                {
                     telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
                     tagToTelemetry(tagOfInterest);
                 }
             }
 
-        } else {
+        }
+        else
+        {
             telemetry.addLine("Don't see tag of interest :(");
 
-            if (tagOfInterest == null) {
+            if(tagOfInterest == null)
+            {
                 telemetry.addLine("(The tag has never been seen)");
-            } else {
+            }
+            else
+            {
                 telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
                 tagToTelemetry(tagOfInterest);
             }
@@ -232,6 +248,7 @@ public class shortBlueCenterSpline extends LinearOpMode {
 
         telemetry.update();
         sleep(20);
+
     }
     private void initColorDetection() {
 
