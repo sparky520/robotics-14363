@@ -105,7 +105,7 @@ public class shortBlueCenterSpline extends LinearOpMode {
                         boardStack1 = drive.trajectorySequenceBuilder(tape.end())
                                 .lineToLinearHeading(new Pose2d(boardX,boardY-6,Math.toRadians(-90)))
                                 .lineToConstantHeading(new Vector2d(26.5,-20))
-                                .lineToConstantHeading(new Vector2d(24,30)).build();
+                                .lineToConstantHeading(new Vector2d(24,45)).build();
                         caseTagFound = true;
                     }
                     if (!drive.isBusy() && caseTagFound == true){
@@ -119,9 +119,9 @@ public class shortBlueCenterSpline extends LinearOpMode {
                         boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x / 6 / 1.41);
                         boardY = toBoardEnd.getY() + (100*tagOfInterest.pose.z / 6);
                         boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end())
-                                .splineToConstantHeading(new Vector2d(boardX,boardY-boardOffset),0)
+                                .lineToConstantHeading(new Vector2d(boardX,boardY-boardOffset))
                                 .lineToConstantHeading(new Vector2d(26.5,20))
-                                .lineToConstantHeading(new Vector2d(24,60)).build();
+                                .lineToConstantHeading(new Vector2d(24,75)).build();
                     }
                     if (!drive.isBusy()){
                         drive.followTrajectorySequenceAsync(boardStack2);
