@@ -61,7 +61,7 @@ public class aprilTagTest extends LinearOpMode{
     boolean tagFound = false;
     Trajectory tape, board, sensorToBoard, moveAwayFromBoard, toStack, toBoardFromStack, toStack2, toBoardFromStack_, toBoardFromStack2_, toBoardFromStack2, moveAwayFromBoard1, moveAwayFromBoard2;
     Robot robot;
-    shortBlueCenter.state currentState = shortBlueCenter.state.IDLE;
+    state currentState = state.IDLE;
     ElapsedTime timer = new ElapsedTime();
     DistanceSensor distanceSensor;
     Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
@@ -93,7 +93,7 @@ public class aprilTagTest extends LinearOpMode{
         while (opModeIsActive() && !isStopRequested()){detectTags();}
 
         initPaths(blueDetect.getLocation());
-        currentState = shortBlueCenter.state.toTape;
+        currentState = state.toTape;
         robot.Claw.setPosition(armState.intakingCLAW);
         drive.followTrajectoryAsync(tape);
         while (opModeIsActive() && !isStopRequested()){
@@ -104,7 +104,7 @@ public class aprilTagTest extends LinearOpMode{
                 switch(currentState){
                     case toTape:
                         if (!drive.isBusy()){
-                            currentState = shortBlueCenter.state.wait1;
+                            currentState = state.wait1;
                             robot.Claw.setTape();
                             timer.reset();
                         }
@@ -114,7 +114,7 @@ public class aprilTagTest extends LinearOpMode{
                             robot.Arm.setPosition(armState.medium);
                             outtakeAfterMedium();
                             drive.followTrajectoryAsync(board);
-                            currentState = shortBlueCenter.state.toBoard;
+                            currentState = state.toBoard;
                         }
                         break;
                     case toBoard:
@@ -137,13 +137,13 @@ public class aprilTagTest extends LinearOpMode{
                                     sensorToBoard = createPathToBoard(toBoardFromStack2.end());
                                 }
                                 drive.followTrajectoryAsync(sensorToBoard);
-                                currentState = shortBlueCenter.state.wait3;
+                                currentState = state.wait3;
                             }
                         }
                     case wait3:
                         if (!drive.isBusy()){
                             robot.Claw.dropBoard();
-                            currentState = shortBlueCenter.state.moveAwayFromBoard;
+                            currentState = state.moveAwayFromBoard;
                             timer.reset();
                         }
                         break;
@@ -156,7 +156,7 @@ public class aprilTagTest extends LinearOpMode{
                             }else if (cycle == 2){
                                 drive.followTrajectoryAsync(moveAwayFromBoard2);
                             }
-                            currentState = shortBlueCenter.state.retractArm;
+                            currentState = state.retractArm;
                             timer.reset();
                         }
                         break;
@@ -165,7 +165,7 @@ public class aprilTagTest extends LinearOpMode{
                             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                             robot.Arm.setPosition(armState.medium);
                             robot.Claw.setPosition(armState.intakingCLAW);
-                            currentState = shortBlueCenter.state.toStack;
+                            currentState = state.toStack;
                         }
                         break;
                     case toStack:
@@ -176,39 +176,39 @@ public class aprilTagTest extends LinearOpMode{
                                 drive.followTrajectoryAsync(toStack);
                                 robot.Arm.topStack();
                                 robot.Claw.setPosition(armState.outtaking);
-                                currentState = shortBlueCenter.state.toBoardFromStack1;
+                                currentState = state.toBoardFromStack1;
                             }else if (cycle == 2){
                                 drive.followTrajectoryAsync(toStack2);
                                 robot.Arm.topStack();
                                 robot.Claw.setPosition(armState.outtaking);
-                                currentState = shortBlueCenter.state.toBoardFromStack2;
+                                currentState = state.toBoardFromStack2;
                             }else{
-                                currentState = shortBlueCenter.state.IDLE;
+                                currentState = state.IDLE;
                             }
                         }
                     case toBoardFromStack1:
                         if (!drive.isBusy()){
                             drive.followTrajectoryAsync(toBoardFromStack_);
-                            currentState = shortBlueCenter.state.toBoardFromStack_;
+                            currentState = state.toBoardFromStack_;
                         }
                     case toBoardFromStack_:
                         if (!drive.isBusy()){
                             drive.followTrajectoryAsync(toBoardFromStack);
                             robot.Arm.setPosition(armState.medium);
                             outtakeAfterMedium();
-                            currentState = shortBlueCenter.state.toBoard;
+                            currentState = state.toBoard;
                         }
                     case toBoardFromStack2:
                         if (!drive.isBusy()){;
                             drive.followTrajectoryAsync(toBoardFromStack2_);
-                            currentState = shortBlueCenter.state.toBoardFromStack2_;
+                            currentState = state.toBoardFromStack2_;
                         }
                     case toBoardFromStack2_:
                         if (!drive.isBusy()){
                             drive.followTrajectoryAsync(toBoardFromStack2);
                             robot.Arm.setPosition(armState.medium);
                             outtakeAfterMedium();
-                            currentState = shortBlueCenter.state.toBoard;
+                            currentState = state.toBoard;
                         }
                     case IDLE:
                         break;
@@ -220,7 +220,7 @@ public class aprilTagTest extends LinearOpMode{
                 switch(currentState){
                     case toTape:
                         if (!drive.isBusy()){
-                            currentState = shortBlueCenter.state.wait1;
+                            currentState = state.wait1;
                             robot.Claw.setTape();
                             detectTags();
                             Pose2d end = tape.end();
@@ -233,7 +233,7 @@ public class aprilTagTest extends LinearOpMode{
                             robot.Arm.setPosition(armState.medium);
                             outtakeAfterMedium();
                             drive.followTrajectoryAsync(board);
-                            currentState = shortBlueCenter.state.toBoard;
+                            currentState = state.toBoard;
                         }
                         break;
                     case toBoard:
@@ -256,13 +256,13 @@ public class aprilTagTest extends LinearOpMode{
                                     sensorToBoard = createPathToBoard(toBoardFromStack2.end());
                                 }
                                 drive.followTrajectoryAsync(sensorToBoard);
-                                currentState = shortBlueCenter.state.wait3;
+                                currentState = state.wait3;
                             }
                         }
                     case wait3:
                         if (!drive.isBusy()){
                             robot.Claw.dropBoard();
-                            currentState = shortBlueCenter.state.moveAwayFromBoard;
+                            currentState = state.moveAwayFromBoard;
                             timer.reset();
                         }
                         break;
@@ -275,7 +275,7 @@ public class aprilTagTest extends LinearOpMode{
                             }else if (cycle == 2){
                                 drive.followTrajectoryAsync(moveAwayFromBoard2);
                             }
-                            currentState = shortBlueCenter.state.retractArm;
+                            currentState = state.retractArm;
                             timer.reset();
                         }
                         break;
@@ -284,7 +284,7 @@ public class aprilTagTest extends LinearOpMode{
                             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                             robot.Arm.setPosition(armState.medium);
                             robot.Claw.setPosition(armState.intakingCLAW);
-                            currentState = shortBlueCenter.state.toStack;
+                            currentState = state.toStack;
                         }
                         break;
                     case toStack:
@@ -296,14 +296,14 @@ public class aprilTagTest extends LinearOpMode{
                                 drive.followTrajectoryAsync(toStack);
                                 robot.Arm.topStack();
                                 robot.Claw.setPosition(armState.outtaking);
-                                currentState = shortBlueCenter.state.toBoardFromStack1;
+                                currentState = state.toBoardFromStack1;
                             }else if (cycle == 2){
                                 drive.followTrajectoryAsync(toStack2);
                                 robot.Arm.topStack();
                                 robot.Claw.setPosition(armState.outtaking);
-                                currentState = shortBlueCenter.state.toBoardFromStack2;
+                                currentState = state.toBoardFromStack2;
                             }else{
-                                currentState = shortBlueCenter.state.IDLE;
+                                currentState = state.IDLE;
                             }
                         }
                     case toBoardFromStack1:
@@ -314,26 +314,26 @@ public class aprilTagTest extends LinearOpMode{
                         }
                         if (!drive.isBusy()){
                             drive.followTrajectoryAsync(toBoardFromStack_);
-                            currentState = shortBlueCenter.state.toBoardFromStack_;
+                            currentState = state.toBoardFromStack_;
                         }
                     case toBoardFromStack_:
                         if (!drive.isBusy()){
                             drive.followTrajectoryAsync(toBoardFromStack);
                             robot.Arm.setPosition(armState.medium);
                             outtakeAfterMedium();
-                            currentState = shortBlueCenter.state.toBoard;
+                            currentState = state.toBoard;
                         }
                     case toBoardFromStack2:
                         if (!drive.isBusy()){;
                             drive.followTrajectoryAsync(toBoardFromStack2_);
-                            currentState = shortBlueCenter.state.toBoardFromStack2_;
+                            currentState = state.toBoardFromStack2_;
                         }
                     case toBoardFromStack2_:
                         if (!drive.isBusy()){
                             drive.followTrajectoryAsync(toBoardFromStack2);
                             robot.Arm.setPosition(armState.medium);
                             outtakeAfterMedium();
-                            currentState = shortBlueCenter.state.toBoard;
+                            currentState = state.toBoard;
                         }
                     case IDLE:
                         break;
