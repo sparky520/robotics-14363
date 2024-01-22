@@ -53,9 +53,9 @@ public class shortBlueLeft extends LinearOpMode {
     double cy = 221.506;
     double tagsize = 0.166;
     shortBlueObjectDetectTest blueDetect;
-    int left = 4;
-    int middle = 5;
-    int right = 6;
+    int left = 1;
+    int middle = 2;
+    int right = 3;
     AprilTagDetection tagOfInterest = null;
 
     @Override
@@ -96,17 +96,13 @@ public class shortBlueLeft extends LinearOpMode {
                 case tape:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        telemetry.addLine("  " + tagOfInterest.id);
-                        telemetry.addLine(toBoardEnd.getX()-(100*tagOfInterest.pose.x/6/1.41) + "");
                         boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x/6/1.41);
                         boardY = toBoardEnd.getY()+(100*tagOfInterest.pose.z/6);
-                        telemetry.addLine(boardX + "  " + boardY );
-                        telemetry.update();
                         boardStack1 = drive.trajectorySequenceBuilder(tape.end())
                                 .lineToConstantHeading(new Vector2d(boardX,boardY-6))
-                                .lineToConstantHeading(new Vector2d(40,15))
-                                .lineToConstantHeading(new Vector2d(40,-20))
-                                .lineToConstantHeading(new Vector2d(40,60)).build();
+                                .lineToConstantHeading(new Vector2d(45,12))
+                                .lineToConstantHeading(new Vector2d(45,-25))
+                                .lineToConstantHeading(new Vector2d(45,60)).build();
                         caseTagFound = true;
                     }
                     if (!drive.isBusy() && caseTagFound == true){
@@ -122,8 +118,9 @@ public class shortBlueLeft extends LinearOpMode {
                         boardY = toBoardEnd.getY() + (100*tagOfInterest.pose.z / 6);
                         boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end())
                                 .lineToConstantHeading(new Vector2d(boardX,boardY-boardOffset))
-                                .lineToConstantHeading(new Vector2d(26.5,30))
-                                .lineToConstantHeading(new Vector2d(24,75)).build();
+                                .lineToConstantHeading(new Vector2d(45,60))
+                                .lineToConstantHeading(new Vector2d(45,30))
+                                .lineToConstantHeading(new Vector2d(45,75)).build();
                     }
                     if (!drive.isBusy()){
                         drive.followTrajectorySequenceAsync(boardStack2);

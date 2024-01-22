@@ -52,9 +52,9 @@ public class shortBlueCenter extends LinearOpMode {
     double cy = 221.506;
     double tagsize = 0.166;
     shortBlueObjectDetectTest blueDetect;
-    int left = 4;
-    int middle = 5;
-    int right = 6;
+    int left = 1;
+    int middle = 2;
+    int right = 3;
     AprilTagDetection tagOfInterest = null;
 
     @Override
@@ -103,7 +103,7 @@ public class shortBlueCenter extends LinearOpMode {
                         boardStack1 = drive.trajectorySequenceBuilder(tape.end())
                                 .lineToLinearHeading(new Pose2d(boardX,boardY-6,Math.toRadians(-90)))
                                 .lineToConstantHeading(new Vector2d(26.5,-20))
-                                .lineToConstantHeading(new Vector2d(24,45)).build();
+                                .lineToConstantHeading(new Vector2d(24,25)).build();
                         caseTagFound = true;
                     }
                     if (!drive.isBusy() && caseTagFound == true){
