@@ -25,4 +25,10 @@ public class Robot {
         Airplane = new airplane(hardwareMap);
     }
 
+    public void initialize(){
+        Arm.setPosition(armState.low);
+        slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+        Claw.setPosition(armState.outtaking);
+    }
+
 }

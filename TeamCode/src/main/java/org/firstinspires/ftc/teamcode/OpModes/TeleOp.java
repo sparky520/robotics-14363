@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Robot;
 import org.firstinspires.ftc.teamcode.states.armState;
@@ -15,13 +15,17 @@ public class TeleOp extends OpMode
 {
     private GamepadEx driver, operator;
     private Robot robot;
-    TouchSensor touchSensor;
+    enum state{
+        low,medium,high, IDLE
+    }
+    ElapsedTime timer = new ElapsedTime();
+    state armPos = state.low;
     DistanceSensor distanceSensor;
+
     @Override
     public void init()
     {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
-        //touchSensor = hardwareMap.get(TouchSensor.class, "touchsensor");
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
@@ -33,6 +37,9 @@ public class TeleOp extends OpMode
         operator.readButtons();
 
         robot.drivetrain.fieldCentric(driver);
+
+
+
         if (gamepad1.dpad_up){
             robot.drivetrain.resetIMU();
         }
@@ -88,13 +95,24 @@ public class TeleOp extends OpMode
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
         }
 
-
-
-
-
-
-
-
+        switch(armPos){
+            case high:
+                //Wrist.setpos outtaking
+                robot.Arm.setPosition(armState.outtaking);
+                break;
+            case medium:
+                robot.Arm.setPosition(armState.medium);
+                timer.reset();
+                armPos = state.low;
+            case low:
+                if (timer.seconds() > .3) robot.Arm.setPosition(armState.low);
+                if (timer.seconds() > .5){
+                    //Wrist.setpos intaking
+                    armPos = state.IDLE;
+                }
+            case IDLE:
+                
+        }
 
     }
 }

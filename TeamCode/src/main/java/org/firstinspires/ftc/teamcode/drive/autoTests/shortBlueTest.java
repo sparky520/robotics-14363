@@ -145,8 +145,8 @@ public class shortBlueTest extends LinearOpMode {
                 case stack2:
                     if (tagOfInterest != null && caseTagFound == false) {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX() - 2 -(100*tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() + (100*tagOfInterest.pose.z / 6);
+                        boardX = toBoardEnd.getX() - 10 -(100*tagOfInterest.pose.x / 6 / 1.41);
+                        boardY = toBoardEnd.getY() -8 + (100*tagOfInterest.pose.z / 6);
                         boardStack3 = drive.trajectorySequenceBuilder(boardStack2.end())
                                 .lineToConstantHeading(new Vector2d(boardX,boardY-boardOffset)).build();
                     }
