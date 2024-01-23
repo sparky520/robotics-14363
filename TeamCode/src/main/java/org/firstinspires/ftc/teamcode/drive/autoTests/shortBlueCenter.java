@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.SubSystems.Robot;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.states.armState;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -52,9 +53,9 @@ public class shortBlueCenter extends LinearOpMode {
     double cy = 221.506;
     double tagsize = 0.166;
     shortBlueObjectDetectTest blueDetect;
-    int left = 1;
-    int middle = 2;
-    int right = 3;
+    int left = 4;
+    int middle = 5;
+    int right = 6;
     AprilTagDetection tagOfInterest = null;
 
     @Override
@@ -69,7 +70,7 @@ public class shortBlueCenter extends LinearOpMode {
                     //robot.Arm.setPosition(armState.low);
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .lineToLinearHeading(new Pose2d(37,7, Math.toRadians(-70)))
+                .lineToLinearHeading(new Pose2d(34,7, Math.toRadians(-70)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                 }).build();
@@ -96,14 +97,14 @@ public class shortBlueCenter extends LinearOpMode {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         telemetry.addLine("  " + tagOfInterest.id);
                         telemetry.addLine(toBoardEnd.getX()-(100*tagOfInterest.pose.x/6/1.41) + "");
-                        boardX = toBoardEnd.getX()-16 - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()+(100*tagOfInterest.pose.z/6);
+                        boardX = toBoardEnd.getX()-20 - (100*tagOfInterest.pose.x/6/1.41);
+                        boardY = toBoardEnd.getY()- 6 +(100*tagOfInterest.pose.z/6);
                         telemetry.addLine(boardX + "  " + boardY );
                         telemetry.update();
                         boardStack1 = drive.trajectorySequenceBuilder(tape.end())
-                                .lineToLinearHeading(new Pose2d(boardX,boardY-6,Math.toRadians(-90)))
-                                .lineToConstantHeading(new Vector2d(26.5,-20))
-                                .lineToConstantHeading(new Vector2d(24,25)).build();
+                                .lineToLinearHeading(new Pose2d(boardX,boardY,Math.toRadians(-90)))
+                                .lineToConstantHeading(new Vector2d(25,boardY-50), SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH),SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToConstantHeading(new Vector2d(26.5,boardY+9)).build();
                         caseTagFound = true;
                     }
                     if (!drive.isBusy() && caseTagFound == true){
@@ -115,11 +116,11 @@ public class shortBlueCenter extends LinearOpMode {
                     if (tagOfInterest != null && caseTagFound == false) {
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX() - 2 - (100*tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() + (100*tagOfInterest.pose.z / 6);
+                        boardY = toBoardEnd.getY() - boardOffset + (100*tagOfInterest.pose.z / 6);
                         boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end())
-                                .lineToConstantHeading(new Vector2d(boardX,boardY-boardOffset))
-                                .lineToConstantHeading(new Vector2d(26.5,30))
-                                .lineToConstantHeading(new Vector2d(24,75)).build();
+                                .lineToConstantHeading(new Vector2d(boardX,boardY))
+                                .lineToConstantHeading(new Vector2d(26,boardY-50),SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH),SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToConstantHeading(new Vector2d(26,boardY+9)).build();
                     }
                     if (!drive.isBusy()){
                         drive.followTrajectorySequenceAsync(boardStack2);
