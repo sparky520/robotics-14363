@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.states.armState;
 public class arm {
     private Servo leftArm, rightArm;
     public Telemetry telem;
-    motionProfile profile;
     public arm (HardwareMap hardwareMap, Telemetry telemetryy)
     {
         leftArm = hardwareMap.servo.get("leftArm");

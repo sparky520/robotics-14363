@@ -45,11 +45,14 @@ public class TeleOp extends OpMode
         if (gamepad1.triangle){
             robot.wrist.setPosition(armState.outtaking);
         }
-        if (gamepad1.circle){
-            robot.Arm.topStack();
+        if (gamepad1.dpad_down){
+            robot.Arm.setPosition(armState.low);
+        }
+        if (gamepad1.dpad_left){
+            robot.Arm.setPosition(armState.medium);
         }
         if (gamepad1.dpad_up){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+            robot.Arm.setPosition(armState.high);
         }
 
     }
