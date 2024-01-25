@@ -7,6 +7,7 @@ public enum outtakeStates {
     HIGHIN,
     MEDIUMIN,
     LOWIN,
+    TOPSTACK,
     STATION,
     etxending,
     retracted,

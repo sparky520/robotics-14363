@@ -83,10 +83,9 @@ public class aprilTagTest extends LinearOpMode{
     @Override
     public void runOpMode()
     {
-        initColorDetection();
-        /* Actually do something useful */
+        robot = new Robot(hardwareMap,telemetry);
+        robot.Arm.setPosition(armState.low);
         waitForStart();
-        camera.closeCameraDevice();
 
 
         initAprilTagDetect();
@@ -124,7 +123,7 @@ public class aprilTagTest extends LinearOpMode{
         if (currentDetections.size() != 0) {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == 2) {
+                if (tag.id == 9) {
                     telemetry.addLine("Found!");
                     telemetry.update();
                     tagOfInterest = tag;

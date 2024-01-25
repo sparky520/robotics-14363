@@ -10,6 +10,7 @@ public class Robot {
     public slides slide;
     public claw Claw;
     public airplane Airplane;
+    public wrist wrist;
 
     //public airplane Airplane;
     public Robot(HardwareMap hardwareMap, Telemetry telemtry){
@@ -23,6 +24,7 @@ public class Robot {
         slide = new slides(hardwareMap);
         Claw = new claw(hardwareMap, telemtry);
         Airplane = new airplane(hardwareMap);
+        wrist = new wrist(hardwareMap);
     }
 
     public void initialize(){

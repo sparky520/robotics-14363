@@ -53,9 +53,8 @@ public class arm {
         rightArm.setPosition(.2);
     }
     public void topStack(){
-        leftArm.setPosition(.98);
-        rightArm.setPosition(.98);
+        leftArm.setPosition(.9);
+        rightArm.setPosition(.9);
     }
-
 
 }
