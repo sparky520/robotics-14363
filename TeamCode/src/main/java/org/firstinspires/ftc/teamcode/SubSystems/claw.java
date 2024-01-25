@@ -20,8 +20,6 @@ public class claw {
     public void setPosition(armState state){
         switch (state){
             case intakingCLAW:
-                tel.addLine("bobross");
-                tel.update();
                 leftClaw.setPosition(.82);
                 rightClaw.setPosition(.82);
                 break;

@@ -66,15 +66,15 @@ public class aprilTagTest extends LinearOpMode{
     DistanceSensor distanceSensor;
     Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
     SampleMecanumDrive drive;
-    OpenCvCamera camera;
+    OpenCvCamera camera, camera2;
     double boardX, boardY;
-    aprilTagDetection aprilTagDetectionPipeline;
+    aprilTagDetection aprilTagDetectionPipeline, aprilTagDetectionPipeline2;
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
     double tagsize = 0.166;
-    shortBlueObjectDetectTest blueDetect;
+    shortBlueObjectDetectTest blueDetect, blueDetect2;
     int left = 4;
     int middle = 5;
     int right = 6;
@@ -84,266 +84,14 @@ public class aprilTagTest extends LinearOpMode{
     public void runOpMode()
     {
         initColorDetection();
-
         /* Actually do something useful */
         waitForStart();
-        camera.stopStreaming();
+        camera.closeCameraDevice();
+
+
         initAprilTagDetect();
-
-        while (opModeIsActive() && !isStopRequested()){detectTags();}
-
-        initPaths(blueDetect.getLocation());
-        currentState = state.toTape;
-        robot.Claw.setPosition(armState.intakingCLAW);
-        drive.followTrajectoryAsync(tape);
         while (opModeIsActive() && !isStopRequested()){
-            if (blueDetect.getLocation().equals("LEFT")){
-                detectTags();
-            }else if(blueDetect.getLocation().equals("MIDDLE")){
-                /*
-                switch(currentState){
-                    case toTape:
-                        if (!drive.isBusy()){
-                            currentState = state.wait1;
-                            robot.Claw.setTape();
-                            timer.reset();
-                        }
-                        break;
-                    case wait1:
-                        if (timer.seconds() > .3){
-                            robot.Arm.setPosition(armState.medium);
-                            outtakeAfterMedium();
-                            drive.followTrajectoryAsync(board);
-                            currentState = state.toBoard;
-                        }
-                        break;
-                    case toBoard:
-                        if (!drive.isBusy()){
-                            ElapsedTime timer2 = new ElapsedTime();
-                            timer2.reset();
-                            double distance = distanceSensor.getDistance(DistanceUnit.INCH);
-                            while (timer2.seconds()<.6){
-                                if (distance < 20){
-                                    totalDistanceRecordings +=1;
-                                    distanceSums += distanceSensor.getDistance(DistanceUnit.INCH);
-                                }
-                            }
-                            if (timer2.seconds() > .6){
-                                if (cycle == 0){
-                                    sensorToBoard = createPathToBoard(board.end());
-                                }else if (cycle == 1){
-                                    sensorToBoard = createPathToBoard(toBoardFromStack.end());
-                                }else if (cycle == 2){
-                                    sensorToBoard = createPathToBoard(toBoardFromStack2.end());
-                                }
-                                drive.followTrajectoryAsync(sensorToBoard);
-                                currentState = state.wait3;
-                            }
-                        }
-                    case wait3:
-                        if (!drive.isBusy()){
-                            robot.Claw.dropBoard();
-                            currentState = state.moveAwayFromBoard;
-                            timer.reset();
-                        }
-                        break;
-                    case moveAwayFromBoard:
-                        if (timer.seconds() > .3) {
-                            if (cycle == 0){
-                                drive.followTrajectoryAsync(moveAwayFromBoard);
-                            }else if (cycle == 1){
-                                drive.followTrajectoryAsync(moveAwayFromBoard1);
-                            }else if (cycle == 2){
-                                drive.followTrajectoryAsync(moveAwayFromBoard2);
-                            }
-                            currentState = state.retractArm;
-                            timer.reset();
-                        }
-                        break;
-                    case retractArm:
-                        if (timer.seconds() > .5){
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                            robot.Arm.setPosition(armState.medium);
-                            robot.Claw.setPosition(armState.intakingCLAW);
-                            currentState = state.toStack;
-                        }
-                        break;
-                    case toStack:
-
-                        if (!drive .isBusy()){
-                            cycle+=1;
-                            if (cycle == 1){
-                                drive.followTrajectoryAsync(toStack);
-                                robot.Arm.topStack();
-                                robot.Claw.setPosition(armState.outtaking);
-                                currentState = state.toBoardFromStack1;
-                            }else if (cycle == 2){
-                                drive.followTrajectoryAsync(toStack2);
-                                robot.Arm.topStack();
-                                robot.Claw.setPosition(armState.outtaking);
-                                currentState = state.toBoardFromStack2;
-                            }else{
-                                currentState = state.IDLE;
-                            }
-                        }
-                    case toBoardFromStack1:
-                        if (!drive.isBusy()){
-                            drive.followTrajectoryAsync(toBoardFromStack_);
-                            currentState = state.toBoardFromStack_;
-                        }
-                    case toBoardFromStack_:
-                        if (!drive.isBusy()){
-                            drive.followTrajectoryAsync(toBoardFromStack);
-                            robot.Arm.setPosition(armState.medium);
-                            outtakeAfterMedium();
-                            currentState = state.toBoard;
-                        }
-                    case toBoardFromStack2:
-                        if (!drive.isBusy()){;
-                            drive.followTrajectoryAsync(toBoardFromStack2_);
-                            currentState = state.toBoardFromStack2_;
-                        }
-                    case toBoardFromStack2_:
-                        if (!drive.isBusy()){
-                            drive.followTrajectoryAsync(toBoardFromStack2);
-                            robot.Arm.setPosition(armState.medium);
-                            outtakeAfterMedium();
-                            currentState = state.toBoard;
-                        }
-                    case IDLE:
-                        break;
-                }
-
-                drive.update();
-                detectTags();
-                */
-                switch(currentState){
-                    case toTape:
-                        if (!drive.isBusy()){
-                            currentState = state.wait1;
-                            robot.Claw.setTape();
-                            detectTags();
-                            Pose2d end = tape.end();
-                            board = drive.trajectoryBuilder(end).lineToConstantHeading(new Vector2d(end.getX()-(tagOfInterest.pose.x/6/1.41), end.getY()+(tagOfInterest.pose.y/6))).build();
-                            timer.reset();
-                        }
-                        break;
-                    case wait1:
-                        if (timer.seconds() > .3){
-                            robot.Arm.setPosition(armState.medium);
-                            outtakeAfterMedium();
-                            drive.followTrajectoryAsync(board);
-                            currentState = state.toBoard;
-                        }
-                        break;
-                    case toBoard:
-                        if (!drive.isBusy()){
-                            ElapsedTime timer2 = new ElapsedTime();
-                            timer2.reset();
-                            double distance = distanceSensor.getDistance(DistanceUnit.INCH);
-                            while (timer2.seconds()<.6){
-                                if (distance < 20){
-                                    totalDistanceRecordings +=1;
-                                    distanceSums += distanceSensor.getDistance(DistanceUnit.INCH);
-                                }
-                            }
-                            if (timer2.seconds() > .6){
-                                if (cycle == 0){
-                                    sensorToBoard = createPathToBoard(board.end());
-                                }else if (cycle == 1){
-                                    sensorToBoard = createPathToBoard(toBoardFromStack.end());
-                                }else if (cycle == 2){
-                                    sensorToBoard = createPathToBoard(toBoardFromStack2.end());
-                                }
-                                drive.followTrajectoryAsync(sensorToBoard);
-                                currentState = state.wait3;
-                            }
-                        }
-                    case wait3:
-                        if (!drive.isBusy()){
-                            robot.Claw.dropBoard();
-                            currentState = state.moveAwayFromBoard;
-                            timer.reset();
-                        }
-                        break;
-                    case moveAwayFromBoard:
-                        if (timer.seconds() > .3) {
-                            if (cycle == 0){
-                                drive.followTrajectoryAsync(moveAwayFromBoard);
-                            }else if (cycle == 1){
-                                drive.followTrajectoryAsync(moveAwayFromBoard1);
-                            }else if (cycle == 2){
-                                drive.followTrajectoryAsync(moveAwayFromBoard2);
-                            }
-                            currentState = state.retractArm;
-                            timer.reset();
-                        }
-                        break;
-                    case retractArm:
-                        if (timer.seconds() > .5){
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-                            robot.Arm.setPosition(armState.medium);
-                            robot.Claw.setPosition(armState.intakingCLAW);
-                            currentState = state.toStack;
-                        }
-                        break;
-                    case toStack:
-
-                        if (!drive .isBusy()){
-                            cycle+=1;
-                            tagFound = false;
-                            if (cycle == 1){
-                                drive.followTrajectoryAsync(toStack);
-                                robot.Arm.topStack();
-                                robot.Claw.setPosition(armState.outtaking);
-                                currentState = state.toBoardFromStack1;
-                            }else if (cycle == 2){
-                                drive.followTrajectoryAsync(toStack2);
-                                robot.Arm.topStack();
-                                robot.Claw.setPosition(armState.outtaking);
-                                currentState = state.toBoardFromStack2;
-                            }else{
-                                currentState = state.IDLE;
-                            }
-                        }
-                    case toBoardFromStack1:
-                        if (tagOfInterest != null){
-                            Pose2d toBoardEnd = drive.getPoseEstimate();
-                            boardX = toBoardEnd.getX()-(tagOfInterest.pose.x/6/1.41);
-                            boardY = toBoardEnd.getY()+(tagOfInterest.pose.y/6);
-                        }
-                        if (!drive.isBusy()){
-                            drive.followTrajectoryAsync(toBoardFromStack_);
-                            currentState = state.toBoardFromStack_;
-                        }
-                    case toBoardFromStack_:
-                        if (!drive.isBusy()){
-                            drive.followTrajectoryAsync(toBoardFromStack);
-                            robot.Arm.setPosition(armState.medium);
-                            outtakeAfterMedium();
-                            currentState = state.toBoard;
-                        }
-                    case toBoardFromStack2:
-                        if (!drive.isBusy()){;
-                            drive.followTrajectoryAsync(toBoardFromStack2_);
-                            currentState = state.toBoardFromStack2_;
-                        }
-                    case toBoardFromStack2_:
-                        if (!drive.isBusy()){
-                            drive.followTrajectoryAsync(toBoardFromStack2);
-                            robot.Arm.setPosition(armState.medium);
-                            outtakeAfterMedium();
-                            currentState = state.toBoard;
-                        }
-                    case IDLE:
-                        break;
-                }
-
-                drive.update();
-                detectTags();
-            }else if(blueDetect.getLocation().equals("RIGHT")){
-
-            }
+            detectTags();
         }
     }
 
@@ -371,59 +119,20 @@ public class aprilTagTest extends LinearOpMode{
 
         }
     }
-    void detectTags(){
+    void detectTags() {
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-        if(currentDetections.size() != 0)
-        {
+        if (currentDetections.size() != 0) {
             tagFound = false;
-            for(AprilTagDetection tag : currentDetections)
-            {
-                if(tag.id == middle || tag.id == right || tag.id == left)
-                {
+            for (AprilTagDetection tag : currentDetections) {
+                if (tag.id == 2) {
+                    telemetry.addLine("Found!");
+                    telemetry.update();
                     tagOfInterest = tag;
                     tagFound = true;
                     break;
                 }
             }
-            if(tagFound)
-            {
-                telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                tagToTelemetry(tagOfInterest);
-            }
-            else
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
-            }
-
         }
-        else
-        {
-            telemetry.addLine("Don't see tag of interest :(");
-
-            if(tagOfInterest == null)
-            {
-                telemetry.addLine("(The tag has never been seen)");
-            }
-            else
-            {
-                telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                tagToTelemetry(tagOfInterest);
-            }
-
-        }
-
-        telemetry.update();
-        sleep(20);
     }
     void initAprilTagDetect(){
         aprilTagDetectionPipeline = new aprilTagDetection(tagsize, fx, fy, cx, cy);
@@ -459,6 +168,25 @@ public class aprilTagTest extends LinearOpMode{
     private void initColorDetection() {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+        blueDetect = new shortBlueObjectDetectTest(telemetry);
+
+        camera.setPipeline(blueDetect);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.showFpsMeterOnViewport(true);
+                camera.startStreaming(320, 240, OpenCvCameraRotation.SENSOR_NATIVE);
+            }
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addLine("Unspecified Error Occurred; Camera Opening");
+            }
+        });
+    }
+    private void initColorDetection2() {
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         blueDetect = new shortBlueObjectDetectTest(telemetry);
 
@@ -475,21 +203,5 @@ public class aprilTagTest extends LinearOpMode{
             }
         });
     }
-    public void outtakeAfterMedium(){
-        ElapsedTime timer1 = new ElapsedTime();
-        while (timer1.seconds() < .6){
-            continue;
-        }
-        robot.Arm.setPosition(armState.high);
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
-    }
-    public Trajectory createPathToBoard(Pose2d endPose){
-        Trajectory createdPath;
-        double averageDistance = distanceSums/totalDistanceRecordings;
-        double finalDistance = averageDistance - boardOffset;
-        createdPath = drive.trajectoryBuilder(endPose).forward(-finalDistance).build();
-        telemetry.addData("final", finalDistance);
-        telemetry.update();
-        return createdPath;
-    }
+
 }

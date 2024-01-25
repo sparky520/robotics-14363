@@ -111,7 +111,7 @@ public class TeleOp extends OpMode
                     armPos = state.IDLE;
                 }
             case IDLE:
-                
+
         }
 
     }

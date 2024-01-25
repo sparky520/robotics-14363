@@ -33,7 +33,7 @@ public class shortBlueTest extends LinearOpMode {
     int cycle = 0;
 
     enum state {
-        tape,stack1,stack2,stack3,IDLE
+        tape,board,stack1,board2,stack2,board3,stack3,IDLE
     }
 
     boolean tagFound = false;
@@ -41,7 +41,6 @@ public class shortBlueTest extends LinearOpMode {
     Robot robot;
     state currentState = state.IDLE;
     ElapsedTime timer = new ElapsedTime();
-    DistanceSensor distanceSensor;
     Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
     SampleMecanumDrive drive;
     OpenCvCamera camera;
@@ -53,7 +52,8 @@ public class shortBlueTest extends LinearOpMode {
     double cy = 221.506;
     double tagsize = 0.166;
     shortBlueObjectDetectTest blueDetect;
-    int location = 5;
+    int location = 2;
+    Pose2d boardPose = new Pose2d(26,43,Math.toRadians(-90));
     AprilTagDetection tagOfInterest = null;
 
     @Override
@@ -61,99 +61,131 @@ public class shortBlueTest extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(start);
         robot = new Robot(hardwareMap, telemetry);
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "distancesensor");
         Trajectory tape = drive.trajectoryBuilder(start)
                 .addDisplacementMarker(() -> {
                     //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
                     //robot.Arm.setPosition(armState.low);
                     robot.Claw.setPosition(armState.intakingCLAW);
                 })
-                .lineToLinearHeading(new Pose2d(26,7, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(33,7, Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     robot.Claw.setTape();
                 }).build();
         TrajectorySequence boardStack1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
-        TrajectorySequence boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end()).lineToConstantHeading(new Vector2d(0,2)).build();
+        TrajectorySequence boardstack1_5 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1.5)).build();
+        TrajectorySequence boardStack2 = drive.trajectorySequenceBuilder(new Pose2d(50,35)).lineToConstantHeading(new Vector2d(0,2)).build();
+        TrajectorySequence boardstack2_5 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,2.5)).build();
         TrajectorySequence boardStack3 = drive.trajectorySequenceBuilder(boardStack2.end()).lineToConstantHeading(new Vector2d(0,3)).build();
 
         initColorDetection();
-
         /* Actually do something useful */
         waitForStart();
         camera.stopStreaming();
         initAprilTagDetect();
 
         if (isStopRequested()) return;
-        currentState = state.tape;
+        currentState = state.board;
         robot.Claw.setPosition(armState.intakingCLAW);
         drive.followTrajectoryAsync(tape);
         timer.reset();
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
-                case tape:
+                case board:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX()-10 - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()- 8 +(100*tagOfInterest.pose.z/6);
+                        boardY = toBoardEnd.getY()- 10 +(100*tagOfInterest.pose.z/6);
                         telemetry.addLine(boardX + "  " + boardY );
                         telemetry.update();
                         boardStack1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .lineToConstantHeading(new Vector2d(boardX,boardY))
-                                .addDisplacementMarker(() -> {
-                                    drive.setPoseEstimate(new Pose2d(26,43,Math.toRadians(-90)));
-                                })
-                                .waitSeconds(.2)
-                                .splineToConstantHeading(new Vector2d(50,12), Math.toRadians(280))
-                                .splineToConstantHeading(new Vector2d(49,-25),Math.toRadians(280))
-                                .waitSeconds(.2)
-                                .lineToConstantHeading(new Vector2d(50,35))
                                 .build();
                         caseTagFound = true;
                     }
                     if (!drive.isBusy() && caseTagFound == true){
-                        location = 6;
+                        location = 3;
                         drive.followTrajectorySequenceAsync(boardStack1);
                         caseTagFound = false;
                         currentState = state.stack1;
+                        tagOfInterest = null;
                     }
                 case stack1:
-                    if (tagOfInterest != null && caseTagFound == false) {
-                        Pose2d toBoardEnd = drive.getPoseEstimate();
-                        telemetry.addLine(boardX + "  " + boardY );
-                        telemetry.update();
-                        boardX = toBoardEnd.getX() - 10 - (100*tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() -8 + boardOffset + (100*tagOfInterest.pose.z / 6);
-                        boardStack2 = drive.trajectorySequenceBuilder(boardStack1.end())
+                    if (!drive.isBusy()){
+                        boardstack1_5 = drive.trajectorySequenceBuilder(boardPose)
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(boardX,boardY))
-                                .addDisplacementMarker(() -> {
-                                    drive.setPoseEstimate(new Pose2d(26,43,Math.toRadians(-90)));
-                                })
                                 .waitSeconds(.2)
                                 .splineToConstantHeading(new Vector2d(50,12), Math.toRadians(280))
                                 .splineToConstantHeading(new Vector2d(49,-25),Math.toRadians(280))
                                 .waitSeconds(.2)
                                 .lineToConstantHeading(new Vector2d(50,35))
                                 .build();
+                        telemetry.addLine(drive.getPoseEstimate().getX() + "  " + drive.getPoseEstimate().getY());
+                        drive.setPoseEstimate(boardPose);
+                        telemetry.addLine(drive.getPoseEstimate().getX() + "  " + drive.getPoseEstimate().getY());
+                        telemetry.update();
+                        drive.followTrajectorySequenceAsync(boardstack1_5);
+                        currentState = state.board2;
                     }
-                    if (!drive.isBusy()){
+                case board2:
+                    if (tagOfInterest != null && caseTagFound == false){
+                        Pose2d last = boardstack1_5.end();
+                        Pose2d realLast = new Pose2d(50,35);
+                        Pose2d toBoardEnd = drive.getPoseEstimate();
+                        boardX = toBoardEnd.getX()-10 - (100*tagOfInterest.pose.x/6/1.41);
+                        boardY = toBoardEnd.getY()- 10 +(100*tagOfInterest.pose.z/6);
+                        telemetry.addLine(boardstack1_5.end().getX() + "  " + boardstack1_5.end().getY());
+                        telemetry.addLine(drive.getPoseEstimate().getX() + "  " + drive.getPoseEstimate().getY());
+                        telemetry.update();
+                        boardStack2 = drive.trajectorySequenceBuilder(realLast)
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                                .lineToConstantHeading(new Vector2d(boardX - (realLast.getX()- last.getX()),boardY + realLast.getY() - last.getY()))
+                                .build();
+                        caseTagFound = true;
+                    }
+                    if (!drive.isBusy() && caseTagFound == true){
+                        location = 3;
                         drive.followTrajectorySequenceAsync(boardStack2);
                         caseTagFound = false;
                         currentState = state.stack2;
+                        tagOfInterest = null;
                     }
                 case stack2:
-                    if (tagOfInterest != null && caseTagFound == false) {
-                        Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX() - 10 -(100*tagOfInterest.pose.x / 6 / 1.41);
-                        boardY = toBoardEnd.getY() -8 + (100*tagOfInterest.pose.z / 6);
-                        boardStack3 = drive.trajectorySequenceBuilder(boardStack2.end())
-                                .lineToConstantHeading(new Vector2d(boardX,boardY-boardOffset)).build();
-                    }
                     if (!drive.isBusy()){
-                        drive.followTrajectorySequenceAsync(boardStack3);
+                        boardstack2_5 = drive.trajectorySequenceBuilder(boardPose)
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                                .waitSeconds(.2)
+                                .splineToConstantHeading(new Vector2d(50,12), Math.toRadians(280))
+                                .splineToConstantHeading(new Vector2d(49,-25),Math.toRadians(280))
+                                .waitSeconds(.2)
+                                .lineToConstantHeading(new Vector2d(50,35))
+                                .build();
+                        telemetry.addLine(drive.getPoseEstimate().getX() + "  " + drive.getPoseEstimate().getY());
+                        drive.setPoseEstimate(boardPose);
+                        telemetry.addLine(drive.getPoseEstimate().getX() + "  " + drive.getPoseEstimate().getY());
+                        telemetry.update();
+                        drive.followTrajectorySequenceAsync(boardstack1_5);
+                        currentState = state.board3;
+                    }
+                case board3:
+                    if (tagOfInterest != null && caseTagFound == false){
+                        Pose2d toBoardEnd = drive.getPoseEstimate();
+                        boardX = toBoardEnd.getX()-10 - (100*tagOfInterest.pose.x/6/1.41);
+                        boardY = toBoardEnd.getY()- 10 +(100*tagOfInterest.pose.z/6);
+                        telemetry.addLine(boardX + " s " + boardY );
+                        telemetry.update();
+                        boardStack1 = drive.trajectorySequenceBuilder(boardstack2_5.end())
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                                .lineToConstantHeading(new Vector2d(boardX,boardY))
+                                .build();
+                        caseTagFound = true;
+                    }
+                    if (!drive.isBusy() && caseTagFound == true){
+                        location = 3;
+                        drive.followTrajectorySequenceAsync(boardStack1);
                         caseTagFound = false;
-                        currentState = state.IDLE;
+                        currentState = state.stack3;
+                        tagOfInterest = null;
                     }
                 case stack3:
                     if (!drive.isBusy()){
@@ -172,6 +204,8 @@ public class shortBlueTest extends LinearOpMode {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
                 if (tag.id == location) {
+                    telemetry.addLine("FOUND");
+                    telemetry.update();
                     tagOfInterest = tag;
                     tagFound = true;
                     break;
@@ -198,32 +232,23 @@ public class shortBlueTest extends LinearOpMode {
             }
         });
     }
-    void initAprilTagDetect() {
+    void initAprilTagDetect(){
         aprilTagDetectionPipeline = new aprilTagDetection(tagsize, fx, fy, cx, cy);
         camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
             @Override
-            public void onOpened() {
-                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode)
+            {
 
             }
         });
         telemetry.setMsTransmissionInterval(50);
-    }
-
-    void tagToTelemetry(AprilTagDetection detection) {
-        Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
-
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x / 6 / 1.41));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z / 6));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
     }
 }
