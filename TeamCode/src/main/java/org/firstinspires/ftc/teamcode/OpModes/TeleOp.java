@@ -2,17 +2,21 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Robot;
+import org.firstinspires.ftc.teamcode.SubSystems.VoltageReader;
 import org.firstinspires.ftc.teamcode.states.armState;
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends OpMode
 {
+    private VoltageReader voltageReader;
+    private double slideOverride = 0;
     private GamepadEx driver, operator;
     private Robot robot;
     TouchSensor touchSensor;
@@ -25,6 +29,7 @@ public class TeleOp extends OpMode
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
+        voltageReader = new VoltageReader(hardwareMap);
     }
     @Override
     public void loop() {
@@ -87,6 +92,7 @@ public class TeleOp extends OpMode
         if (gamepad2.dpad_right){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
         }
+        robot.slide.powerSlides(voltageReader.getVoltage(), slideOverride);
 
 
 
