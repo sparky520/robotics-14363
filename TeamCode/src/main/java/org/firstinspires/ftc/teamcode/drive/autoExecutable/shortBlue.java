@@ -31,7 +31,6 @@ public class shortBlue extends LinearOpMode {
     SampleMecanumDrive drive;
     OpenCvCamera camera;
     double boardX, boardY;
-
     aprilTagDetection aprilTagDetectionPipeline;
     double fx = 578.272;
     double fy = 578.272;
