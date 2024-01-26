@@ -47,6 +47,7 @@ public class shortBlue extends LinearOpMode {
     Pose2d stackPose = new Pose2d(50,-75,Math.toRadians(-90));
     AprilTagDetection tagOfInterest = null;
     state currentState = state.IDLE;
+    double boardXOffset;
 
     enum state{
         IDLE, board1, stack1, checkStack1, board2, checkBoard2,
@@ -81,6 +82,7 @@ public class shortBlue extends LinearOpMode {
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     }).build();
+            boardXOffset = 3;
 
         }else if(testing.equals("MIDDLE")){
             tape = drive.trajectoryBuilder(start)
@@ -93,6 +95,7 @@ public class shortBlue extends LinearOpMode {
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     }).build();
+            boardXOffset = 0;
 
         }else if(testing.equals("RIGHT")){
             tape = drive.trajectoryBuilder(start)
@@ -105,7 +108,7 @@ public class shortBlue extends LinearOpMode {
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     }).build();
-
+            boardXOffset = -3;
         }
 
         currentState = state.board1;
@@ -118,7 +121,7 @@ public class shortBlue extends LinearOpMode {
                 case board1:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX()- 1 - (100*tagOfInterest.pose.x/6/1.41);
+                        boardX = toBoardEnd.getX()- boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
                         boardY = toBoardEnd.getY()- 8 +(100*tagOfInterest.pose.z/6);
                         board1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
