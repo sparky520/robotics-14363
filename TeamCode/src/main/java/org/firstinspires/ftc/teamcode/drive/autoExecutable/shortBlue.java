@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.autoExecutable;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -43,11 +44,11 @@ public class shortBlue extends LinearOpMode {
     shortBlueObjectDetect blueDetection;
     int location = 5;
     Pose2d currentPose;
-    Pose2d boardPose = new Pose2d(26,43,Math.toRadians(-90));
+    Pose2d boardPose;
     Pose2d stackPose = new Pose2d(50,-75,Math.toRadians(-90));
     AprilTagDetection tagOfInterest = null;
     state currentState = state.IDLE;
-
+    int boardYDisplacement;
     enum state{
         IDLE, board1, stack1, checkStack1, board2, checkBoard2,
     }
@@ -81,7 +82,8 @@ public class shortBlue extends LinearOpMode {
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     }).build();
-
+            boardYDisplacement = 13;
+            boardPose = new Pose2d(31,43,Math.toRadians(-90));
         }else if(testing.equals("MIDDLE")){
             tape = drive.trajectoryBuilder(start)
                     .addDisplacementMarker(() -> {
@@ -93,7 +95,8 @@ public class shortBlue extends LinearOpMode {
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     }).build();
-
+            boardYDisplacement = 8;
+            boardPose = new Pose2d(26,43,Math.toRadians(-90));
         }else if(testing.equals("RIGHT")){
             tape = drive.trajectoryBuilder(start)
                     .addDisplacementMarker(() -> {
@@ -105,7 +108,8 @@ public class shortBlue extends LinearOpMode {
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     }).build();
-
+            boardYDisplacement = 2;
+            boardPose = new Pose2d(20,43,Math.toRadians(-90));
         }
 
         currentState = state.board1;
@@ -119,7 +123,7 @@ public class shortBlue extends LinearOpMode {
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX()- 1 - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()- 8 +(100*tagOfInterest.pose.z/6);
+                        boardY = toBoardEnd.getY()- boardYDisplacement +(100*tagOfInterest.pose.z/6);
                         board1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .lineToConstantHeading(new Vector2d(boardX,boardY))
