@@ -26,18 +26,18 @@ public class arm {
                 rightArm.setPosition(1);
                 break;
             case medium:
-                leftArm.setPosition(.93);
-                rightArm.setPosition(.93);
+                leftArm.setPosition(.75);
+                rightArm.setPosition(.75);
                 break;
 
             case high:
                 //for auto
-                leftArm.setPosition(.11);
-                rightArm.setPosition(.11);
+                leftArm.setPosition(0);
+                rightArm.setPosition(0);
                 break;
             case outtaking:
-                leftArm.setPosition(.478);
-                rightArm.setPosition(.478);
+                leftArm.setPosition(-0.1);
+                rightArm.setPosition(-0.1);
                 //leftArm.setPosition(.485);
                 //rightArm.setPosition(.485);
                 break;
