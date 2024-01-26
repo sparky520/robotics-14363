@@ -41,7 +41,7 @@ public class slides {
     public void powerSlides(double voltage, double override){
 
         int rightCurrent = rightSlide.getCurrentPosition();
-        double power = rightPID.getCorrectionPosition(rightCurrent,voltage,state);
+        double power = rightPID.getCorrectionPosition(rightCurrent,voltage);
         if(override != 0){
             setTarget(rightCurrent);
             power = -override;
