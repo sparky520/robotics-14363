@@ -14,10 +14,10 @@ public class wrist {
     public void setPosition(armState state){
         switch (state){
             case intakingCLAW:
-                wrist.setPosition(.5);
+                wrist.setPosition(.66);
                 break;
             case outtaking:
-                wrist.setPosition(.9);
+                wrist.setPosition(.92);
                 break;
         }
     }

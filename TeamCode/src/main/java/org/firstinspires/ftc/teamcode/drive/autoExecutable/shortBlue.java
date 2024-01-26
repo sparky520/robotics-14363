@@ -4,12 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.autoExecutable.*;
+import org.firstinspires.ftc.teamcode.drive.autoTests.shortBlueObjectDetectTest;
+import org.firstinspires.ftc.teamcode.drive.autoTests.shortBlueTest;
+import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.states.*;
@@ -18,10 +23,32 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous(name = "short Blue", group = "Auto")
 public class shortBlue extends LinearOpMode {
-    OpenCvCamera camera;
-    shortBlueObjectDetect blueDetection;
-    String webcamName;
+    boolean tagFound = false;
+    boolean caseTagFound = false;
     Robot robot;
+    ElapsedTime timer = new ElapsedTime();
+    Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
+    SampleMecanumDrive drive;
+    OpenCvCamera camera;
+    double boardX, boardY;
+
+    aprilTagDetection aprilTagDetectionPipeline;
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+    double tagsize = 0.166;
+    shortBlueObjectDetectTest blueDetect;
+    int location = 2;
+    Pose2d currentPose;
+    Pose2d boardPose = new Pose2d(26,43,Math.toRadians(-90));
+    Pose2d stackPose = new Pose2d(50,-75,Math.toRadians(-90));
+    AprilTagDetection tagOfInterest = null;
+    state currentState = state.IDLE;
+
+    enum state{
+        IDLE, board1, stack1, checkStack1, board2, checkBoard2,
+    }
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);

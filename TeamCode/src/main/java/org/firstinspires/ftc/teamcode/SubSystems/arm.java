@@ -14,6 +14,8 @@ public class arm {
     {
         leftArm = hardwareMap.servo.get("leftArm");
         rightArm = hardwareMap.servo.get("rightArm");
+        leftArm.setDirection(Servo.Direction.REVERSE);
+        rightArm.setDirection(Servo.Direction.REVERSE);
         telem = telemetryy;
 
 
@@ -32,8 +34,8 @@ public class arm {
 
             case high:
                 //for auto
-                leftArm.setPosition(0);
-                rightArm.setPosition(0);
+                leftArm.setPosition(-1);
+                rightArm.setPosition(-1);
                 break;
             case outtaking:
                 leftArm.setPosition(-0.1);
