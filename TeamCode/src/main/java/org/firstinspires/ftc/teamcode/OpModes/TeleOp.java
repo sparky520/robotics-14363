@@ -18,7 +18,7 @@ public class TeleOp extends OpMode
     private GamepadEx driver, operator;
     private Robot robot;
     enum state{
-        high,high2,high3,high4, low,low2,low3,low4,IDLE
+        outtake,outtake2,outtake3, low,low2,low3,low4,IDLE
     }
     ElapsedTime timer = new ElapsedTime();
     state armPos = state.IDLE;
@@ -39,25 +39,55 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-
-        if (gamepad1.dpad_down){
-            robot.Arm.setPosition(armState.low);
+        switch (armPos){
+            case outtake:
+                timer.reset();
+                robot.Arm.setPosition(armState.outtaking);
+                armPos = state.outtake2;
+                break;
+            case outtake2:
+                if (timer.seconds() > .3){
+                    robot.wrist.setPosition(armState.outtaking);
+                    armPos = state.IDLE;
+                }
+                break;
+            case low:
+                robot.Arm.setPosition(armState.medium);
+                robot.wrist.setPosition(armState.intakingCLAW);
+                armPos = state.low2;
+                timer.reset();
+                break;
+            case low2:
+                if (timer.seconds() > .4){
+                    robot.Arm.setPosition(armState.low);
+                    armPos = state.IDLE;
+                }
+                break;
+        }
+        if (gamepad1.left_bumper){
+            armPos = state.low;
         }if (gamepad1.dpad_left){
-            robot.Arm.setPosition(armState.medium);
-        }if (gamepad1.dpad_up){
-            robot.Arm.setPosition(armState.high);
-        }if (gamepad1.dpad_right){
-            robot.Arm.setPosition(armState.outtaking);
+            armPos = state.outtake;
         }
 
-
-
-
-        if (gamepad1.square){
-            robot.wrist.setPosition(armState.intakingCLAW);
+        if (gamepad1.left_bumper){
+            robot.Claw.setPosition(armState.outtaking);
         }
-        if (gamepad1.triangle){
-            robot.wrist.setPosition(armState.outtaking);
+        if (gamepad1.right_bumper){
+            robot.Claw.setPosition(armState.intakingCLAW);
+        }
+
+        if (gamepad2.dpad_down){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
+        }
+        if (gamepad2.dpad_left){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LOWIN);
+        }
+        if (gamepad2.dpad_up){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
+        }
+        if (gamepad2.dpad_right){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.HIGHIN);
         }
         telemetry.update();
 
