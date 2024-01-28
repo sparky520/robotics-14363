@@ -13,14 +13,18 @@ public class longBlueObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
-    private String location = "LEFT";
+    private String location = "RIGHT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(160, 30),
-            new Point(220, 70));
+            new Point(160, 10),
+            new Point(220, 140));
+
+    /*static final Rect MIDDLE_ROI = new Rect(
+            new Point(0, 110),
+            new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(0, 0),
-            new Point(60, 40));
+            new Point(0, 10),
+            new Point(60, 140));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.2;
     public longBlueObjectDetect(Telemetry t) { telemetry = t; }

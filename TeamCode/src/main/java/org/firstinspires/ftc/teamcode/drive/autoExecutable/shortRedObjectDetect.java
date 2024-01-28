@@ -13,7 +13,7 @@ public class shortRedObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
-    private String location = "LEFT";
+    private String location = "RIGHT";
 
     static final Rect MIDDLE_ROI = new Rect(
             new Point(255, 30),
@@ -23,17 +23,17 @@ public class shortRedObjectDetect extends OpenCvPipeline {
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(90, 40),
-            new Point(150, 80));
-    static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
-    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.25;
+            new Point(50, 40),
+            new Point(110, 80));
+    static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.05;
+    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.05;
     public shortRedObjectDetect(Telemetry t) { telemetry = t; }
 
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(165, 78, 78);
-        Scalar highHSV = new Scalar(180, 255, 255);
+        Scalar lowHSV = new Scalar(0, 128, 100);
+        Scalar highHSV = new Scalar(20, 255, 255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);
@@ -56,13 +56,13 @@ public class shortRedObjectDetect extends OpenCvPipeline {
         boolean TSEMiddle = middleValue > MIDDLE_PERCENT_COLOR_THRESHOLD;
 
         if(TSEMiddle){
-            location = "MIDDLE";
-            telemetry.addData("TSE Location", "MIDDLE");
+            location = "LEFT";
+            telemetry.addData("TSE Location", "LEFT");
             // TSE = team scoring element
         }
         else if (TSERight){
-            location = "RIGHT";
-            telemetry.addData("TSE Location", "RIGHT");
+            location = "MIDDLE";
+            telemetry.addData("TSE Location", "MIDDLE");
         }
         telemetry.update();
 

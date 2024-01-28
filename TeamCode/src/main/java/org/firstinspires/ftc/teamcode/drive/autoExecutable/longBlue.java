@@ -40,7 +40,7 @@ public class longBlue extends LinearOpMode {
     double cx = 402.145;
     double cy = 221.506;
     double tagsize = 0.166;
-    shortBlueObjectDetect blueDetection;
+    longBlueObjectDetect blueDetection;
     int location = 5;
     Pose2d currentPose;
     Pose2d boardPose = new Pose2d(26,43,Math.toRadians(-90));
@@ -50,7 +50,7 @@ public class longBlue extends LinearOpMode {
     double boardXOffset;
 
     enum state{
-        IDLE, toBoardLeft, toBoardRight, toBoardCenter, board1, stack1, checkStack1, board2, checkBoard2,
+        IDLE, board1, stack1, checkStack1, board2, checkBoard2,
     }
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
@@ -58,8 +58,6 @@ public class longBlue extends LinearOpMode {
         drive.setPoseEstimate(start);
 
         Trajectory tape = drive.trajectoryBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
-        TrajectorySequence toBoardRight = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,0.)).build();
-        TrajectorySequence toBoardLeft = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,0.5)).build();
         TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
         TrajectorySequence stack1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1.5)).build();
         TrajectorySequence checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(0,1.6)).lineToConstantHeading(new Vector2d(0,2)).build();
@@ -80,15 +78,13 @@ public class longBlue extends LinearOpMode {
                         //robot.Arm.setPosition(armState.low);
                         //robot.Claw.setPosition(armState.intakingCLAW);
                     })
-                    .lineToLinearHeading(new Pose2d(33,12, Math.toRadians(-90)))
+                    .lineToLinearHeading(new Pose2d(33,-5, Math.toRadians(-90)))
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
-
-                    }
-                    )
-                    .lineToLinearHeading(new Pose2d(45,9,Math.toRadians(-180)))
-                    .lineToConstantHeading(new Vector2d(45,60))
-                    .build();
+                    })
+                    .lineToConstantHeading(new Vector2d(33,5))
+                    .lineToConstantHeading(new Vector2d(49,5))
+                    .lineToConstantHeading(new Vector2d(49,35)).build();
             boardXOffset = 3;
 
         }else if(testing.equals("MIDDLE")){
@@ -98,12 +94,13 @@ public class longBlue extends LinearOpMode {
                         //robot.Arm.setPosition(armState.low);
                         //robot.Claw.setPosition(armState.intakingCLAW);
                     })
-                    .lineToLinearHeading(new Pose2d(35,5, Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(43,6))
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(43,9,Math.toRadians(-180)))
-                    .lineToConstantHeading(new Vector2d(43,60))
+                    .lineToConstantHeading(new Vector2d(49,6))
+                    .lineToLinearHeading(new Pose2d(49,15,Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(49,35))
                     .build();
             boardXOffset = 0;
 
@@ -114,13 +111,13 @@ public class longBlue extends LinearOpMode {
                         //robot.Arm.setPosition(armState.low);
                         //robot.Claw.setPosition(armState.intakingCLAW);
                     })
-                    .lineToConstantHeading(new Vector2d(32,-6))
+                    .lineToLinearHeading(new Pose2d(35,-3, Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(49,-3))
+                    .lineToLinearHeading(new Pose2d(49,15,Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(49,35))
                     .addDisplacementMarker(() -> {
                         robot.Claw.setTape();
-                    })
-                    .lineToLinearHeading(new Pose2d(44,-8,Math.toRadians(-180)))
-                    .lineToConstantHeading(new Vector2d(44,60))
-                    .build();
+                    }).build();
             boardXOffset = -3;
         }
 
@@ -131,13 +128,12 @@ public class longBlue extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
-
                 case board1:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX()- boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
                         boardY = toBoardEnd.getY()- 8 +(100*tagOfInterest.pose.z/6);
-                        board1 = drive.trajectorySequenceBuilder(toBoardLeft.end())
+                        board1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .lineToConstantHeading(new Vector2d(boardX,boardY))
                                 .build();
@@ -247,7 +243,7 @@ public class longBlue extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        blueDetection = new shortBlueObjectDetect(telemetry);
+        blueDetection = new longBlueObjectDetect(telemetry);
 
         camera.setPipeline(blueDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {

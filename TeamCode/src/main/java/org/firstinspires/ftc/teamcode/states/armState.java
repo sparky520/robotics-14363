@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.states;
 
 public enum armState {
+    open,close,
     airplaneInit,
     airplaneLaunch,
     outtaking2,

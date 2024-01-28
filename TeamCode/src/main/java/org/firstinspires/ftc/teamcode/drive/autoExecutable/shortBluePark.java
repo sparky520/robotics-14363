@@ -23,8 +23,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "short Blue", group = "Auto")
-public class shortBlue extends LinearOpMode {
+@Autonomous(name = "short Blue Park", group = "Auto")
+public class shortBluePark extends LinearOpMode {
 
     boolean tagFound = false;
     boolean caseTagFound = false;
@@ -41,7 +41,7 @@ public class shortBlue extends LinearOpMode {
     double cy = 221.506;
     double tagsize = 0.166;
     shortBlueObjectDetect blueDetection;
-    int location = 5;
+    int location = 2;
     Pose2d currentPose;
     Pose2d boardPose;
     Pose2d stackPose = new Pose2d(50,-75,Math.toRadians(-90));
@@ -52,7 +52,7 @@ public class shortBlue extends LinearOpMode {
     boolean pixelDropped = false;
 
     enum state{
-        IDLE, board1, stack1, checkStack1, board2, checkBoard2,
+        IDLE, board1, stack1, park, checkStack1, board2, checkBoard2,
     }
     boolean armRaised = false;
     public void runOpMode() {
@@ -62,6 +62,7 @@ public class shortBlue extends LinearOpMode {
 
         Trajectory tape = drive.trajectoryBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
         TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
+        TrajectorySequence park = drive.trajectorySequenceBuilder(board1.end()).lineToConstantHeading(new Vector2d(0,1.2)).build();
         TrajectorySequence stack1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1.5)).build();
         TrajectorySequence checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(0,1.6)).lineToConstantHeading(new Vector2d(0,2)).build();
         TrajectorySequence board2 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,2.5)).build();
@@ -84,15 +85,15 @@ public class shortBlue extends LinearOpMode {
 
         }else if(blueDetection.getLocation().equals("MIDDLE")){
             tape = drive.trajectoryBuilder(start)
-                    .lineToLinearHeading(new Pose2d(36.5,5, Math.toRadians(-90))).build();
-            boardXOffset = 4;
+                    .lineToLinearHeading(new Pose2d(35,5, Math.toRadians(-90))).build();
+            boardXOffset = 1;
             boardYOffset = -1;
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
 
         }else if(blueDetection.getLocation().equals("RIGHT")){
             tape = drive.trajectoryBuilder(start)
                     .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90))).build();
-            boardXOffset = -3;
+            boardXOffset = -6;
             boardYOffset = -1;
             boardPose = new Pose2d(29,43,Math.toRadians(-90));
         }
@@ -126,88 +127,31 @@ public class shortBlue extends LinearOpMode {
                     }
                     if (armRaised && timer.seconds() > 1){
                         caseTagFound = false;
-                        currentState = state.stack1;
+                        currentState = state.park;
                         tagOfInterest = null;
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
                     }
-                    break;
-                case stack1:
+                case park:
                     if (!drive.isBusy()){
                         robot.Claw.dropBoard();
-                        pixelDropped = true;
-                    }
-                    if (!drive.isBusy() && pixelDropped){
-                        pixelDropped = false;
-                        stack1 = drive.trajectorySequenceBuilder(boardPose)
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .waitSeconds(.2)
-                                .splineToConstantHeading(new Vector2d(53,22), Math.toRadians(280))
-                                .splineToConstantHeading(new Vector2d(53,-13),Math.toRadians(280))
+                        park = drive.trajectorySequenceBuilder(currentPose)
+                                .waitSeconds(1)
+                                .forward(5)
+                                .addDisplacementMarker(() -> {
+                                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+                                    robot.Arm.setPosition(armState.medium);
+                                })
+                                .turn(Math.toRadians(90))
+                                .back(-30)
+                                .addDisplacementMarker(() -> {
+                                    robot.Claw.setPosition(armState.close);
+                                })
                                 .build();
-                        drive.setPoseEstimate(boardPose);
-                        drive.followTrajectorySequenceAsync(stack1);
-                        camera.closeCameraDevice();
-                        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-                        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
-                        initAprilTagDetect();
-                        location = 10;
-                        currentState = state.checkStack1;
+                        drive.followTrajectorySequenceAsync(park);
+                        currentState = state.IDLE;
+                    }
 
-                        timer.reset();
-                    }
-                    break;
-                case checkStack1:
-                    if (tagOfInterest != null && caseTagFound == false && timer.seconds() > 3){
-                        Pose2d toBoardEnd = currentPose;
-                        boardX = toBoardEnd.getX() - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY() - 7 - (100*tagOfInterest.pose.z/6);
-                        checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(49,-25,Math.toRadians(-90)))
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(boardX,boardY))
-                                .build();
-                        caseTagFound = true;
-                    }
-                    if (!drive.isBusy() && caseTagFound == true){
-                        drive.followTrajectorySequenceAsync(checkStack1);
-                        caseTagFound = false;
-                        currentState = state.board2;
-                        tagOfInterest = null;
-                    }
-                    break;
-                case board2:
-                    if (!drive.isBusy()){
-                        drive.setPoseEstimate(new Pose2d(50,-75,Math.toRadians(-90)));
 
-                        board2 = drive.trajectorySequenceBuilder(stackPose)
-                                .lineToConstantHeading(new Vector2d(50,-20)).build();
-                        drive.followTrajectorySequenceAsync(board2);
-                        camera.closeCameraDevice();
-                        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-                        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-                        initAprilTagDetect();
-                        location = 3;
-                        currentState = state.checkBoard2;
-                    }
-                    break;
-                case checkBoard2:
-                    if (tagOfInterest != null && caseTagFound == false){
-                        Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX()-10 - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()- 8 +(100*tagOfInterest.pose.z/6);
-                        checkBoard2 = drive.trajectorySequenceBuilder(tape.end())
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(boardX,boardY))
-                                .build();
-                        caseTagFound = true;
-                    }
-                    if (!drive.isBusy() && caseTagFound == true){
-                        location = 3;
-                        drive.followTrajectorySequenceAsync(checkBoard2);
-                        caseTagFound = false;
-                        currentState = state.stack1;
-                        tagOfInterest = null;
-                    }
-                    break;
             }
 
             currentPose = drive.getPoseEstimate();
@@ -221,6 +165,8 @@ public class shortBlue extends LinearOpMode {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
                 if (tag.id == location) {
+                    telemetry.addLine("bobreg");
+                    telemetry.update();
                     tagOfInterest = tag;
                     tagFound = true;
                     break;
