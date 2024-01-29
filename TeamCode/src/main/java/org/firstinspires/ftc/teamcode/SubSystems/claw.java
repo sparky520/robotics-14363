@@ -19,11 +19,11 @@ public class claw {
 
     public void setPosition(armState state){
         switch (state){
-            case intakingCLAW:
+            case open:
                 leftClaw.setPosition(.82);
                 rightClaw.setPosition(.82);
                 break;
-            case outtaking:
+            case close:
                 leftClaw.setPosition(.91);
                 //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
                 rightClaw.setPosition(.91);
@@ -33,13 +33,14 @@ public class claw {
 
     //auto
     public void setTape(){
-        leftClaw.setPosition(.91);
+        rightClaw.setPosition(.75);
     }
-    public void afterTape(){leftClaw.setPosition(.7);}
-    public void openCenter(){leftClaw.setPosition(1);}
+    public void afterTape(){
+        rightClaw.setPosition(.91);
+    }
     //auto
     public void dropBoard(){
-        rightClaw.setPosition(.91);
+        leftClaw.setPosition(.91);
     }
     public void stack(){leftClaw.setPosition(1);}
 

@@ -22,30 +22,32 @@ public class arm {
     }
 
     public void setPosition(armState state){
+        double rightOffSet = 0;
+        double leftOffSet = 0.01;
         switch(state) {
             case low:
-                leftArm.setPosition(1);
-                rightArm.setPosition(1);
+                leftArm.setPosition(.91 - leftOffSet);
+                rightArm.setPosition(.91 - rightOffSet);
                 break;
             case medium:
-                leftArm.setPosition(.75);
-                rightArm.setPosition(.75);
+                leftArm.setPosition(.75- leftOffSet);
+                rightArm.setPosition(.75 - rightOffSet);
                 break;
 
             case high:
                 //for auto
-                leftArm.setPosition(-1);
-                rightArm.setPosition(-1);
+                leftArm.setPosition(-1- leftOffSet);
+                rightArm.setPosition(-1 - rightOffSet);
                 break;
             case outtaking:
-                leftArm.setPosition(0);
-                rightArm.setPosition(0);
+                leftArm.setPosition(-.15- leftOffSet);
+                rightArm.setPosition(-.15- rightOffSet);
                 //leftArm.setPosition(.485);
                 //rightArm.setPosition(.485);
                 break;
             case outtaking2:
-                leftArm.setPosition(.49);
-                rightArm.setPosition(.49);
+                leftArm.setPosition(.49 - leftOffSet);
+                rightArm.setPosition(.49 - rightOffSet);
         }
     }
 

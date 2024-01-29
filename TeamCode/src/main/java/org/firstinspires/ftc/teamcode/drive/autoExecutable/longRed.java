@@ -105,7 +105,6 @@ public class longRed extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
                     robot.Arm.longAuto();
-                    robot.Claw.openCenter();
                 })
                 .lineToLinearHeading(new Pose2d(16,-70, Math.toRadians(90)))
                 //.lineToConstantHeading(new Vector2d(17,-78.3))
@@ -137,7 +136,6 @@ public class longRed extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.HIGHIN);
                     robot.Arm.setPosition(armState.high);
-                    robot.Claw.openCenter();
                 })
                 .lineToLinearHeading(new Pose2d(16,-70, Math.toRadians(90)))
                 //.lineToConstantHeading(new Vector2d(17,-78.3))

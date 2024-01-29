@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.autoExecutable.*;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -41,7 +39,7 @@ public class aprilTagTest extends LinearOpMode {
     double cy = 221.506;
     double tagsize = 0.166;
     shortBlueObjectDetect blueDetection;
-    int location = 1;
+    int location = 9;
     Pose2d currentPose;
     Pose2d boardPose;
     Pose2d stackPose = new Pose2d(50,-75,Math.toRadians(-90));
@@ -78,6 +76,8 @@ public class aprilTagTest extends LinearOpMode {
             currentPose = drive.getPoseEstimate();
             drive.update();
             detectTags();
+
+            telemetry.update();
         }
     }
     void detectTags() {
@@ -86,19 +86,21 @@ public class aprilTagTest extends LinearOpMode {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
                 if (tag.id == location) {
-                    telemetry.addLine("rgne");
-                    telemetry.update();
+                    telemetry.addLine("found");
                     tagOfInterest = tag;
                     tagFound = true;
                     break;
                 }
             }
         }
+        else{
+            telemetry.addLine("out of sight");
+        }
     }
     private void initColorDetection() {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
         blueDetection = new shortBlueObjectDetect(telemetry);
 
         camera.setPipeline(blueDetection);
@@ -137,6 +139,5 @@ public class aprilTagTest extends LinearOpMode {
         ElapsedTime timer1 = new ElapsedTime();
         robot.Arm.setPosition(armState.outtaking);
         robot.wrist.setPosition(armState.outtaking);
-        robot.Claw.afterTape();
     }
 }

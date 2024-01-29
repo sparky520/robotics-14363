@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.autoExecutable.*;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -62,6 +61,7 @@ public class shortBlue extends LinearOpMode {
 
         Trajectory tape = drive.trajectoryBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
         TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
+        TrajectorySequence park = drive.trajectorySequenceBuilder(board1.end()).lineToConstantHeading(new Vector2d(0,1.2)).build();
         TrajectorySequence stack1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1.5)).build();
         TrajectorySequence checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(0,1.6)).lineToConstantHeading(new Vector2d(0,2)).build();
         TrajectorySequence board2 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,2.5)).build();
@@ -84,28 +84,27 @@ public class shortBlue extends LinearOpMode {
 
         }else if(blueDetection.getLocation().equals("MIDDLE")){
             tape = drive.trajectoryBuilder(start)
-                    .lineToLinearHeading(new Pose2d(36.5,5, Math.toRadians(-90))).build();
-            boardXOffset = 4;
+                    .lineToLinearHeading(new Pose2d(35,5, Math.toRadians(-90))).build();
+            boardXOffset = 1;
             boardYOffset = -1;
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
 
         }else if(blueDetection.getLocation().equals("RIGHT")){
             tape = drive.trajectoryBuilder(start)
                     .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90))).build();
-            boardXOffset = -3;
+            boardXOffset = -6;
             boardYOffset = -1;
             boardPose = new Pose2d(29,43,Math.toRadians(-90));
         }
 
         currentState = state.board1;
-        robot.Claw.setPosition(armState.close);
-        robot.wrist.setPosition(armState.intakingCLAW);
         drive.followTrajectoryAsync(tape);
         timer.reset();
 
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case board1:
+                    if (timer.seconds() > .8)robot.Claw.setTape();
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX()- boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
@@ -116,8 +115,8 @@ public class shortBlue extends LinearOpMode {
                                 .build();
                         caseTagFound = true;
                     }
+                    if(!drive.isBusy());
                     if (!drive.isBusy() && caseTagFound == true){
-                        robot.Claw.setTape();
                         outtake();
                         timer.reset();
                         armRaised = true;
@@ -130,7 +129,6 @@ public class shortBlue extends LinearOpMode {
                         tagOfInterest = null;
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
                     }
-                    break;
                 case stack1:
                     if (!drive.isBusy()){
                         robot.Claw.dropBoard();
