@@ -46,7 +46,7 @@ public class aprilTagTest extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     state currentState = state.IDLE;
     double boardXOffset;
-    double boardYOffset = 0;
+    double boardYOffset = 9;
     boolean pixelDropped = false;
 
     enum state{
@@ -86,8 +86,9 @@ public class aprilTagTest extends LinearOpMode {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
                 if (tag.id == location) {
-                    telemetry.addLine("found");
                     tagOfInterest = tag;
+                    telemetry.addData("X", 100*tagOfInterest.pose.x/6/1.41);
+                    telemetry.addData("Z", 100*tagOfInterest.pose.z/6);
                     tagFound = true;
                     break;
                 }

@@ -17,9 +17,9 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 
 import java.util.ArrayList;
-
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends OpMode
 {
@@ -61,61 +61,33 @@ public class TeleOp extends OpMode
 
         robot.drivetrain.fieldCentric(driver);
 
-        switch (armPos){
-            case outtake:
-                timer.reset();
-                robot.Arm.setPosition(armState.outtaking);
-                armPos = state.outtake2;
-                break;
-            case outtake2:
-                if (timer.seconds() > .3){
-                    //robot.wrist.setPosition(armState.outtaking);
-                    armPos = state.IDLE;
-                }
-                break;
-            case low:
-                robot.Arm.setPosition(armState.medium);
-                //robot.wrist.setPosition(armState.intakingCLAW);
-                armPos = state.low2;
-                timer.reset();
-                break;
-            case low2:
-                if (timer.seconds() > .4){
-                    robot.Arm.setPosition(armState.low);
-                    armPos = state.IDLE;
-                }
-                break;
-        }
-        if (gamepad2.square){
-            armPos = state.low;
+
+        if (gamepad2.circle){
+            robot.Arm.setPosition(armState.outtaking);
+            robot.wrist.setPosition(armState.outtaking);
         }
         if (gamepad2.triangle){
-         robot.Arm.setPosition(armState.medium);
+            robot.Arm.setPosition(armState.medium);
+            robot.wrist.setPosition(armState.intakingCLAW);
         }
-        if (gamepad2.circle){
-            armPos = state.outtake;
+        if (gamepad2.square){
+            robot.Arm.setPosition(armState.low);
+            robot.wrist.setPosition(armState.intakingCLAW);
         }
-
-        if (gamepad1.left_bumper){
-            robot.Claw.setPosition(armState.outtaking);
-        }
-        if (gamepad1.right_bumper){
-            robot.Claw.setPosition(armState.intakingCLAW);
-        }
-
-        if (gamepad2.dpad_down){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
-        }
-        if (gamepad2.dpad_left){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LOWIN);
+        if (gamepad2.left_bumper){
+            robot.Claw.setPosition(armState.open);
         }
         if (gamepad2.dpad_up){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
-        }
-        if (gamepad2.dpad_right){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.HIGHIN);
-        }
 
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+        }
+        if (gamepad2.dpad_left){
+            robot.Arm.topStack();
+            robot.wrist.stack();
+        }
+        if (gamepad2.right_bumper){
+            robot.Claw.setPosition(armState.close);
+        }
         if (gamepad1.triangle){
             camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
             {

@@ -41,7 +41,6 @@ public class longRed extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(16,-64,Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
-                    robot.Arm.longAuto();
                 })
                 .lineToConstantHeading(new Vector2d(16,-64.01))
                 .lineToConstantHeading(new Vector2d(26.5,-81))
@@ -73,7 +72,6 @@ public class longRed extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(41,-65))
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
-                    robot.Arm.longAuto();
                     robot.Claw.afterTape();
                 })
                 .lineToConstantHeading(new Vector2d(16,-65))
@@ -104,7 +102,6 @@ public class longRed extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(48, -70))
                 .addDisplacementMarker(() -> {
                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.AUTO_HIGH);
-                    robot.Arm.longAuto();
                 })
                 .lineToLinearHeading(new Pose2d(16,-70, Math.toRadians(90)))
                 //.lineToConstantHeading(new Vector2d(17,-78.3))

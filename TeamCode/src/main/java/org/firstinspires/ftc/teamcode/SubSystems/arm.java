@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.states.armState;
+
 
 public class arm {
     private Servo leftArm, rightArm;
@@ -26,38 +28,43 @@ public class arm {
         double leftOffSet = 0.01;
         switch(state) {
             case low:
-                leftArm.setPosition(.91 - leftOffSet);
-                rightArm.setPosition(.91 - rightOffSet);
+                intake();
                 break;
             case medium:
-                leftArm.setPosition(.75- leftOffSet);
-                rightArm.setPosition(.75 - rightOffSet);
-                break;
-
-            case high:
-                //for auto
-                leftArm.setPosition(-1- leftOffSet);
-                rightArm.setPosition(-1 - rightOffSet);
+                medium();
                 break;
             case outtaking:
-                leftArm.setPosition(-.15- leftOffSet);
-                rightArm.setPosition(-.15- rightOffSet);
-                //leftArm.setPosition(.485);
-                //rightArm.setPosition(.485);
+                outtake();
                 break;
-            case outtaking2:
-                leftArm.setPosition(.49 - leftOffSet);
-                rightArm.setPosition(.49 - rightOffSet);
         }
     }
 
-    public void longAuto(){
-        leftArm.setPosition(.2);
-        rightArm.setPosition(.2);
+
+    public void outtake(){
+        double ofset = .011;
+
+        leftArm.setPosition(.25 + ofset);
+        rightArm.setPosition(.25);
+    }
+    public void intake(){
+        double ofset;
+        ofset = .011;
+        leftArm.setPosition(.955 + ofset);
+        rightArm.setPosition(.955);
+    }
+    public void medium(){
+        double ofset;
+        ofset = .014;
+
+        leftArm.setPosition(.845 + ofset);
+        rightArm.setPosition(.845);
     }
     public void topStack(){
-        leftArm.setPosition(.9);
-        rightArm.setPosition(.9);
+        double ofset;
+        ofset = .014;
+
+        leftArm.setPosition(.93 + ofset);
+        rightArm.setPosition(.93);
     }
 
 }
