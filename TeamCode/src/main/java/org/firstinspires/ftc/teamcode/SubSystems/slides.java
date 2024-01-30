@@ -94,8 +94,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case TOPSTACK:
-                        leftSlide.setTargetPosition(50);
-                        rightSlide.setTargetPosition(-50);
+                        leftSlide.setTargetPosition(30);
+                        rightSlide.setTargetPosition(-30);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

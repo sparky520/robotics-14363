@@ -25,7 +25,7 @@ public class claw {
                 rightClaw.setPosition(.82);
                 break;
             case close:
-                leftClaw.setPosition(.92);
+                leftClaw.setPosition(.935);
                 //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
                 rightClaw.setPosition(.92);
                 break;
@@ -34,15 +34,23 @@ public class claw {
 
     //auto
     public void setTape(){
-        rightClaw.setPosition(.82);
+        rightClaw.setPosition(.8);
     }
     public void afterTape(){
-        rightClaw.setPosition(.92);
+        rightClaw.setPosition(1);
     }
     //auto
     public void dropBoard(){
         leftClaw.setPosition(.82);
     }
-    public void stack(){leftClaw.setPosition(1);}
+    public void maxClose(){
+        leftClaw.setPosition(.98);
+        rightClaw.setPosition(.98);
+    }
+    public void stack()
+    {
+        leftClaw.setPosition(.7);
+        rightClaw.setPosition(.7);
+    }
 
 }

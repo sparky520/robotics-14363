@@ -63,8 +63,8 @@ public class arm {
         double ofset;
         ofset = .014;
 
-        leftArm.setPosition(.93 + ofset);
-        rightArm.setPosition(.93);
+        leftArm.setPosition(.94 + ofset);
+        rightArm.setPosition(.94);
     }
 
 }

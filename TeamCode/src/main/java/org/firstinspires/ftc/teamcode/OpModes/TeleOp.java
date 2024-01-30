@@ -27,6 +27,7 @@ public class TeleOp extends OpMode
     boolean tagFound;
     int location = 9;
     AprilTagDetection tagOfInterest = null;
+    DistanceSensor distanceSensor;
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
@@ -46,6 +47,7 @@ public class TeleOp extends OpMode
     public void init()
     {
 
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
         telemetry.setMsTransmissionInterval(50);
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
@@ -60,7 +62,7 @@ public class TeleOp extends OpMode
         operator.readButtons();
 
         robot.drivetrain.fieldCentric(driver);
-
+        telemetry.addLine(distanceSensor.getDistance(DistanceUnit.INCH )+ "");
 
         if (gamepad2.circle){
             robot.Arm.setPosition(armState.outtaking);
@@ -83,8 +85,11 @@ public class TeleOp extends OpMode
         }
         if (gamepad2.dpad_left){
             robot.Arm.topStack();
-            robot.wrist.stack();
+            robot.wrist.setPosition(armState.intakingCLAW);
+            robot.Claw.stack();
         }
+        if (gamepad2.dpad_right)robot.wrist.setPosition(armState.intakingCLAW);
+        if (gamepad2.dpad_down)robot.wrist.setPosition(armState.outtaking);
         if (gamepad2.right_bumper){
             robot.Claw.setPosition(armState.close);
         }
