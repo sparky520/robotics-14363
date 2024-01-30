@@ -6,11 +6,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.states.armState;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-public class claw {
+public class finger {
     private Servo leftClaw, rightClaw;
     Telemetry tel;
-    public claw (HardwareMap hardwareMap, Telemetry telemetry)
+    public finger(HardwareMap hardwareMap, Telemetry telemetry)
     {
         tel = telemetry;
         leftClaw = hardwareMap.servo.get("leftClaw");

@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.states.*;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class Robot {
     public Mecanum drivetrain;
     public slides slide;
-    public claw Claw;
+    public finger Claw;
     public airplane Airplane;
     public wrist wrist;
     public arm Arm;
@@ -16,7 +16,7 @@ public class Robot {
         drivetrain = new Mecanum(hardwareMap);
         Arm = new arm(hardwareMap, telemtry);
         slide = new slides(hardwareMap);
-        Claw = new claw(hardwareMap, telemtry);
+        Claw = new finger(hardwareMap, telemtry);
         Airplane = new airplane(hardwareMap);
         wrist = new wrist(hardwareMap);
     }
