@@ -11,7 +11,7 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-
+import java.util.ArrayList;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -60,6 +60,9 @@ public class shortBluePark extends LinearOpMode {
     AprilTagDetection lastTOI = null;
     boolean armRaised = false;
     double distance;
+    boolean strafeChecking = false;
+    double initialDistance;
+    ArrayList<Double> distances = new ArrayList<>();
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -80,8 +83,7 @@ public class shortBluePark extends LinearOpMode {
         initAprilTagDetect();
 
         if (isStopRequested()) return;
-        telemetry.addLine(blueDetection.getLocation() + "");
-        telemetry.update();
+
         if (blueDetection.getLocation().equals("LEFT")){
             tape = drive.trajectoryBuilder(start)
                     .addTemporalMarker(1,() -> {
@@ -180,11 +182,11 @@ public class shortBluePark extends LinearOpMode {
                                 })
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .waitSeconds(.2)
-                                .splineToConstantHeading(new Vector2d(55,22), Math.toRadians(280))
+                                .splineToConstantHeading(new Vector2d(50,22), Math.toRadians(280))
                                 .addDisplacementMarker(() -> {
                                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
                                 })
-                                .splineToConstantHeading(new Vector2d(55,0),Math.toRadians(280))
+                                .splineToConstantHeading(new Vector2d(50,-5),Math.toRadians(280))
                                 .build();
                         drive.followTrajectorySequenceAsync(stack1);
                         currentState = state.checkStack1;
@@ -193,18 +195,27 @@ public class shortBluePark extends LinearOpMode {
                     break;
                 case checkStack1:
                     if (!drive.isBusy()){
-                        stack1Y = currentPose.getY() - distance + 5;
-                        checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(59,0,Math.toRadians(-90)))
+                        /*stack1Y = currentPose.getY() - distance + 5;
+                        checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(50,0,Math.toRadians(-90)))
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(9, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .addDisplacementMarker(()->{
                                     robot.Claw.stack();
                                 })
-                                .lineToLinearHeading(new Pose2d(58,stack1Y,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(48,stack1Y,Math.toRadians(-90)))
                                 .build();
                         drive.followTrajectorySequenceAsync(checkStack1);
                         caseTagFound = false;
                         currentState = state.board2;
-                        tagOfInterest = null;
+                        tagOfInterest = null;*/
+                        Trajectory lignUp = drive.trajectoryBuilder(new Pose2d(50,-5,Math.toRadians(-90)))
+                                .lineToConstantHeading(new Vector2d(50,-5 - (distance-11)))
+                                .addDisplacementMarker(()-> {
+                                    strafeChecking = true;
+                                })
+                                .lineToConstantHeading(new Vector2d(42,-5 - (distance-11)))
+                                .build();
+
+
                     }
                     break;
                 case board2:
@@ -244,7 +255,19 @@ public class shortBluePark extends LinearOpMode {
 
             currentPose = drive.getPoseEstimate();
             distance = distanceSensor.getDistance(DistanceUnit.INCH);
-            telemetry.addLine(distance + "");
+
+            if (strafeChecking){
+                distances.add(distance);
+                if (distance + 1.5 > initialDistance){
+                    telemetry.addLine("Pixel found? " + drive.getPoseEstimate().getX());
+                }
+                else if (distance - 1.5 > initialDistance){
+                    telemetry.addLine("Pixel passed by? ");
+                }
+                else{
+                    telemetry.addLine("starin at wall");
+                }
+            }
             telemetry.update();
             drive.update();
             detectTags();

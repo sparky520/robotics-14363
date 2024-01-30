@@ -49,8 +49,8 @@ public class claw {
     }
     public void stack()
     {
-        leftClaw.setPosition(.7);
-        rightClaw.setPosition(.7);
+        leftClaw.setPosition(1);
+        rightClaw.setPosition(.65);
     }
 
 }
