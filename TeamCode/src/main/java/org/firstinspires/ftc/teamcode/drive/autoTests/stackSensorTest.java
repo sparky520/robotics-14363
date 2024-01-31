@@ -35,6 +35,8 @@ public class stackSensorTest extends LinearOpMode {
     ArrayList<Double> distances = new ArrayList<>();
     Pose2d currentPose = new Pose2d(50,0,Math.toRadians(-90));
     Pose2d stackFound = null;
+    double dOffset;
+    boolean initOffset = false;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -48,11 +50,10 @@ public class stackSensorTest extends LinearOpMode {
         TrajectorySequence lignUp = drive.trajectorySequenceBuilder(new Pose2d(50,0,Math.toRadians(-90)))
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(12, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
 
-                .lineToConstantHeading(new Vector2d(50,y))
                 .addDisplacementMarker(()-> {
                     strafeChecking = true;
                 })
-                .lineToConstantHeading(new Vector2d(35,y))
+                .lineToConstantHeading(new Vector2d(35,0))
                 .build();
         drive.followTrajectorySequenceAsync(lignUp);
         waitForStart();
@@ -61,15 +62,19 @@ public class stackSensorTest extends LinearOpMode {
             distance = distanceSensor.getDistance(DistanceUnit.INCH);
             distance2 = distanceSensor.getDistance(DistanceUnit.INCH);
             if (strafeChecking){
-                if (initialDistance < 1)initialDistance = distance - 1;
-                distances.add(distance);
-                if (distance + .25 < initialDistance){
+                if (distance2 - distance  > 3){
                     telemetry.addLine("Pixel found? " + distance + "  " + initialDistance);
+                    telemetry.addLine(distance2 - distance + "");
+                    telemetry.addLine(distance+ "");
+                    telemetry.addLine(distance2+ "");
                     stackFound = drive.getPoseEstimate();
                     strafeChecking = false;
                 }
                 else{
                     telemetry.addLine("starin at wall  "+ distance+ "  " + initialDistance);
+                    telemetry.addLine(distance2 - distance  + "");
+                    telemetry.addLine(distance+ "");
+                    telemetry.addLine(distance2+ "");
                 }
             }
             if (stackFound != null){
