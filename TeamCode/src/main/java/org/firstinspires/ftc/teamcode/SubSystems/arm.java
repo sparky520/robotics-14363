@@ -62,9 +62,9 @@ public class arm {
     public void topStack(){
         double ofset;
         ofset = .014;
-
-        leftArm.setPosition(.94 + ofset);
-        rightArm.setPosition(.94);
+        double test = DriveConstants.MAX_ANG_VEL;
+        leftArm.setPosition(.92 + ofset);
+        rightArm.setPosition(.92);
     }
 
 }

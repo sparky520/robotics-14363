@@ -85,10 +85,15 @@ public class TeleOp extends OpMode
 
             }
         });
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+        while (true){
+            robot.wrist.auto();
+            robot.Arm.topStack();
+        }
     }
     @Override
     public void loop() {
-
+        robot.Claw.dropBoard();
         driver.readButtons();
         operator.readButtons();
         detectTags();
