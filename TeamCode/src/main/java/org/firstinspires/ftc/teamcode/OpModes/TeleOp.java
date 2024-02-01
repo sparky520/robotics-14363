@@ -95,7 +95,8 @@ public class TeleOp extends OpMode
         robot.drivetrain.fieldCentric(driver);
         d = distanceSensor.getDistance(DistanceUnit.INCH );
         d2 = distanceSensor2.getDistance(DistanceUnit.INCH );
-
+        telemetry.addData("d1", d);
+        telemetry.addData("d2", d2);
         if (gamepad2.circle){
             robot.Arm.setPosition(armState.outtaking);
             robot.wrist.setPosition(armState.outtaking);
@@ -141,7 +142,8 @@ public class TeleOp extends OpMode
             for (AprilTagDetection tag : currentDetections) {
                 if (tag.id == 1||tag.id == 2||tag.id == 3||tag.id == 4||tag.id == 5||tag.id == 6) {
                     tagOfInterest = tag;
-                    double power = 1 - 1/(5*tagOfInterest.pose.z/6);
+                    double hypotenuse = Math.sqrt(Math.pow(tagOfInterest.pose.z/6,2) + Math.pow(tagOfInterest.pose.z/6/1.41,2));
+                    double power = 1 - 1/hypotenuse;
                     if (power > .2){
                         robot.drivetrain.slow_mode = power;
                     }

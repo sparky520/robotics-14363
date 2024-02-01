@@ -55,14 +55,17 @@ public class shortBluePark extends LinearOpMode {
     boolean pixelDropped = false;
     boolean intaking = false;
     enum state{
-        IDLE, board1, stack1, park, checkStack1, board2, checkBoard2,
+        IDLE, board1, stack1, park, checkStack1, intakeStack, board2, checkBoard2,test
     }
     AprilTagDetection lastTOI = null;
     boolean armRaised = false;
     double distance, distance2;
     boolean strafeChecking = false;
     double initialDistance, y;
-    Pose2d stackFound;
+    Pose2d stackFound, strafePose;
+    double totalChecks = 0;
+    double totalDistance = 0;
+    boolean firstStackFound = false;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -75,7 +78,10 @@ public class shortBluePark extends LinearOpMode {
         TrajectorySequence  stack1;
         TrajectorySequence checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(0,1.6)).lineToConstantHeading(new Vector2d(0,2)).build();
         TrajectorySequence board2 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,2.5)).build();
-        TrajectorySequence checkBoard2 = drive.trajectorySequenceBuilder(checkStack1.end()).lineToConstantHeading(new Vector2d(0,3)).build();
+        TrajectorySequence checkBoard2 = drive.trajectorySequenceBuilder(checkStack1.end()).setVelConstraint(SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                .lineToConstantHeading(new Vector2d(0,3)).build();
+        TrajectorySequence t = drive.trajectorySequenceBuilder(checkStack1.end()).setVelConstraint(SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                .lineToConstantHeading(new Vector2d(0,13)).build();
 
         initColorDetection();
         waitForStart();
@@ -83,28 +89,32 @@ public class shortBluePark extends LinearOpMode {
         initAprilTagDetect();
 
         if (isStopRequested()) return;
-
-        if (blueDetection.getLocation().equals("LEFT")){
+        boolean test = true;
+        boolean noTest = false;
+        //if (blueDetection.getLocation().equals("LEFT")){
+        if (test){
             tape = drive.trajectoryBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
                     .lineToLinearHeading(new Pose2d(33,12, Math.toRadians(-90))).build();
-            boardXOffset = -5;
-            boardYOffset = 1;
+            boardXOffset = -20;
+            boardYOffset = -2;
             boardPose = new Pose2d(23,43,Math.toRadians(-90));
 
-        }else if(blueDetection.getLocation().equals("MIDDLE")){
+        }//else if(blueDetection.getLocation().equals("MIDDLE")){
+        else if (noTest){
             tape = drive.trajectoryBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(35,5, Math.toRadians(-90))).build();
-            boardXOffset = -1;
-            boardYOffset = 1;
+                    .lineToLinearHeading(new Pose2d(37,5, Math.toRadians(-90))).build();
+            boardXOffset = -25;
+            boardYOffset = -1;
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
 
-        }else if(blueDetection.getLocation().equals("RIGHT")){
+        }//else if(blueDetection.getLocation().equals("RIGHT")){
+        else if (noTest){
             tape = drive.trajectoryBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
@@ -180,9 +190,9 @@ public class shortBluePark extends LinearOpMode {
                                     robot.Arm.topStack();
                                     robot.Claw.maxClose();
                                 })
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .waitSeconds(.2)
-                                .splineToConstantHeading(new Vector2d(50,22), Math.toRadians(280))
+                                .splineToConstantHeading(new Vector2d(53,22), Math.toRadians(280))
                                 .addDisplacementMarker(() -> {
                                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
                                 })
@@ -195,50 +205,82 @@ public class shortBluePark extends LinearOpMode {
                     break;
                 case checkStack1:
                     if (!drive.isBusy() && !strafeChecking){
-                        y = -(distance2) + 11;
-                        telemetry.addLine(distance2 + "");
-                        TrajectorySequence lignUp = drive.trajectorySequenceBuilder(new Pose2d(50,-25,Math.toRadians(-90)))
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(12, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                        y = currentPose.getY() - (distance2) + 9;
+                        telemetry.addData("to wall", y);
+                        TrajectorySequence lignUp = drive.trajectorySequenceBuilder(currentPose)
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                                .lineToLinearHeading(new Pose2d(50,y*.7,Math.toRadians(-90)))
+
+                                .lineToConstantHeading(new Vector2d(50,y))
                                 .addDisplacementMarker(()-> {
                                     strafeChecking = true;
+                                    strafePose = drive.getPoseEstimate();
                                 })
-                                .lineToConstantHeading(new Vector2d(35,-25))
+                                .lineToConstantHeading(new Vector2d(35,y))
                                 .build();
                         drive.followTrajectorySequenceAsync(lignUp);
                     }
-                    if (strafeChecking){
-                        if (initialDistance < 1)initialDistance = distance - 1;
-                        if (distance + .25 < initialDistance){
-                            telemetry.addLine("Pixel found? " + distance + "  " + initialDistance);
-                            stackFound = drive.getPoseEstimate();
-                            strafeChecking = false;
-                        }
-                        else{
-                            telemetry.addLine("starin at wall  "+ distance+ "  " + initialDistance);
-                        }
+                    if (distance +distance2 > 200){
+                        telemetry.addLine("Sensors not reading");
+                        break;
                     }
-                    if (stackFound != null){
-                        stackDetectX = stackFound.getX() + 5;
-                        stackDetectY = stackFound.getY() - distance2 -1.25;
-                        telemetry.addLine(stackFound.getY() + "  " + distance2);
-                        TrajectorySequence t = drive.trajectorySequenceBuilder(currentPose)
-                                .addDisplacementMarker(()->{
-                                    robot.Claw.stack();
-                                })
-                                .lineToConstantHeading(new Vector2d(stackDetectX,y))
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(stackDetectX,stackDetectY)).build();
-                        drive.followTrajectorySequenceAsync(t);
-                        stackFound = null;
-                        currentState = state.board2;
+                    else {
+                        if (strafeChecking){
+                            if (distance2 - distance  > -.7){
+                                telemetry.addLine("Pixel found? " + distance);
+                                telemetry.addData("difference", distance2 - distance);
+                                telemetry.addData("distance",distance);
+                                telemetry.addData("distance2",distance2);
+                                stackFound = currentPose;
+                                totalChecks += 1;
+                                totalDistance += stackFound.getX() - strafePose.getX();
+                                firstStackFound = true;
+                            }
+                            else{
+                                telemetry.addLine("starin at wall  "+ distance);
+                                telemetry.addLine(distance2 - distance  + "");
+                                telemetry.addLine(distance+ "");
+                                telemetry.addLine(distance2+ "");
+                                if (firstStackFound){
+                                    if (totalChecks > 1){
+                                        strafeChecking = false;
+                                        double stackDetectY = stackFound.getY() - distance2;
+                                        double averageDistance = strafePose.getX() + (totalDistance/totalChecks) + 7.75;
+                                        telemetry.addData("checks",totalChecks);
+                                        telemetry.addData("avgD",averageDistance);
+                                        telemetry.addData("avgD",averageDistance);
+                                        t = drive.trajectorySequenceBuilder(currentPose)
+                                                .lineToConstantHeading(new Vector2d(averageDistance,y))
+                                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+
+                                                .lineToConstantHeading(new Vector2d(averageDistance,stackDetectY))
+                                                .addDisplacementMarker(()->{
+                                                    robot.Claw.setPosition(armState.close);
+                                                }).build();
+                                        stackFound = null;
+                                        currentState = state.intakeStack;
+                                    }else{
+                                        telemetry.addData("Checks", totalChecks);
+                                    }
+
+                                }
+                            }
+                        }
                     }
                     break;
+                case intakeStack:
+                    drive.followTrajectorySequenceAsync(t);
+                    currentState = state.board2;
                 case board2:
+                    telemetry.addLine("#1");
                     if (!drive.isBusy()){
-                        robot.Claw.setPosition(armState.close);
-                        board2 = drive.trajectorySequenceBuilder(new Pose2d(stackDetectX,stackDetectY,Math.toRadians(-90)))
+                        telemetry.addLine("#2");
+                        drive.setPoseEstimate(new Pose2d(55,0,Math.toRadians(-90)));
+                        board2 = drive.trajectorySequenceBuilder(new Pose2d(55,0,Math.toRadians(-90)))
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+
                                 .waitSeconds(1)
-                                .lineToConstantHeading(new Vector2d(55,70)).build();
+                                .lineToConstantHeading(new Vector2d(55,65)).build();
                         drive.followTrajectorySequenceAsync(board2);
                         location = 3;
                         currentState = state.checkBoard2;
@@ -248,9 +290,9 @@ public class shortBluePark extends LinearOpMode {
                     if (tagOfInterest != null){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX() - 32 - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY()- 3 +(100*tagOfInterest.pose.z/6);
-                        checkBoard2 = drive.trajectorySequenceBuilder(new Pose2d(55,70,Math.toRadians(-90)))
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                        boardY = toBoardEnd.getY() - 3 +(100*tagOfInterest.pose.z/6);
+                        checkBoard2 = drive.trajectorySequenceBuilder(currentPose)
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .lineToConstantHeading(new Vector2d(boardX,boardY))
                                 .build();
                         caseTagFound = true;
@@ -266,6 +308,14 @@ public class shortBluePark extends LinearOpMode {
                         boardPose = new Pose2d(30,43,Math.toRadians(-90));
                     }
                     break;
+                case IDLE:
+                    drive.followTrajectorySequenceAsync(t);
+                    currentState = state.test;
+                case test:
+                    if (!drive.isBusy()){
+
+                        telemetry.addLine("th");
+                    }
             }
 
             currentPose = drive.getPoseEstimate();

@@ -74,7 +74,7 @@ public class longBluePark extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        if (blueDetection.getLocation().equals("LEFT")){
+        if (blueDetection.getLocation().equals("RIGHT")){
             tape = drive.trajectorySequenceBuilder(start)
                     .lineToLinearHeading(new Pose2d(32,-6, Math.toRadians(90)))
                     .addDisplacementMarker(() -> {
@@ -83,11 +83,11 @@ public class longBluePark extends LinearOpMode {
                     .lineToConstantHeading(new Vector2d(32,7))
                     .lineToConstantHeading(new Vector2d(32,-5))
                     .lineToLinearHeading(new Pose2d(53,5,Math.toRadians(-90)))
-                    .lineToConstantHeading(new Vector2d(53,50))
-                    .turn(Math.toRadians(20))
+                    .lineToConstantHeading(new Vector2d(56,60))
+
                     .build();
-            boardXOffset = 15;
-            boardYOffset = -1;
+            boardXOffset = -41.5;
+            boardYOffset = -6.5;
             boardPose = new Pose2d(23,43,Math.toRadians(90));
 
         }else if(blueDetection.getLocation().equals("MIDDLE")){
@@ -106,7 +106,7 @@ public class longBluePark extends LinearOpMode {
             boardYOffset = -1;
             boardPose = new Pose2d(26,43,Math.toRadians(90));
 
-        }else if(blueDetection.getLocation().equals("RIGHT")){
+        }else if(blueDetection.getLocation().equals("LEFT")){
             tape = drive.trajectorySequenceBuilder(start)
                     .lineToConstantHeading(new Vector2d(40,-3))
                     .addDisplacementMarker(() -> {
@@ -133,8 +133,8 @@ public class longBluePark extends LinearOpMode {
                 case board1:
                     if (tagOfInterest != null && caseTagFound == false){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX()- boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY() - boardYOffset +(100*tagOfInterest.pose.z/6);
+                        boardX = toBoardEnd.getX()+ boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
+                        boardY = toBoardEnd.getY() + boardYOffset +(100*tagOfInterest.pose.z/6);
                         board1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .lineToLinearHeading(new Pose2d(boardX,boardY,Math.toRadians(-90)))
@@ -163,6 +163,7 @@ public class longBluePark extends LinearOpMode {
                         robot.Claw.dropBoard();
                         park = drive.trajectorySequenceBuilder(currentPose)
                                 .forward(5)
+                                .strafeRight(13)
                                 .addDisplacementMarker(() -> {
                                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
                                     robot.Arm.setPosition(armState.medium);
