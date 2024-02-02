@@ -92,7 +92,7 @@ public class shortBluePark extends LinearOpMode {
         boolean test = true;
         boolean noTest = false;
         //if (blueDetection.getLocation().equals("LEFT")){
-        if (test){
+        if (noTest){
             tape = drive.trajectoryBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
@@ -114,7 +114,7 @@ public class shortBluePark extends LinearOpMode {
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
 
         }//else if(blueDetection.getLocation().equals("RIGHT")){
-        else if (noTest){
+        else if (test){
             tape = drive.trajectoryBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
@@ -216,6 +216,8 @@ public class shortBluePark extends LinearOpMode {
                                 .addDisplacementMarker(()-> {
                                     strafeChecking = true;
                                     strafePose = drive.getPoseEstimate();
+                                    robot.Claw.stack();
+                                    
                                 })
                                 .lineToConstantHeading(new Vector2d(35,y))
                                 .build();
@@ -245,7 +247,7 @@ public class shortBluePark extends LinearOpMode {
                                 if (firstStackFound){
                                     if (totalChecks > 1){
                                         strafeChecking = false;
-                                        double stackDetectY = stackFound.getY() - distance2;
+                                        double stackDetectY = stackFound.getY() - distance2 - 1.5;
                                         double averageDistance = strafePose.getX() + (totalDistance/totalChecks) + 7.75;
                                         telemetry.addData("checks",totalChecks);
                                         telemetry.addData("avgD",averageDistance);

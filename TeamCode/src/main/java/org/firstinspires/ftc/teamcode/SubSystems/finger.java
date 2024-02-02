@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.states.armState;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+
 public class finger {
     private Servo leftClaw, rightClaw;
     Telemetry tel;
@@ -24,16 +26,16 @@ public class finger {
                 rightClaw.setPosition(.82);
                 break;
             case close:
-                leftClaw.setPosition(.935);
+                leftClaw.setPosition(.97);
                 //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
-                rightClaw.setPosition(.92);
+                rightClaw.setPosition(.99);
                 break;
         }
     }
 
     //auto
     public void setTape(){
-        rightClaw.setPosition(.8);
+        rightClaw.setPosition(.82);
     }
     public void afterTape(){
         rightClaw.setPosition(1);
@@ -43,13 +45,17 @@ public class finger {
         leftClaw.setPosition(.82);
     }
     public void maxClose(){
-        leftClaw.setPosition(.98);
-        rightClaw.setPosition(.98);
+        leftClaw.setPosition(1);
+        rightClaw.setPosition(1);
     }
     public void stack()
     {
+        double test = DriveConstants.MAX_ANG_VEL;
+        double test2 = DriveConstants.MAX_ANG_ACCEL;
         leftClaw.setPosition(1);
-        rightClaw.setPosition(.65);
+        //.84
+        //.97
+        rightClaw.setPosition(.8);
     }
 
 }

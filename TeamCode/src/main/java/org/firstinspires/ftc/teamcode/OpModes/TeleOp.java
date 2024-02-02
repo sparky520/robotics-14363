@@ -71,6 +71,8 @@ public class TeleOp extends OpMode
         drive.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
         initAprilTag();
         timer.reset();
+        robot.wrist.setPosition(armState.intakingCLAW);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -85,23 +87,26 @@ public class TeleOp extends OpMode
 
             }
         });
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
-        while (true){
-            robot.wrist.auto();
-            robot.Arm.topStack();
-        }
+
     }
     @Override
     public void loop() {
-        robot.Claw.dropBoard();
         driver.readButtons();
         operator.readButtons();
-        detectTags();
         robot.drivetrain.fieldCentric(driver);
         d = distanceSensor.getDistance(DistanceUnit.INCH );
         d2 = distanceSensor2.getDistance(DistanceUnit.INCH );
         telemetry.addData("d1", d);
         telemetry.addData("d2", d2);
+
+        if (gamepad1.right_trigger > 0){
+            robot.drivetrain.slow_mode = .15;
+        }else if (gamepad1.left_trigger > 0){
+            robot.drivetrain.slow_mode = .3;
+        }
+        else{
+            robot.drivetrain.slow_mode = 1;
+        }
         if (gamepad2.circle){
             robot.Arm.setPosition(armState.outtaking);
             robot.wrist.setPosition(armState.outtaking);
@@ -114,21 +119,24 @@ public class TeleOp extends OpMode
             robot.Arm.setPosition(armState.low);
             robot.wrist.setPosition(armState.intakingCLAW);
         }
-        if (gamepad2.left_bumper){
+        if (gamepad1.left_bumper){
             robot.Claw.setPosition(armState.open);
         }
         if (gamepad2.dpad_up){
 
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
         }
         if (gamepad2.dpad_left){
-            robot.Arm.topStack();
-            robot.wrist.setPosition(armState.intakingCLAW);
-            robot.Claw.stack();
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LOWIN);
         }
-        if (gamepad2.dpad_right)robot.wrist.setPosition(armState.intakingCLAW);
-        if (gamepad2.dpad_down)robot.wrist.setPosition(armState.outtaking);
-        if (gamepad2.right_bumper){
+        if (gamepad2.dpad_right){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.HIGHIN);
+        }
+
+        if (gamepad2.dpad_down){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+        }
+        if (gamepad1.right_bumper){
             robot.Claw.setPosition(armState.close);
         }
         if (gamepad1.triangle){
@@ -147,12 +155,12 @@ public class TeleOp extends OpMode
             for (AprilTagDetection tag : currentDetections) {
                 if (tag.id == 1||tag.id == 2||tag.id == 3||tag.id == 4||tag.id == 5||tag.id == 6) {
                     tagOfInterest = tag;
-                    double hypotenuse = Math.sqrt(Math.pow(tagOfInterest.pose.z/6,2) + Math.pow(tagOfInterest.pose.z/6/1.41,2));
-                    double power = 1 - 1/hypotenuse;
+                    double power = 1 - 8/tagOfInterest.pose.z/6;
                     if (power > .2){
                         robot.drivetrain.slow_mode = power;
                     }
                     telemetry.addData("slowmode", robot.drivetrain.slow_mode);
+                    telemetry.addData("power", power);
 
                     gamepad1.rumble(1);
                     tagFound = true;
@@ -161,7 +169,7 @@ public class TeleOp extends OpMode
             }
         }
         else{
-            //telemetry.addLine("NOT FOUND");
+            telemetry.addLine("NOT FOUND");
         }
     }
     public void initAprilTag(){
