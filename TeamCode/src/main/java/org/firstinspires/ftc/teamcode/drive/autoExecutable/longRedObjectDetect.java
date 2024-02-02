@@ -32,8 +32,8 @@ public class longRedObjectDetect extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(170, 78, 78);
-        Scalar highHSV = new Scalar(190, 255, 255);
+        Scalar lowHSV = new Scalar(0, 128, 100);
+        Scalar highHSV = new Scalar(20, 255, 255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);

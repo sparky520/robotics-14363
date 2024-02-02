@@ -72,8 +72,8 @@ public class slides {
                         extensionState = extensionState.extended;
                         break;
                     case MEDIUMIN:
-                        leftSlide.setTargetPosition(600);
-                        rightSlide.setTargetPosition(-600);
+                        leftSlide.setTargetPosition(800);
+                        rightSlide.setTargetPosition(-800);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -105,8 +105,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case LOWIN:
-                        leftSlide.setTargetPosition(360);
-                        rightSlide.setTargetPosition(-360);
+                        leftSlide.setTargetPosition(500);
+                        rightSlide.setTargetPosition(-500);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

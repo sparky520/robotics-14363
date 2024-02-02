@@ -35,7 +35,7 @@ public class finger {
 
     //auto
     public void setTape(){
-        rightClaw.setPosition(.82);
+        rightClaw.setPosition(.84);
     }
     public void afterTape(){
         rightClaw.setPosition(1);

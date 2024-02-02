@@ -24,9 +24,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "short Blue Park", group = "Auto")
-public class shortBluePark extends LinearOpMode {
-
+@Autonomous(name = "long red parkk", group = "Auto")
+public class longRedPark2 extends LinearOpMode {
     boolean tagFound = false;
     boolean caseTagFound = false;
     Robot robot;
@@ -43,8 +42,8 @@ public class shortBluePark extends LinearOpMode {
     double cx = 402.145;
     double cy = 221.506;
     double tagsize = 0.166;
-    shortBlueObjectDetect blueDetection;
-    int location = 1;
+    longRedObjectDetect blueDetection;
+    int location = 4;
     Pose2d currentPose;
     Pose2d boardPose;
     Pose2d stackPose = new Pose2d(50,-75,Math.toRadians(-90));
@@ -72,7 +71,7 @@ public class shortBluePark extends LinearOpMode {
         drive.setPoseEstimate(start);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
         distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
-        Trajectory tape = drive.trajectoryBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
+        TrajectorySequence tape = drive.trajectorySequenceBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
         TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
         TrajectorySequence park = drive.trajectorySequenceBuilder(board1.end()).lineToConstantHeading(new Vector2d(0,1.2)).build();
         TrajectorySequence  stack1;
@@ -92,45 +91,64 @@ public class shortBluePark extends LinearOpMode {
         boolean test = true;
         boolean noTest = false;
         //if (blueDetection.getLocation().equals("LEFT")){
-        if (noTest){
-            tape = drive.trajectoryBuilder(start)
-                    .addTemporalMarker(1,() -> {
+        if (test){
+            tape = drive.trajectorySequenceBuilder(start)
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(33,12, Math.toRadians(-90))).build();
-            boardXOffset = -20;
-            boardYOffset = -2;
-            boardPose = new Pose2d(23,43,Math.toRadians(-90));
+                    .addTemporalMarker(3,() -> {
+                        robot.Claw.setPosition(armState.close);
+                    })
+                    .lineToConstantHeading(new Vector2d(40,5))
+                    .lineToLinearHeading(new Pose2d(53,3, Math.toRadians(-270)))
+                    .lineToLinearHeading(new Pose2d(50,-70,Math.toRadians(-295)))
+                    .build();
+            boardXOffset = -29;
+            boardYOffset = 9;
+            boardPose = new Pose2d(29,43,Math.toRadians(90));
 
         }//else if(blueDetection.getLocation().equals("MIDDLE")){
         else if (noTest){
-            tape = drive.trajectoryBuilder(start)
-                    .addTemporalMarker(1,() -> {
+            tape = drive.trajectorySequenceBuilder(start)
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(37,5, Math.toRadians(-90))).build();
-            boardXOffset = -25;
-            boardYOffset = -1;
-            boardPose = new Pose2d(26,43,Math.toRadians(-90));
+                    .addTemporalMarker(3,() -> {
+                        robot.Claw.setPosition(armState.close);
+                    })
+                    .lineToConstantHeading(new Vector2d(46,-6))
+                    .lineToConstantHeading(new Vector2d(53,-6))
+                    .turn(Math.toRadians(-90))
+                    .lineToLinearHeading(new Pose2d(53,-70,Math.toRadians(-295)))
+                    .build();
+            boardXOffset = -29;
+            boardYOffset = 10;
+            boardPose = new Pose2d(26,43,Math.toRadians(90));
 
         }//else if(blueDetection.getLocation().equals("RIGHT")){
-        else if (test){
-            tape = drive.trajectoryBuilder(start)
+        else if (noTest){
+            tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90))).build();
-            boardXOffset = 2.5;
-            boardYOffset = 0;
-            boardPose = new Pose2d(42,43,Math.toRadians(-90));
-            pathXoffset = 0;
+                    .addTemporalMarker(2.5,() -> {
+                        robot.Claw.setPosition(armState.close);
+                    })
+                    .lineToLinearHeading(new Pose2d(29,-9, Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(29,4))
+                    .lineToLinearHeading(new Pose2d(48,4,Math.toRadians(-270)))
+                    .lineToLinearHeading(new Pose2d(44,-70,Math.toRadians(-295)))
+                    .build();
+            boardXOffset = -47.2;
+            boardYOffset = 13;
+            boardPose = new Pose2d(23,-43,Math.toRadians(-270));
         }
 
         currentState = state.board1;
         robot.Arm.setPosition(armState.low);
         robot.Claw.setPosition(armState.close);
         robot.wrist.auto();
-        drive.followTrajectoryAsync(tape);
+        drive.followTrajectorySequenceAsync(tape);
         timer.reset();
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -139,7 +157,7 @@ public class shortBluePark extends LinearOpMode {
                     if (tagOfInterest != null && drive.isBusy()){
                         Pose2d toBoardEnd = drive.getPoseEstimate();
                         boardX = toBoardEnd.getX() + boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY() + boardYOffset +(100*tagOfInterest.pose.z/6);
+                        boardY = toBoardEnd.getY() + boardYOffset - (100*tagOfInterest.pose.z/6);
                         caseTagFound = true;
                     }
                     if (!drive.isBusy()){
@@ -152,16 +170,16 @@ public class shortBluePark extends LinearOpMode {
                                     robot.wrist.setPosition(armState.outtaking);
                                 })
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(boardX,boardY))
+                                .lineToLinearHeading(new Pose2d(boardX,boardY,Math.toRadians(-270)))
                                 .build();
                         timer.reset();
                         armRaised = true;
-                        location = 3;
+                        location = 4;
                         drive.followTrajectorySequenceAsync(board1);
                     }
                     if (armRaised && timer.seconds() > 1){
                         caseTagFound = false;
-                        currentState = state.stack1;
+                        currentState = state.park;
                         tagOfInterest = null;
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
                     }
@@ -283,7 +301,7 @@ public class shortBluePark extends LinearOpMode {
                                 .waitSeconds(1)
                                 .lineToConstantHeading(new Vector2d(55,65)).build();
                         drive.followTrajectorySequenceAsync(board2);
-                        location = 3;
+                        location = 4;
                         currentState = state.checkBoard2;
                     }
                     break;
@@ -301,7 +319,7 @@ public class shortBluePark extends LinearOpMode {
                     if (!drive.isBusy()){
                         robot.Arm.setPosition(armState.outtaking);
                         robot.wrist.setPosition(armState.outtaking);
-                        location = 3;
+                        location = 4;
                         drive.followTrajectorySequenceAsync(checkBoard2);
                         caseTagFound = false;
                         currentState = state.stack1;
@@ -310,10 +328,26 @@ public class shortBluePark extends LinearOpMode {
                     }
                     break;
                 case IDLE:
-                    if (!drive.isBusy()) {
-                        robot.Claw.dropBoard();
-                    }
                     break;
+                case park:
+                    if (!drive.isBusy()){
+                        robot.Claw.dropBoard();
+                        park = drive.trajectorySequenceBuilder(currentPose)
+                                .waitSeconds(1)
+                                .forward(5)
+                                .addDisplacementMarker(() -> {
+                                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+                                    robot.Arm.setPosition(armState.medium);
+                                })
+                                .turn(Math.toRadians(-100))
+                                .back(20)
+                                .addDisplacementMarker(() -> {
+                                    robot.Claw.setPosition(armState.close);
+                                })
+                                .build();
+                        drive.followTrajectorySequenceAsync(park);
+                        currentState = state.IDLE;
+                    }
 
             }
 
@@ -356,8 +390,8 @@ public class shortBluePark extends LinearOpMode {
     private void initColorDetection() {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        blueDetection = new shortBlueObjectDetect(telemetry);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+        blueDetection = new longRedObjectDetect(telemetry);
 
         camera.setPipeline(blueDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
