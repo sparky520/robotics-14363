@@ -95,9 +95,10 @@ public class shortBluePark extends LinearOpMode {
                         robot.Claw.setTape();
                     })
                     .lineToLinearHeading(new Pose2d(33,12, Math.toRadians(-90))).build();
-            boardXOffset = -20;
-            boardYOffset = -2;
+            boardXOffset = -15;
+            boardYOffset = -1;
             boardPose = new Pose2d(23,43,Math.toRadians(-90));
+            pathXoffset = 10;
 
         }else if(blueDetection.getLocation().equals("MIDDLE")){
             tape = drive.trajectorySequenceBuilder(start)
@@ -105,15 +106,17 @@ public class shortBluePark extends LinearOpMode {
                         robot.Claw.setTape();
                     })
                     .lineToLinearHeading(new Pose2d(40,5, Math.toRadians(-75))).build();
-            boardXOffset = -17;
-            boardYOffset = -5;
+            boardXOffset = -15;
+            boardYOffset = -4;
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
+            pathXoffset = 4;
 
         }else if(blueDetection.getLocation().equals("RIGHT")){
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
+
                     .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90)))
                     .addDisplacementMarker(()->{
                         robot.Arm.setPosition(armState.outtaking);
@@ -128,6 +131,7 @@ public class shortBluePark extends LinearOpMode {
 
         currentState = state.board1;
         robot.Arm.setPosition(armState.low);
+        robot.Claw.setPosition(armState.close);
         robot.wrist.auto();
         drive.followTrajectorySequenceAsync(tape);
         timer.reset();
@@ -157,7 +161,7 @@ public class shortBluePark extends LinearOpMode {
                     }
                     if (armRaised && timer.seconds() > 1){
                         caseTagFound = false;
-                        currentState = state.park;
+                        currentState = state.stack1;
                         tagOfInterest = null;
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.SHORT_AUTO);
                     }

@@ -87,6 +87,11 @@ public class TeleOp extends OpMode
 
             }
         });
+        while (true){
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.TOPSTACK);
+            robot.Arm.topStack();
+            robot.wrist.auto();
+        }
 
     }
     @Override

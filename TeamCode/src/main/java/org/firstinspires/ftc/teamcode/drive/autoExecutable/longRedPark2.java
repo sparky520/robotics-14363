@@ -90,14 +90,10 @@ public class longRedPark2 extends LinearOpMode {
         if (isStopRequested()) return;
         boolean test = true;
         boolean noTest = false;
-        //if (blueDetection.getLocation().equals("LEFT")){
-        if (test){
+        if (blueDetection.getLocation().equals("LEFT")){
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
-                    })
-                    .addTemporalMarker(3,() -> {
-                        robot.Claw.setPosition(armState.close);
                     })
                     .lineToConstantHeading(new Vector2d(40,5))
                     .lineToLinearHeading(new Pose2d(53,3, Math.toRadians(-270)))
@@ -107,14 +103,11 @@ public class longRedPark2 extends LinearOpMode {
             boardYOffset = 9;
             boardPose = new Pose2d(29,43,Math.toRadians(90));
 
-        }//else if(blueDetection.getLocation().equals("MIDDLE")){
-        else if (noTest){
+        }
+        else if(blueDetection.getLocation().equals("MIDDLE")){
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
-                    })
-                    .addTemporalMarker(3,() -> {
-                        robot.Claw.setPosition(armState.close);
                     })
                     .lineToConstantHeading(new Vector2d(46,-6))
                     .lineToConstantHeading(new Vector2d(53,-6))
@@ -125,22 +118,18 @@ public class longRedPark2 extends LinearOpMode {
             boardYOffset = 10;
             boardPose = new Pose2d(26,43,Math.toRadians(90));
 
-        }//else if(blueDetection.getLocation().equals("RIGHT")){
-        else if (noTest){
+        }else if(blueDetection.getLocation().equals("RIGHT")){
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .addTemporalMarker(2.5,() -> {
-                        robot.Claw.setPosition(armState.close);
-                    })
-                    .lineToLinearHeading(new Pose2d(29,-9, Math.toRadians(-90)))
-                    .lineToConstantHeading(new Vector2d(29,4))
-                    .lineToLinearHeading(new Pose2d(48,4,Math.toRadians(-270)))
+                    .lineToLinearHeading(new Pose2d(29,-5, Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(29,-10))
+                    .lineToLinearHeading(new Pose2d(48,6,Math.toRadians(-270)))
                     .lineToLinearHeading(new Pose2d(44,-70,Math.toRadians(-295)))
                     .build();
-            boardXOffset = -47.2;
-            boardYOffset = 13;
+            boardXOffset = -36;
+            boardYOffset = 8;
             boardPose = new Pose2d(23,-43,Math.toRadians(-270));
         }
 
