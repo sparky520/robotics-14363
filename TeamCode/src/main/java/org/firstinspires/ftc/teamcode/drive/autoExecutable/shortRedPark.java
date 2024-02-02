@@ -77,9 +77,11 @@ public class shortRedPark extends LinearOpMode {
         telemetry.update();
         if (blueDetection.getLocation().equals("LEFT")){
             tape = drive.trajectorySequenceBuilder(start)
+                    .addTemporalMarker(2,() -> {
+                        robot.Claw.setTape();
+                    })
                     .lineToLinearHeading(new Pose2d(31,-12, Math.toRadians(90)))
                     .lineToConstantHeading(new Vector2d(31,1))
-                    .lineToConstantHeading(new Vector2d(26,-15))
                     .build();
 
             boardXOffset = 13;
@@ -88,16 +90,14 @@ public class shortRedPark extends LinearOpMode {
 
         }else if(blueDetection.getLocation().equals("MIDDLE")){
             tape = drive.trajectorySequenceBuilder(start)
-                    .lineToLinearHeading(new Pose2d(40.5,-5, Math.toRadians(90)))
-                    .lineToConstantHeading(new Vector2d(26,-15)).build();
-            boardXOffset = -.5;
-            boardYOffset = 1;
+                    .lineToLinearHeading(new Pose2d(37,-5, Math.toRadians(70))).build();
+            boardXOffset = -14;
+            boardYOffset = 4;
             boardPose = new Pose2d(26,-43,Math.toRadians(90));
 
         }else if(blueDetection.getLocation().equals("RIGHT")){
             tape = drive.trajectorySequenceBuilder(start)
-                    .lineToLinearHeading(new Pose2d(30,-16, Math.toRadians(90)))
-                    .lineToConstantHeading(new Vector2d(26,-15)).build();
+                    .lineToLinearHeading(new Pose2d(30,-16, Math.toRadians(90))).build();
             boardXOffset = -4;
             boardYOffset = 0;
             boardPose = new Pose2d(29,-43,Math.toRadians(90));
@@ -118,7 +118,7 @@ public class shortRedPark extends LinearOpMode {
                         boardY = toBoardEnd.getY() + boardYOffset - 2 - (100*tagOfInterest.pose.z/6);
                         board1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(boardX,boardY))
+                                .lineToLinearHeading(new Pose2d(boardX,boardY,Math.toRadians(90)))
                                 .build();
                         caseTagFound = true;
                     }
@@ -134,7 +134,7 @@ public class shortRedPark extends LinearOpMode {
                         caseTagFound = false;
                         currentState = state.park;
                         tagOfInterest = null;
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
                     }
                 case park:
                     if (!drive.isBusy()){

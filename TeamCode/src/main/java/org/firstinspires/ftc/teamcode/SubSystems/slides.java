@@ -83,8 +83,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case AUTO1:
-                        leftSlide.setTargetPosition(150);
-                        rightSlide.setTargetPosition(-150);
+                        leftSlide.setTargetPosition(350);
+                        rightSlide.setTargetPosition(-350);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -116,8 +116,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case STATION:
-                        leftSlide.setTargetPosition(35);
-                        rightSlide.setTargetPosition(-35);
+                        leftSlide.setTargetPosition(0);
+                        rightSlide.setTargetPosition(-0);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

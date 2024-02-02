@@ -74,51 +74,60 @@ public class longBluePark extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        if (blueDetection.getLocation().equals("RIGHT")){
+        //if (blueDetection.getLocation().equals("RIGHT"))
+        if (true)
+        {
             tape = drive.trajectorySequenceBuilder(start)
-                    .lineToLinearHeading(new Pose2d(32,-6, Math.toRadians(90)))
-                    .addDisplacementMarker(() -> {
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToConstantHeading(new Vector2d(32,7))
-                    .lineToConstantHeading(new Vector2d(32,-5))
-                    .lineToLinearHeading(new Pose2d(53,5,Math.toRadians(-90)))
-                    .lineToConstantHeading(new Vector2d(56,60))
-
+                    .addTemporalMarker(3,() -> {
+                        robot.Claw.setPosition(armState.close);
+                    })
+                    .lineToConstantHeading(new Vector2d(45,-6))
+                    .lineToConstantHeading(new Vector2d(53,-6))
+                    .turn(Math.toRadians(90))
+                    .lineToLinearHeading(new Pose2d(54,65,Math.toRadians(-70)))
                     .build();
-            boardXOffset = -41.5;
+            boardXOffset = -25;
             boardYOffset = -6.5;
             boardPose = new Pose2d(23,43,Math.toRadians(90));
 
-        }else if(blueDetection.getLocation().equals("MIDDLE")){
+        }//else if(blueDetection.getLocation().equals("MIDDLE"))
+        else if (false)
+        {
             tape = drive.trajectorySequenceBuilder(start)
-                    .lineToConstantHeading(new Vector2d(46,6))
-                    .addDisplacementMarker(() -> {
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
+                    .addTemporalMarker(3,() -> {
+                        robot.Claw.setPosition(armState.close);
+                    })
+                    .lineToConstantHeading(new Vector2d(46,6))
                     .lineToConstantHeading(new Vector2d(53,6))
                     .turn(Math.toRadians(90))
-                    .lineToConstantHeading(new Vector2d(53,15))
-                    .lineToConstantHeading(new Vector2d(53,50))
-                    .turn(Math.toRadians(20))
+                    .lineToLinearHeading(new Pose2d(53,65,Math.toRadians(-70)))
                     .build();
-            boardXOffset = 9;
-            boardYOffset = -1;
+            boardXOffset = -28.5;
+            boardYOffset = -6.5;
             boardPose = new Pose2d(26,43,Math.toRadians(90));
 
-        }else if(blueDetection.getLocation().equals("LEFT")){
+        }//else if(blueDetection.getLocation().equals("LEFT"))
+        else if (false){
             tape = drive.trajectorySequenceBuilder(start)
-                    .lineToConstantHeading(new Vector2d(40,-3))
-                    .addDisplacementMarker(() -> {
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToConstantHeading(new Vector2d(53,-3))
-                    .turn(Math.toRadians(90))
-                    .lineToConstantHeading(new Vector2d(53,50))
-                    .turn(Math.toRadians(20))
+                    .addTemporalMarker(3,() -> {
+                        robot.Claw.setPosition(armState.close);
+                    })
+                    .lineToLinearHeading(new Pose2d(30,3, Math.toRadians(90)))
+                    .lineToConstantHeading(new Vector2d(30,9))
+                    .lineToLinearHeading(new Pose2d(53,-5,Math.toRadians(-90)))
+                    .lineToLinearHeading(new Pose2d(54,65,Math.toRadians(-70)))
                     .build();
-            boardXOffset = 3;
-            boardYOffset = -1;
+            boardXOffset = -37;
+            boardYOffset = -6;
             boardPose = new Pose2d(29,43,Math.toRadians(-90));
         }
 
@@ -156,30 +165,30 @@ public class longBluePark extends LinearOpMode {
                         caseTagFound = false;
                         currentState = state.park;
                         tagOfInterest = null;
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
                     }
                 case park:
                     if (!drive.isBusy()){
                         robot.Claw.dropBoard();
                         park = drive.trajectorySequenceBuilder(currentPose)
-                                .forward(5)
-                                .strafeRight(13)
-                                .addDisplacementMarker(() -> {
+                                .addTemporalMarker(10,()->{
                                     robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
                                     robot.Arm.setPosition(armState.medium);
-                                })
-                                .turn(Math.toRadians(-90))
-                                .addDisplacementMarker(() -> {
+                                    robot.wrist.setPosition(armState.intakingCLAW);
                                     robot.Claw.setPosition(armState.close);
                                 })
+                                .addTemporalMarker(14,()->{
+                                    robot.Arm.setPosition(armState.low);
+                                })
+                                .forward(5)
+                                .strafeRight(13)
+                                .turn(Math.toRadians(-90))
                                 .build();
                         drive.followTrajectorySequenceAsync(park);
 
                         currentState = state.IDLE;
                     }
                 case IDLE:
-
-
 
             }
 

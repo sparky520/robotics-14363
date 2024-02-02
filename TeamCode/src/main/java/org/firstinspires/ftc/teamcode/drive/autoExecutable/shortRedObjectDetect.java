@@ -16,15 +16,15 @@ public class shortRedObjectDetect extends OpenCvPipeline {
     private String location = "RIGHT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(255, 30),
-            new Point(315, 70));
+            new Point(150, 120),
+            new Point(210, 190));
 
     /*static final Rect MIDDLE_ROI = new Rect(
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(50, 40),
-            new Point(110, 80));
+            new Point(0, 120),
+            new Point(60, 190));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.05;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.05;
     public shortRedObjectDetect(Telemetry t) { telemetry = t; }
@@ -56,13 +56,13 @@ public class shortRedObjectDetect extends OpenCvPipeline {
         boolean TSEMiddle = middleValue > MIDDLE_PERCENT_COLOR_THRESHOLD;
 
         if(TSEMiddle){
-            location = "LEFT";
-            telemetry.addData("TSE Location", "LEFT");
+            location = "MIDDLE";
+            telemetry.addData("TSE Location", "MIDDLE");
             // TSE = team scoring element
         }
         else if (TSERight){
-            location = "MIDDLE";
-            telemetry.addData("TSE Location", "MIDDLE");
+            location = "LEFT";
+            telemetry.addData("TSE Location", "LEFT");
         }
         telemetry.update();
 

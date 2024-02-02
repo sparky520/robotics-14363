@@ -13,18 +13,18 @@ public class longRedObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
-    private String location = "RIGHT";
+    private String location = "LEFT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(250, 10),
-            new Point(310, 140));
+            new Point(190, 10),
+            new Point(250, 140));
 
     /*static final Rect MIDDLE_ROI = new Rect(
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(40, 10),
-            new Point(100, 140));
+            new Point(0, 10),
+            new Point(60, 140));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.1;
     public longRedObjectDetect(Telemetry t) { telemetry = t; }
@@ -56,13 +56,13 @@ public class longRedObjectDetect extends OpenCvPipeline {
         boolean TSEMiddle = middleValue > MIDDLE_PERCENT_COLOR_THRESHOLD;
 
         if(TSEMiddle){
-            location = "LEFT";
-            telemetry.addData("TSE Location", "LEFT");
+            location = "MIDDLE";
+            telemetry.addData("TSE Location", "MIDDLE");
             // TSE = team scoring element
         }
         else if (TSERight){
-            location = "MIDDLE";
-            telemetry.addData("TSE Location", "MIDDLE");
+            location = "RIGHT";
+            telemetry.addData("TSE Location", "RIGHT");
         }
         telemetry.update();
 
