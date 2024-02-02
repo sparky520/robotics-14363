@@ -159,7 +159,7 @@ public class shortBluePark extends LinearOpMode {
                         caseTagFound = false;
                         currentState = state.park;
                         tagOfInterest = null;
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.SHORT_AUTO);
                     }
                 case stack1:
                     if (tagOfInterest != null){

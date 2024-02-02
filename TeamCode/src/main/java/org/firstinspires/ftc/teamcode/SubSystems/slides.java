@@ -47,9 +47,9 @@ public class slides {
 
                         extensionState = extensionState.extended;
                         break;
-                    case AUTO_HIGH:
-                        leftSlide.setTargetPosition(1300);
-                        rightSlide.setTargetPosition(-1300);
+                    case SHORT_AUTO:
+                        leftSlide.setTargetPosition(200);
+                        rightSlide.setTargetPosition(-200);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
