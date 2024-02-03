@@ -116,12 +116,11 @@ public class shortBluePark extends LinearOpMode {
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-
-                    .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90)))
-                    .addDisplacementMarker(()->{
+                    .addTemporalMarker(3.5,() -> {
                         robot.Arm.setPosition(armState.outtaking);
                         robot.wrist.setPosition(armState.outtaking);
                     })
+                    .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90)))
                     .lineToConstantHeading(new Vector2d(30,5)).build();
             boardXOffset = 2.5;
             boardYOffset = -2.5;
@@ -161,7 +160,7 @@ public class shortBluePark extends LinearOpMode {
                     }
                     if (armRaised && timer.seconds() > 1){
                         caseTagFound = false;
-                        currentState = state.stack1;
+                        currentState = state.park;
                         tagOfInterest = null;
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.SHORT_AUTO);
                     }

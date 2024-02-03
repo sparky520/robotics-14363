@@ -9,6 +9,7 @@ public enum outtakeStates {
     LOWIN,
     AUTO1,
     TOPSTACK,
+    TELEOPSTATION,
     STATION,
     etxending,
     retracted,

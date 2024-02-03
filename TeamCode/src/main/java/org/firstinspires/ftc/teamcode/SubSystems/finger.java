@@ -26,7 +26,7 @@ public class finger {
                 rightClaw.setPosition(.82);
                 break;
             case close:
-                leftClaw.setPosition(.97);
+                leftClaw.setPosition(.99);
                 //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
                 rightClaw.setPosition(.99);
                 break;

@@ -69,7 +69,8 @@ public class longBluePark extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(start);
-
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
         TrajectorySequence tape = drive.trajectorySequenceBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
         TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
         TrajectorySequence park = drive.trajectorySequenceBuilder(board1.end()).lineToConstantHeading(new Vector2d(0,1.2)).build();
@@ -87,37 +88,29 @@ public class longBluePark extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        //if (blueDetection.getLocation().equals("RIGHT"))
-        if (true)
+        if (blueDetection.getLocation().equals("RIGHT"))
         {
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .addTemporalMarker(3,() -> {
-                        robot.Claw.setPosition(armState.close);
-                    })
-                    .lineToConstantHeading(new Vector2d(45,-6))
-                    .lineToConstantHeading(new Vector2d(53,-6))
+                    .lineToConstantHeading(new Vector2d(40,-8))
+                    .lineToConstantHeading(new Vector2d(53,-8))
                     .turn(Math.toRadians(90))
                     .lineToLinearHeading(new Pose2d(54,65,Math.toRadians(-70)))
                     .build();
-            boardXOffset = -25;
+            boardXOffset = -28.5;
             boardYOffset = -6.5;
             boardPose = new Pose2d(23,43,Math.toRadians(90));
 
-        }//else if(blueDetection.getLocation().equals("MIDDLE"))
-        else if (false)
+        }else if(blueDetection.getLocation().equals("MIDDLE"))
         {
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .addTemporalMarker(3,() -> {
-                        robot.Claw.setPosition(armState.close);
-                    })
-                    .lineToConstantHeading(new Vector2d(46,6))
-                    .lineToConstantHeading(new Vector2d(53,6))
+                    .lineToConstantHeading(new Vector2d(46,3))
+                    .lineToConstantHeading(new Vector2d(53,3))
                     .turn(Math.toRadians(90))
                     .lineToLinearHeading(new Pose2d(53,65,Math.toRadians(-70)))
                     .build();
@@ -125,21 +118,18 @@ public class longBluePark extends LinearOpMode {
             boardYOffset = -6.5;
             boardPose = new Pose2d(26,43,Math.toRadians(90));
 
-        }//else if(blueDetection.getLocation().equals("LEFT"))
-        else if (false){
+        }else if(blueDetection.getLocation().equals("LEFT")){
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .addTemporalMarker(3,() -> {
-                        robot.Claw.setPosition(armState.close);
-                    })
                     .lineToLinearHeading(new Pose2d(30,3, Math.toRadians(90)))
                     .lineToConstantHeading(new Vector2d(30,9))
+                    .lineToConstantHeading(new Vector2d(30,5))
                     .lineToLinearHeading(new Pose2d(53,-5,Math.toRadians(-90)))
                     .lineToLinearHeading(new Pose2d(54,65,Math.toRadians(-70)))
                     .build();
-            boardXOffset = -37;
+            boardXOffset = -30;
             boardYOffset = -6;
             boardPose = new Pose2d(29,43,Math.toRadians(-90));
         }
@@ -339,7 +329,7 @@ public class longBluePark extends LinearOpMode {
                                 })
                                 .forward(5)
                                 .strafeRight(13)
-                                .turn(Math.toRadians(-90))
+                                .turn(Math.toRadians(90))
                                 .build();
                         drive.followTrajectorySequenceAsync(park);
 

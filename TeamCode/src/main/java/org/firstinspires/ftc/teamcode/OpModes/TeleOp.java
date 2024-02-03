@@ -72,7 +72,7 @@ public class TeleOp extends OpMode
         initAprilTag();
         timer.reset();
         robot.wrist.setPosition(armState.intakingCLAW);
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -87,11 +87,6 @@ public class TeleOp extends OpMode
 
             }
         });
-        while (true){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.TOPSTACK);
-            robot.Arm.topStack();
-            robot.wrist.auto();
-        }
 
     }
     @Override
@@ -104,6 +99,9 @@ public class TeleOp extends OpMode
         telemetry.addData("d1", d);
         telemetry.addData("d2", d2);
 
+        if (gamepad1.triangle){
+            robot.drivetrain.resetIMU();
+        }
         if (gamepad1.right_trigger > 0){
             robot.drivetrain.slow_mode = .15;
         }else if (gamepad1.left_trigger > 0){
@@ -112,9 +110,13 @@ public class TeleOp extends OpMode
         else{
             robot.drivetrain.slow_mode = 1;
         }
+
         if (gamepad2.circle){
             robot.Arm.setPosition(armState.outtaking);
             robot.wrist.setPosition(armState.outtaking);
+        }
+        if (gamepad1.square){
+            robot.Airplane.setPosition(armState.airplaneLaunch);
         }
         if (gamepad2.triangle){
             robot.Arm.setPosition(armState.medium);
@@ -139,7 +141,7 @@ public class TeleOp extends OpMode
         }
 
         if (gamepad2.dpad_down){
-            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
         }
         if (gamepad1.right_bumper){
             robot.Claw.setPosition(armState.close);
