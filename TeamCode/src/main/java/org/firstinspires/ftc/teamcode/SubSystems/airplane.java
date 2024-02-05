@@ -17,7 +17,7 @@ public class airplane {
                 airplane.setPosition(.22);
                 break;
             case airplaneLaunch:
-                airplane.setPosition(.6);
+                airplane.setPosition(.7);
                 break;
         }
     }

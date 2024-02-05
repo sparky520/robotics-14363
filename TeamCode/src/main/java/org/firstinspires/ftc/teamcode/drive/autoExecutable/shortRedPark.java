@@ -72,7 +72,7 @@ public class shortRedPark extends LinearOpMode {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
         distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
         TrajectorySequence tape = drive.trajectorySequenceBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();
-        TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1)).build();
+        TrajectorySequence board1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(10,-25)).build();
         TrajectorySequence park = drive.trajectorySequenceBuilder(board1.end()).lineToConstantHeading(new Vector2d(0,1.2)).build();
         TrajectorySequence stack1 = drive.trajectorySequenceBuilder(tape.end()).lineToConstantHeading(new Vector2d(0,1.5)).build();
         TrajectorySequence checkStack1 = drive.trajectorySequenceBuilder(new Pose2d(0,1.6)).lineToConstantHeading(new Vector2d(0,2)).build();
@@ -89,6 +89,7 @@ public class shortRedPark extends LinearOpMode {
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
         if (blueDetection.getLocation().equals("LEFT")){
+            telemetry.addLine("#1");
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1.5,() -> {
                         robot.Claw.setTape();
@@ -102,6 +103,8 @@ public class shortRedPark extends LinearOpMode {
             boardPose = new Pose2d(23,-43,Math.toRadians(90));
 
         }else if(blueDetection.getLocation().equals("MIDDLE")){
+            telemetry.addLine("#2" +
+                    "+");
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1.5,() -> {
                         robot.Claw.setTape();
@@ -112,11 +115,14 @@ public class shortRedPark extends LinearOpMode {
             boardPose = new Pose2d(26,-43,Math.toRadians(90));
 
         }else if(blueDetection.getLocation().equals("RIGHT")){
+            telemetry.addLine("#3");
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1.8,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(32,-16, Math.toRadians(90))).build();
+                    .lineToLinearHeading(new Pose2d(32,-14, Math.toRadians(85)))
+                    .lineToConstantHeading(new Vector2d(32,-20))
+                    .build();
             boardXOffset = -17;
             boardYOffset = 6;
             boardPose = new Pose2d(29,-43,Math.toRadians(90));
@@ -136,6 +142,9 @@ public class shortRedPark extends LinearOpMode {
                         boardX = toBoardEnd.getX()+ boardXOffset + 2 + (100*tagOfInterest.pose.x/6/1.41);
                         boardY = toBoardEnd.getY() + boardYOffset -2 - (100*tagOfInterest.pose.z/6);
                         board1 = drive.trajectorySequenceBuilder(tape.end())
+                                .addTemporalMarker(.4,()->{
+                                    robot.wrist.setPosition(armState.outtaking);
+                                })
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
                                 .lineToLinearHeading(new Pose2d(boardX,boardY,Math.toRadians(90)))
                                 .build();
@@ -302,7 +311,7 @@ public class shortRedPark extends LinearOpMode {
                                     robot.Arm.setPosition(armState.medium);
                                 })
                                 .turn(Math.toRadians(-100))
-                                .back(20)
+                                .back(30)
                                 .addDisplacementMarker(() -> {
                                     robot.Claw.setPosition(armState.close);
                                 })
@@ -389,6 +398,5 @@ public class shortRedPark extends LinearOpMode {
     public void outtake(){
         ElapsedTime timer1 = new ElapsedTime();
         robot.Arm.setPosition(armState.outtaking);
-        robot.wrist.setPosition(armState.outtaking);
     }
 }

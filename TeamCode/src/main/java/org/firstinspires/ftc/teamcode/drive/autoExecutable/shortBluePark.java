@@ -95,7 +95,7 @@ public class shortBluePark extends LinearOpMode {
                         robot.Claw.setTape();
                     })
                     .lineToLinearHeading(new Pose2d(33,12, Math.toRadians(-90))).build();
-            boardXOffset = -15;
+            boardXOffset = -17;
             boardYOffset = -1;
             boardPose = new Pose2d(23,43,Math.toRadians(-90));
             pathXoffset = 10;
@@ -105,7 +105,7 @@ public class shortBluePark extends LinearOpMode {
                     .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(40,5, Math.toRadians(-75))).build();
+                    .lineToLinearHeading(new Pose2d(38.5,5, Math.toRadians(-75))).build();
             boardXOffset = -15;
             boardYOffset = -4;
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
@@ -122,8 +122,8 @@ public class shortBluePark extends LinearOpMode {
                     })
                     .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(-90)))
                     .lineToConstantHeading(new Vector2d(30,5)).build();
-            boardXOffset = 2.5;
-            boardYOffset = -2.5;
+            boardXOffset = 0;
+            boardYOffset = -1.5;
             boardPose = new Pose2d(42,43,Math.toRadians(-90));
             pathXoffset = 0;
         }
@@ -319,7 +319,7 @@ public class shortBluePark extends LinearOpMode {
                                     robot.Claw.setPosition(armState.close);
                                 })
                                 .forward(5)
-                                .strafeRight(13)
+                                .lineToConstantHeading(new Vector2d(5,boardY-5))
                                 .turn(Math.toRadians(-90))
                                 .build();
                         drive.followTrajectorySequenceAsync(park);
