@@ -104,10 +104,10 @@ public class Mecanum
         }
         return angle;
     }
-    public double small(double target, double cur){
-        cur = wrap(cur);
+    public double small(double target, double current){
+        current = wrap(current);
         target = wrap(target);
-        double dif = target - cur;
+        double dif = target - current;
         if (dif < -180){
             dif += 360;
         }
