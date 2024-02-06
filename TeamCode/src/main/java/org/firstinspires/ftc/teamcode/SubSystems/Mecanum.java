@@ -82,9 +82,9 @@ public class Mecanum
         frontRightPower = 1 * (rotY - rotX - rx) / denominator;
         backRightPower = 1 * (rotY + rotX - rx) / denominator;
 
-        frontLeftMotor.setPower(frontLeftPower*slow_mode);
+        frontLeftMotor.setPower(frontLeftPower*.995*slow_mode);
         backLeftMotor.setPower(backLeftPower*slow_mode);
-        frontRightMotor.setPower(frontRightPower*slow_mode);
+        frontRightMotor.setPower(frontRightPower *slow_mode);
         backRightMotor.setPower(backRightPower*.885*slow_mode);
     }
 
