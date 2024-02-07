@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.autoExecutable;
 
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -37,6 +38,11 @@ public class longBluePark extends LinearOpMode {
     OpenCvCamera camera;
     double boardX, boardY, stack1Y, stackDetectX,stackDetectY;
     aprilTagDetection aprilTagDetectionPipeline;
+    final double tag1X = 22;
+    final double tag2LEFTX = 26.5;
+    final double tag2RIGHTX = 29.5;
+    double aprilLoc;
+    final double tag3X = 35;
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
@@ -54,7 +60,7 @@ public class longBluePark extends LinearOpMode {
     boolean pixelDropped = false;
     boolean intaking = false;
     enum state{
-        IDLE, board1, stack1, park, checkStack1, intakeStack, board2, checkBoard2,test
+        IDLE, truss1,board1, stack1, park, checkStack1, intakeStack, board2, checkBoard2,test
     }
     AprilTagDetection lastTOI = null;
     boolean armRaised = false;
@@ -88,7 +94,8 @@ public class longBluePark extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        if (blueDetection.getLocation().equals("RIGHT"))
+        //if (blueDetection.getLocation().equals("RIGHT"))
+        if (false)
         {
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
@@ -101,22 +108,22 @@ public class longBluePark extends LinearOpMode {
                     .build();
             boardXOffset = -28.5;
             boardYOffset = -6.5;
+            aprilLoc = 29.5;
             boardPose = new Pose2d(23,43,Math.toRadians(90));
 
-        }else if(blueDetection.getLocation().equals("MIDDLE"))
+        }else if(true)
         {
             tape = drive.trajectorySequenceBuilder(start)
-                    .addTemporalMarker(2,() -> {
+                    .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToConstantHeading(new Vector2d(46,3))
-                    .lineToConstantHeading(new Vector2d(53,3))
-                    .turn(Math.toRadians(90))
-                    .lineToLinearHeading(new Pose2d(53,65,Math.toRadians(-70)))
+                    .lineToLinearHeading(new Pose2d(30,-3,Math.toRadians(0)))
+                    .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                     .build();
             boardXOffset = -28.5;
             boardYOffset = -6.5;
-            boardPose = new Pose2d(26,43,Math.toRadians(90));
+            aprilLoc = 26.5;
+            boardPose = new Pose2d(26,43,Math.toRadians(-90));
 
         }else if(blueDetection.getLocation().equals("LEFT")){
             tape = drive.trajectorySequenceBuilder(start)
@@ -131,10 +138,11 @@ public class longBluePark extends LinearOpMode {
                     .build();
             boardXOffset = -30;
             boardYOffset = -6;
+            aprilLoc = 22;
             boardPose = new Pose2d(29,43,Math.toRadians(-90));
         }
 
-        currentState = state.board1;
+        currentState = state.truss1;
         robot.Claw.setPosition(armState.close);
         robot.wrist.setPosition(armState.intakingCLAW);
         drive.followTrajectorySequenceAsync(tape);
@@ -142,18 +150,39 @@ public class longBluePark extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
+                case truss1:
+                    if (distance2 < 25 && !drive.isBusy()){
+                        Pose2d atWall = new Pose2d(distance2,0,Math.toRadians(-90));
+                        drive.setPoseEstimate(atWall);
+                        TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(atWall)
+                                        .addTemporalMarker(2,() -> {
+                                            
+                                        })
+                                        .addTemporalMarker(4,() -> {
+                                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                                        })
+                                        .lineToConstantHeading(new Vector2d(5,75))
+                                        .lineToConstantHeading(new Vector2d(35,80)).build();
+                        drive.followTrajectorySequenceAsync(throughTruss);
+                        currentState = state.IDLE;
+                        telemetry.addLine(distance2  + "");
+                    }
+                    break;
                 case board1:
                     if (tagOfInterest != null && caseTagFound == false){
-                        Pose2d toBoardEnd = drive.getPoseEstimate();
-                        boardX = toBoardEnd.getX()+ boardXOffset - (100*tagOfInterest.pose.x/6/1.41);
-                        boardY = toBoardEnd.getY() + boardYOffset +(100*tagOfInterest.pose.z/6);
+                        double distanceToBoard = 100*tagOfInterest.pose.z/6;
+                        drive.setPoseEstimate(new Pose2d(distance2,93 - distanceToBoard,Math.toRadians(-90)));
                         board1 = drive.trajectorySequenceBuilder(tape.end())
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToLinearHeading(new Pose2d(boardX,boardY,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(aprilLoc,93,Math.toRadians(-90)))
                                 .build();
                         caseTagFound = true;
                     }
                     if (!drive.isBusy()){
+                        drive.followTrajectorySequenceAsync(board1);
+                        currentState = state.stack1;
+                    }
+                    /*if (!drive.isBusy()){
                         robot.Claw.setTape();
                     }
                     if (!drive.isBusy() && caseTagFound == true){
@@ -169,11 +198,8 @@ public class longBluePark extends LinearOpMode {
                         currentState = state.park;
                         tagOfInterest = null;
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
-                    }
+                    }*/
                 case stack1:
-                    if (tagOfInterest != null){
-                        lastTOI = tagOfInterest;
-                    }
                     if (!drive.isBusy()){
                         robot.Claw.dropBoard();
                         pixelDropped = true;
@@ -336,6 +362,7 @@ public class longBluePark extends LinearOpMode {
                         currentState = state.IDLE;
                     }
                 case IDLE:
+                    telemetry.addLine(distance2 + "");
 
             }
 
@@ -363,15 +390,17 @@ public class longBluePark extends LinearOpMode {
         if (currentDetections.size() != 0) {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == location) {
-                    telemetry.addLine("bobreg");
-                    telemetry.update();
+                if (tag.id == 1 || tag.id == 2 || tag.id == 3) {
                     tagOfInterest = tag;
+                    telemetry.addData("ID", tagOfInterest.id);
+                    telemetry.addData("X", 100*tagOfInterest.pose.x/6/1.41);
+                    telemetry.addData("Z", 100*tagOfInterest.pose.z/6);
                     tagFound = true;
                     break;
                 }
             }
         }
+
     }
     private void initColorDetection() {
 
@@ -393,6 +422,38 @@ public class longBluePark extends LinearOpMode {
         });
     }
     void initAprilTagDetect(){
+        aprilTagDetectionPipeline = new aprilTagDetection(tagsize, fx, fy, cx, cy);
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+        telemetry.setMsTransmissionInterval(50);
+    }
+    void initAprilTagDetect2(){
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.showFpsMeterOnViewport(true);
+                camera.startStreaming(320, 240, OpenCvCameraRotation.SENSOR_NATIVE);
+            }
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addLine("Unspecified Error Occurred; Camera Opening");
+            }
+        });
         aprilTagDetectionPipeline = new aprilTagDetection(tagsize, fx, fy, cx, cy);
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
