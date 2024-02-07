@@ -10,6 +10,7 @@ public class Robot {
     public airplane Airplane;
     public wrist wrist;
     public arm Arm;
+    public mecanumState mecanumState;
 
     //public airplane Airplane;
     public Robot(HardwareMap hardwareMap, Telemetry telemtry){
@@ -19,12 +20,22 @@ public class Robot {
         Claw = new finger(hardwareMap, telemtry);
         Airplane = new airplane(hardwareMap);
         wrist = new wrist(hardwareMap);
+
+
     }
+
 
     public void initialize(){
         Arm.setPosition(armState.low);
         slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
         Claw.setPosition(armState.outtaking);
+    }
+    public void setMecanumState(mecanumState mecanumState){
+        // driveTrain.driveAngleLock(mecanumState, gamepad1);
+        this.mecanumState = mecanumState;
+    }
+    public mecanumState getMecanumState(){
+        return mecanumState;
     }
 
 }

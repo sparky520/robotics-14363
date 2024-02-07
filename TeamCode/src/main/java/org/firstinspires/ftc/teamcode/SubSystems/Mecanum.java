@@ -35,9 +35,8 @@ public class Mecanum
     double integralSum = 0;
     double kp = 0.02;
     double ki = 0;
-    double kd = 1; 
-
-
+    double kd = 1;
+    double output,  error;
 
     public Mecanum(HardwareMap hardwareMap)
     {
@@ -64,7 +63,78 @@ public class Mecanum
 
 
     }
+    public void driveAngleLock(mecanumState mecanumState, GamepadEx gamepad1){
+        switch (mecanumState){
+            case NORMAL:
+                y = gamepad1.getLeftY();
+                x = gamepad1.getLeftX();
+                rx = gamepad1.getRightX();
 
+                botHeading = -imu.getAngularOrientation().firstAngle;
+
+                rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+                rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+
+                denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                frontLeftPower = (rotY + rotX + rx) / denominator;
+                backLeftPower = (rotY - rotX + rx) / denominator;
+                frontRightPower = (rotY - rotX - rx) / denominator;
+                backRightPower = (rotY + rotX - rx) / denominator;
+                break;
+            case TOREDBACKBOARD:
+                y = gamepad1.getLeftY();
+                x = gamepad1.getLeftX();
+                // double error = angleWrap(Math.toRadians(90) - imu.getAngularOrientation().firstAngle);
+                // rx = .1*(Math.toRadians(90)-imu.getAngularOrientation().firstAngle);
+                // rx = gamepad1.getRightX(); // 0.01 * (des_angle - curr_angle)
+                error = small(90, imu.getAngularOrientation().firstAngle * (180/Math.PI));
+
+
+                timer.reset();
+                output = (error * -kp) + (imu.getAngularVelocity().zRotationRate * kd) + (integralSum * ki);
+                rx = output;
+
+                botHeading = -imu.getAngularOrientation().firstAngle;
+
+
+
+                rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+                rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+
+                denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                frontLeftPower = (rotY + rotX + rx) / denominator;
+                backLeftPower = (rotY - rotX + rx) / denominator;
+                frontRightPower = (rotY - rotX - rx) / denominator;
+                backRightPower = (rotY + rotX - rx) / denominator;
+                break;
+            case TOBLUEBACKBOARD:
+                y = gamepad1.getLeftY();
+                x = gamepad1.getLeftX();
+                // double error = angleWrap(Math.toRadians(90) - imu.getAngularOrientation().firstAngle);
+                // rx = .1*(Math.toRadians(90)-imu.getAngularOrientation().firstAngle);
+                // rx = gamepad1.getRightX(); // 0.01 * (des_angle - curr_angle)
+                error = small(270, imu.getAngularOrientation().firstAngle * (180/Math.PI));
+
+
+                timer.reset();
+                output = (error * -kp) + (imu.getAngularVelocity().zRotationRate * kd) + (integralSum * ki);
+                rx = output;
+
+                botHeading = -imu.getAngularOrientation().firstAngle;
+
+
+                rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+                rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+
+                denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                frontLeftPower = (rotY + rotX + rx) / denominator;
+                backLeftPower = (rotY - rotX + rx) / denominator;
+                frontRightPower = (rotY - rotX - rx) / denominator;
+                backRightPower = (rotY + rotX - rx) / denominator;
+                break;
+
+        }
+    }
 
 
 

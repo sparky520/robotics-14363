@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Robot;
+import org.firstinspires.ftc.teamcode.SubSystems.mecanumState;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.OpModes.opAprilTagDetect;
 import org.firstinspires.ftc.teamcode.states.armState;
@@ -73,6 +74,8 @@ public class TeleOp extends OpMode
         timer.reset();
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
+        robot.drivetrain.driveAngleLock(robot.getMecanumState(), driver);
+        robot.setMecanumState(mecanumState.NORMAL);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -115,6 +118,16 @@ public class TeleOp extends OpMode
             robot.Arm.setPosition(armState.outtaking);
             robot.wrist.setPosition(armState.outtaking);
         }
+        if (gamepad1.dpad_left ) {
+            robot.setMecanumState(mecanumState.TOBLUEBACKBOARD);
+        }
+        if (gamepad1.dpad_up ) {
+            robot.setMecanumState(mecanumState.TOREDBACKBOARD);
+        }
+        if(gamepad1.dpad_right) {
+            robot.setMecanumState(mecanumState.NORMAL);
+        }
+
         if (gamepad1.square){
             robot.Airplane.setPosition(armState.airplaneLaunch);
         }
