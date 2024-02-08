@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.states.*;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -36,6 +37,9 @@ public class Robot {
     }
     public mecanumState getMecanumState(){
         return mecanumState;
+    }
+    public void runMecanum(mecanumState mecanumState, GamepadEx gamepad1){
+        drivetrain.driveAngleLock(mecanumState, gamepad1);
     }
 
 }

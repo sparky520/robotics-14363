@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -21,6 +22,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 
 public class Mecanum
 {
@@ -33,9 +35,11 @@ public class Mecanum
     private double lastError = 0;
     ElapsedTime timer = new ElapsedTime();
     double integralSum = 0;
-    double kp = 0.02;
-    double ki = 0;
-    double kd = 1;
+    //.0005
+    double kp = DriveConstants.MAX_ANG_VEL;
+    double ki = DriveConstants.MAX_VEL;
+    //.75
+    double kd = DriveConstants.MAX_ANG_ACCEL;
     double output,  error;
 
     public Mecanum(HardwareMap hardwareMap)
@@ -64,11 +68,15 @@ public class Mecanum
 
     }
     public void driveAngleLock(mecanumState mecanumState, GamepadEx gamepad1){
+        kp = DriveConstants.MAX_ANG_VEL;
+        ki = DriveConstants.MAX_VEL;
+        //.75
+        kd = DriveConstants.MAX_ANG_ACCEL;
         switch (mecanumState){
             case NORMAL:
                 y = gamepad1.getLeftY();
                 x = gamepad1.getLeftX();
-                rx = gamepad1.getRightX();
+                rx = -gamepad1.getRightX();
 
                 botHeading = -imu.getAngularOrientation().firstAngle;
 
@@ -80,14 +88,18 @@ public class Mecanum
                 backLeftPower = (rotY - rotX + rx) / denominator;
                 frontRightPower = (rotY - rotX - rx) / denominator;
                 backRightPower = (rotY + rotX - rx) / denominator;
-                break;
+
+                frontLeftMotor.setPower(frontLeftPower*.995*slow_mode);
+                backLeftMotor.setPower(backLeftPower*slow_mode);
+                frontRightMotor.setPower(frontRightPower *slow_mode);
+                backRightMotor.setPower(backRightPower*.885*slow_mode);                break;
             case TOREDBACKBOARD:
                 y = gamepad1.getLeftY();
                 x = gamepad1.getLeftX();
                 // double error = angleWrap(Math.toRadians(90) - imu.getAngularOrientation().firstAngle);
                 // rx = .1*(Math.toRadians(90)-imu.getAngularOrientation().firstAngle);
                 // rx = gamepad1.getRightX(); // 0.01 * (des_angle - curr_angle)
-                error = small(90, imu.getAngularOrientation().firstAngle * (180/Math.PI));
+                error = smallestAngleDifference(90, imu.getAngularOrientation().firstAngle * (180/Math.PI));
 
 
                 timer.reset();
@@ -106,14 +118,19 @@ public class Mecanum
                 backLeftPower = (rotY - rotX + rx) / denominator;
                 frontRightPower = (rotY - rotX - rx) / denominator;
                 backRightPower = (rotY + rotX - rx) / denominator;
+
+                frontLeftMotor.setPower(frontLeftPower*.995*slow_mode);
+                backLeftMotor.setPower(backLeftPower*slow_mode);
+                frontRightMotor.setPower(frontRightPower *slow_mode);
+                backRightMotor.setPower(backRightPower*.885*slow_mode);
                 break;
             case TOBLUEBACKBOARD:
                 y = gamepad1.getLeftY();
                 x = gamepad1.getLeftX();
                 // double error = angleWrap(Math.toRadians(90) - imu.getAngularOrientation().firstAngle);
                 // rx = .1*(Math.toRadians(90)-imu.getAngularOrientation().firstAngle);
-                // rx = gamepad1.getRightX(); // 0.01 * (des_angle - curr_angle)
-                error = small(270, imu.getAngularOrientation().firstAngle * (180/Math.PI));
+                 rx = gamepad1.getRightX(); // 0.01 * (des_angle - curr_angle)
+                error = smallestAngleDifference(270, imu.getAngularOrientation().firstAngle * (180/Math.PI));
 
 
                 timer.reset();
@@ -131,6 +148,11 @@ public class Mecanum
                 backLeftPower = (rotY - rotX + rx) / denominator;
                 frontRightPower = (rotY - rotX - rx) / denominator;
                 backRightPower = (rotY + rotX - rx) / denominator;
+
+                frontLeftMotor.setPower(frontLeftPower*.995*slow_mode);
+                backLeftMotor.setPower(backLeftPower*slow_mode);
+                frontRightMotor.setPower(frontRightPower *slow_mode);
+                backRightMotor.setPower(backRightPower*.885*slow_mode);
                 break;
 
         }
@@ -165,54 +187,38 @@ public class Mecanum
         frontRightMotor.setPower(frontRightPower *slow_mode);
         backRightMotor.setPower(backRightPower*.885*slow_mode);
     }
-    public double wrap(double angle){
-        if (angle > 180){
-            angle -= 360;
-        }
-        else if (angle < -180){
+    public double angleWrap360(double angle){
+        angle = angle % 360;
+        if(angle < 0.0){
             angle += 360;
         }
         return angle;
+
     }
-    public double small(double target, double current){
-        current = wrap(current);
-        target = wrap(target);
-        double dif = target - current;
-        if (dif < -180){
-            dif += 360;
+
+    public double angleWrap180(double angle){
+        angle = angleWrap360(angle);
+        if(angle > 180.0){
+            angle-=360;
+        } else if(angle < -180.0) {
+            angle+=360;
         }
-        else if (dif > 180){
-            dif = -(360-dif);
+        return angle;
+    }
+    public double smallestAngleDifference(double current, double desired){
+        current = angleWrap360(current);
+        desired = angleWrap360(desired);
+
+        double difference = current - desired;
+        if(difference > 180.0){
+            difference = -(360.0 - difference);
         }
-        return dif;
+        else if(difference < -180.0){
+            difference = 360.0 + difference;
+        }
+        return difference;
     }
-    public void angleLock(GamepadEx  driver, double angle){
-        y = driver.getLeftY();
-        x = driver.getLeftX();
-        double error = small(angle ,imu.getAngularOrientation().firstAngle * (180/Math.PI));
 
-        integralSum += error * timer.seconds();
-        double derivative = -(wrap(error - lastError)) / (timer.seconds());
-        lastError = error;
-
-
-        timer.reset();
-        double output = (error * -kp) + (imu.getAngularVelocity().zRotationRate * kd) + (integralSum * ki);
-        double rx = output;
-
-        double botHeading = -imu.getAngularOrientation().firstAngle;
-
-
-
-        rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-
-        denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        frontLeftPower = (rotY + rotX + rx) / denominator;
-        backLeftPower = (rotY - rotX + rx) / denominator;
-        frontRightPower = (rotY - rotX - rx) / denominator;
-        backRightPower = (rotY + rotX - rx) / denominator;
-    }
 
 
 

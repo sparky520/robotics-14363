@@ -53,6 +53,7 @@ public class TeleOp extends OpMode
     state armPos = state.IDLE;
     double intakeX,intakeY,intakeRot;
     SampleMecanumDrive drive;
+    mecanumState angleLock = mecanumState.NORMAL;
     opAprilTagDetect aprilTag = new opAprilTagDetect(tagsize, fx, fy, cx, cy);
     OpenCvCamera camera;
     double d,d2;
@@ -68,35 +69,18 @@ public class TeleOp extends OpMode
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
-        drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
-        initAprilTag();
         timer.reset();
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
-        robot.drivetrain.driveAngleLock(robot.getMecanumState(), driver);
-        robot.setMecanumState(mecanumState.NORMAL);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-            }
+        robot.drivetrain.driveAngleLock(mecanumState.NORMAL, driver);
 
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
 
     }
     @Override
     public void loop() {
         driver.readButtons();
         operator.readButtons();
-        robot.drivetrain.fieldCentric(driver);
+        robot.drivetrain.driveAngleLock(angleLock, driver);
         d = distanceSensor.getDistance(DistanceUnit.INCH );
         d2 = distanceSensor2.getDistance(DistanceUnit.INCH );
         telemetry.addData("d1", d);
@@ -119,13 +103,13 @@ public class TeleOp extends OpMode
             robot.wrist.setPosition(armState.outtaking);
         }
         if (gamepad1.dpad_left ) {
-            robot.setMecanumState(mecanumState.TOBLUEBACKBOARD);
+            angleLock = mecanumState.TOBLUEBACKBOARD;
         }
         if (gamepad1.dpad_up ) {
-            robot.setMecanumState(mecanumState.TOREDBACKBOARD);
+            angleLock = mecanumState.TOREDBACKBOARD;
         }
         if(gamepad1.dpad_right) {
-            robot.setMecanumState(mecanumState.NORMAL);
+            angleLock = mecanumState.NORMAL;
         }
 
         if (gamepad1.square){
@@ -162,55 +146,10 @@ public class TeleOp extends OpMode
         if (gamepad1.triangle){
             robot.drivetrain.slow_mode = 1;
         }
-        currentPos = drive.getPoseEstimate();
+
         telemetry.update();
 
 
 
-    }
-    void detectTags() {
-        ArrayList<AprilTagDetection> currentDetections = aprilTagDetect.getLatestDetections();
-        if (currentDetections.size() != 0) {
-            tagFound = false;
-            for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == 1||tag.id == 2||tag.id == 3||tag.id == 4||tag.id == 5||tag.id == 6) {
-                    tagOfInterest = tag;
-                    double power = 1 - 8/tagOfInterest.pose.z/6;
-                    if (power > .2){
-                        robot.drivetrain.slow_mode = power;
-                    }
-                    telemetry.addData("slowmode", robot.drivetrain.slow_mode);
-                    telemetry.addData("power", power);
-
-                    gamepad1.rumble(1);
-                    tagFound = true;
-                    break;
-                }
-            }
-        }
-        else{
-            telemetry.addLine("NOT FOUND");
-        }
-    }
-    public void initAprilTag(){
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetect = new opAprilTagDetect(tagsize, fx, fy, cx, cy);
-        camera.setPipeline(aprilTagDetect);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-        telemetry.setMsTransmissionInterval(50);
     }
 }
