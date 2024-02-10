@@ -13,14 +13,14 @@ public class yellowDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
-    private String location = "RIGHT";
+    public String location = "RIGHT";
 
-    static final Rect LEFT = new Rect(
-            new Point(160, 90),
-            new Point(220, 220));
     static final Rect RIGHT = new Rect(
-            new Point(0, 100),
-            new Point(60, 230));
+            new Point(40, 90),
+            new Point(100, 160));
+    static final Rect LEFT = new Rect(
+            new Point(40, 160),
+            new Point(100, 220));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.2;
     public yellowDetect(Telemetry t) { telemetry = t; }
