@@ -24,8 +24,6 @@ public class arm {
     }
 
     public void setPosition(armState state){
-        double rightOffSet = 0;
-        double leftOffSet = 0.01;
         switch(state) {
             case low:
                 intake();
@@ -41,31 +39,39 @@ public class arm {
 
 
     public void outtake(){
-        double ofset = .011;
+        double ofset = -.025;
 
-        leftArm.setPosition(.25 + ofset);
-        rightArm.setPosition(.25);
+        leftArm.setPosition(.15 + ofset);
+        rightArm.setPosition(.15);
+    }
+    public void test(double pos, double offset){
+        leftArm.setPosition(pos + offset);
+        rightArm.setPosition(pos);
+
     }
     public void intake(){
         double ofset;
-        ofset = .011;
-        leftArm.setPosition(.955 + ofset);
-        rightArm.setPosition(.955);
+        ofset = -.018;
+        leftArm.setPosition(.85 + ofset);
+        rightArm.setPosition(.85);
     }
     public void medium(){
         double ofset;
-        ofset = .014;
+        ofset = -.014;
 
-        leftArm.setPosition(.845 + ofset);
-        rightArm.setPosition(.845);
+        leftArm.setPosition(.75 + ofset);
+        rightArm.setPosition(.75);
+    }
+    public void stackDrop(){
+        double offset = -.023;
+        leftArm.setPosition(.24 + offset);
+        rightArm.setPosition(.24);
     }
     public void topStack(){
         double ofset;
-        ofset = .014;
-        //last .92
-        double test = DriveConstants.MAX_ANG_VEL;
-        leftArm.setPosition(.92 + ofset);
-        rightArm.setPosition(.92);
+        ofset = -.014;
+        leftArm.setPosition(.8 + ofset);
+        rightArm.setPosition(.8);
     }
 
 }

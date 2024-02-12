@@ -69,6 +69,7 @@ public class longBluePark extends LinearOpMode {
     AprilTagDetection lastTOI = null;
     boolean armRaised = false;
     double distance, distance2;
+    double distanceToBoard;
     boolean strafeChecking = false;
     double initialDistance, y;
     Pose2d stackFound, strafePose;
@@ -132,7 +133,8 @@ public class longBluePark extends LinearOpMode {
             aprilLoc = 26.5;
             boardPose = new Pose2d(26,43,Math.toRadians(-90));
 
-        }else if(blueDetection.getLocation().equals("LEFT")){
+        }//else if(blueDetection.getLocation().equals("LEFT")){
+        else if (false){
             followingPath = "LEFT";
             tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
@@ -160,30 +162,29 @@ public class longBluePark extends LinearOpMode {
             switch (currentState) {
                 case truss1:
                     if (distance2 < 25 && !drive.isBusy()){
-                        Pose2d atWall = new Pose2d(distance2,0,Math.toRadians(-90));
+                        Pose2d atWall = new Pose2d(distance2,distance,Math.toRadians(-90));
                         drive.setPoseEstimate(atWall);
                         TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(atWall)
                                         .addTemporalMarker(2,() -> {
                                             robot.Arm.setPosition(armState.outtaking);
                                         })
                                         .addTemporalMarker(4,() -> {
-                                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                                            //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
                                             robot.wrist.setPosition(armState.outtaking);
                                             robot.Claw.afterTape();
                                         })
-                                        .lineToConstantHeading(new Vector2d(5,75))
-                                        .lineToConstantHeading(new Vector2d(32,77)).build();
+                                        .lineToConstantHeading(new Vector2d(7,46))
+                                        .splineToConstantHeading(new Vector2d(29,75),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.board1;
                     }
                     break;
                 case board1:
                     if (tagOfInterest != null && caseTagFound == false){
-                        double distanceToBoard = 100*tagOfInterest.pose.z/6;
+                        distanceToBoard = 100*tagOfInterest.pose.z/6;
                         facingBoard = new Pose2d(distance2,93 - distanceToBoard,Math.toRadians(-90));
                         drive.setPoseEstimate(facingBoard);
-                        board1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                        board1 = drive.trajectorySequenceBuilder(facingBoard)
                                 .lineToConstantHeading(new Vector2d(aprilLoc,87.5))
                                 .build();
                         caseTagFound = true;
@@ -195,13 +196,14 @@ public class longBluePark extends LinearOpMode {
                             if (yellowDetection.getLocation().equals("RIGHT")){
                                 board1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                                         .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                        .lineToConstantHeading(new Vector2d(aprilLoc - 1.5,87.5))
+                                        .lineToConstantHeading(new Vector2d(aprilLoc - 1.5,86))
                                         .build();
                             }
                             drive.followTrajectorySequenceAsync(board1);
                             currentState = state.IDLE;
                         }
                         else{
+                            telemetry.addData("curY", 93-distanceToBoard);
                             drive.followTrajectorySequenceAsync(board1);
                             currentState = state.wall1;
                         }
@@ -212,7 +214,7 @@ public class longBluePark extends LinearOpMode {
                         robot.Claw.dropBoard();
                         stack1 = drive.trajectorySequenceBuilder(new Pose2d(aprilLoc,85,Math.toRadians(-90)))
                                 .addTemporalMarker(.5,() -> {
-                                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+                                    //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
                                 })
                                 .addTemporalMarker(1,() -> {
                                     robot.wrist.setPosition(armState.intakingCLAW);
@@ -220,8 +222,9 @@ public class longBluePark extends LinearOpMode {
                                     robot.Claw.maxClose();
                                 })
                                 .waitSeconds(.2)
-                                .lineToConstantHeading(new Vector2d(5,83))
-                                .lineToConstantHeading(new Vector2d(5,15)).build();
+                                .lineToConstantHeading(new Vector2d(7,80))
+                                .lineToConstantHeading(new Vector2d(5,15))
+                                .splineToConstantHeading(new Vector2d(23,-10),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(stack1);
                         currentState = state.stack1;
                         timer.reset();
@@ -229,34 +232,33 @@ public class longBluePark extends LinearOpMode {
                     break;
                 case stack1:
                     if (!drive.isBusy() && distance < 60){
-                        Pose2d wallReallign = new Pose2d(distance2 - 2,distance - stack.getY(),Math.toRadians(-90));
+                        //FOR FUTURE REFERENCE, switching center (0,0) to the corner piece. (0,0) is no longer the start position
+                        Pose2d wallReallign = new Pose2d(distance2,distance,Math.toRadians(-90));
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence stack2 = drive.trajectorySequenceBuilder(wallReallign)
-                                        .lineToLinearHeading(stack).build();
-                        telemetry.addLine(drive.getPoseEstimate().getX() + "    " +  drive.getPoseEstimate().getY());
+                                        .lineToLinearHeading(new Pose2d(28,4,Math.toRadians(-90))).build();
                         drive.followTrajectorySequenceAsync(stack2);
+
                         currentState = state.intakeStack;
                     }
                     break;
                 case intakeStack:
                     if (!drive.isBusy() && distance < 100){
+                        robot.Claw.setPosition(armState.close);
                         TrajectorySequence toStack = drive.trajectorySequenceBuilder(currentPose)
-                                .lineToConstantHeading(new Vector2d(currentPose.getX(),currentPose.getY() - distance))
-                                .addDisplacementMarker(() -> {
-                                    robot.Claw.setPosition(armState.close);
-                                })
-                                .lineToConstantHeading(new Vector2d(5,-5))
+                                .lineToConstantHeading(new Vector2d(5,35))
                                 .build();
                         drive.followTrajectorySequenceAsync(toStack);
-                        currentState = state.truss1;
+                        currentState = state.IDLE;
                     }
                     break;
+
                 case park:
                     if (!drive.isBusy()){
                         robot.Claw.dropBoard();
                         park = drive.trajectorySequenceBuilder(currentPose)
                                 .addTemporalMarker(10,()->{
-                                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+                                    //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
                                     robot.Arm.setPosition(armState.medium);
                                     robot.wrist.setPosition(armState.intakingCLAW);
                                     robot.Claw.setPosition(armState.close);
@@ -280,6 +282,7 @@ public class longBluePark extends LinearOpMode {
             currentPose = drive.getPoseEstimate();
             distance = distanceSensor.getDistance(DistanceUnit.INCH);
             distance2 = distanceSensor2.getDistance(DistanceUnit.INCH);
+            telemetry.addLine(drive.getPoseEstimate().getX() + "    " +  drive.getPoseEstimate().getY());
             telemetry.update();
             drive.update();
             detectTags();

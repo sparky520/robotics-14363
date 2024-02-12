@@ -22,8 +22,8 @@ public class finger {
     public void setPosition(armState state){
         switch (state){
             case open:
-                leftClaw.setPosition(.82);
-                rightClaw.setPosition(.82);
+                leftClaw.setPosition(.76);
+                rightClaw.setPosition(.76);
                 break;
             case close:
                 leftClaw.setPosition(.99);
