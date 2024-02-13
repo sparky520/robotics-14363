@@ -40,7 +40,8 @@ public class TeleOp extends OpMode
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         robot = new Robot(hardwareMap, telemetry);
-        //robot.wrist.setPosition(armState.intakingCLAW);
+        robot.wrist.setPosition(armState.intakingCLAW);
+        robot.Arm.setPosition(armState.low);
         //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
 
     }
@@ -63,8 +64,8 @@ public class TeleOp extends OpMode
         }
 
         if (gamepad2.circle){
-            robot.Arm.setPosition(armState.outtaking);
-            robot.wrist.setPosition(armState.outtaking);
+            robot.Arm.tempOuttake();
+            robot.wrist.tempOuttake();
         }
         if (gamepad1.square){
             robot.Airplane.setPosition(armState.airplaneLaunch);
@@ -95,10 +96,7 @@ public class TeleOp extends OpMode
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
         }
         if (gamepad1.right_bumper){
-            robot.Claw.setPosition(armState.intakingCLAW);
-        }
-        if (gamepad1.triangle){
-            robot.drivetrain.slow_mode = 1;
+            robot.Claw.setPosition(armState.close);
         }
         telemetry.update();
 

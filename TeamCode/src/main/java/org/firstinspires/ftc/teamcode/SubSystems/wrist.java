@@ -27,4 +27,8 @@ public class wrist {
         wrist.setPosition(.52);
     }
 
+    public void tempOuttake(){
+        wrist.setPosition(.79);
+    }
+
 }

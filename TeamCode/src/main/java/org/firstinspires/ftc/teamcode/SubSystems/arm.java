@@ -52,8 +52,8 @@ public class arm {
     public void intake(){
         double ofset;
         ofset = -.018;
-        leftArm.setPosition(.85 + ofset);
-        rightArm.setPosition(.85);
+        leftArm.setPosition(.86 + ofset);
+        rightArm.setPosition(.86);
     }
     public void medium(){
         double ofset;
@@ -72,6 +72,12 @@ public class arm {
         ofset = -.014;
         leftArm.setPosition(.8 + ofset);
         rightArm.setPosition(.8);
+    }
+
+    public void tempOuttake(){
+        double offset = -.023;
+        leftArm.setPosition(.24 + offset);
+        rightArm.setPosition(.24);
     }
 
 }

@@ -85,7 +85,7 @@ public class aprilTagTest extends LinearOpMode {
         if (currentDetections.size() != 0) {
             tagFound = false;
             for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == 4 || tag.id == 5 || tag.id == 6) {
+                if (tag.id == 1 || tag.id == 2 || tag.id == 3) {
                     tagOfInterest = tag;
                     telemetry.addData("ID", tagOfInterest.id);
                     telemetry.addData("X", 100*tagOfInterest.pose.x/6/1.41);
@@ -102,7 +102,7 @@ public class aprilTagTest extends LinearOpMode {
     private void initColorDetection() {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         blueDetection = new shortBlueObjectDetect(telemetry);
 
         camera.setPipeline(blueDetection);
