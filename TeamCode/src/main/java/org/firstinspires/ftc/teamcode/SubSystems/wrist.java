@@ -15,7 +15,7 @@ public class wrist {
     public void setPosition(armState state){
         switch (state){
             case intakingCLAW:
-                wrist.setPosition(.54);
+                wrist.setPosition(.525);
                 break;
             case outtaking:
                 wrist.setPosition(.76);
@@ -27,8 +27,15 @@ public class wrist {
         wrist.setPosition(.52);
     }
 
-    public void tempOuttake(){
-        wrist.setPosition(.79);
+    public void test(double pos){
+        wrist.setPosition(pos);
     }
+    public void topStack(){
+        wrist.setPosition(.505);
+    }
+    public void autoOuttake(){
+        wrist.setPosition(.63);
+    }
+
 
 }

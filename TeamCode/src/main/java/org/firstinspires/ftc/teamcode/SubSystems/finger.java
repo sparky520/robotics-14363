@@ -22,27 +22,38 @@ public class finger {
     public void setPosition(armState state){
         switch (state){
             case open:
-                leftClaw.setPosition(.76);
-                rightClaw.setPosition(.76);
+                leftClaw.setPosition(.66);
+                rightClaw.setPosition(.66);
                 break;
             case close:
                 leftClaw.setPosition(.99);
-                //rightClaw.setPosition(.51                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       );
                 rightClaw.setPosition(.99);
                 break;
         }
     }
 
     //auto
+    public void closeLeft(){
+        leftClaw.setPosition(.99);
+    }
+    public void closeRight(){
+        rightClaw.setPosition(.99);
+    }
+    public void openLeft(){
+        leftClaw.setPosition(.7);
+    }
+    public void openRight(){
+        rightClaw.setPosition(.7);
+    }
     public void setTape(){
-        rightClaw.setPosition(.84);
+        rightClaw.setPosition(.72);
     }
     public void afterTape(){
         rightClaw.setPosition(1);
     }
     //auto
     public void dropBoard(){
-        leftClaw.setPosition(.82);
+        leftClaw.setPosition(.72);
     }
     public void maxClose(){
         leftClaw.setPosition(1);
@@ -55,7 +66,7 @@ public class finger {
         leftClaw.setPosition(1);
         //.84
         //.97
-        rightClaw.setPosition(.8);
+        rightClaw.setPosition(.7);
     }
 
 }

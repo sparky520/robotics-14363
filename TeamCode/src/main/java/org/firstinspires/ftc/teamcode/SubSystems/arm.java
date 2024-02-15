@@ -39,7 +39,7 @@ public class arm {
 
 
     public void outtake(){
-        double ofset = -.025;
+        double ofset = -.012;
 
         leftArm.setPosition(.15 + ofset);
         rightArm.setPosition(.15);
@@ -51,16 +51,23 @@ public class arm {
     }
     public void intake(){
         double ofset;
-        ofset = -.018;
-        leftArm.setPosition(.86 + ofset);
-        rightArm.setPosition(.86);
+        ofset = -.011;
+        leftArm.setPosition(.837 + ofset);
+        rightArm.setPosition(.837);
     }
     public void medium(){
         double ofset;
-        ofset = -.014;
+        ofset = -.011;
 
         leftArm.setPosition(.75 + ofset);
         rightArm.setPosition(.75);
+    }
+    public void half(){
+        double ofset;
+        ofset = -.011;
+
+        leftArm.setPosition(.7 + ofset);
+        rightArm.setPosition(.7);
     }
     public void stackDrop(){
         double offset = -.023;
@@ -70,14 +77,14 @@ public class arm {
     public void topStack(){
         double ofset;
         ofset = -.014;
-        leftArm.setPosition(.8 + ofset);
-        rightArm.setPosition(.8);
+        leftArm.setPosition(.815 + ofset);
+        rightArm.setPosition(.815);
     }
 
-    public void tempOuttake(){
-        double offset = -.023;
-        leftArm.setPosition(.24 + offset);
-        rightArm.setPosition(.24);
+    public void autoOuttake(){
+        double offset = -.012;
+        leftArm.setPosition(.2 + offset);
+        rightArm.setPosition(.2);
     }
 
 }
