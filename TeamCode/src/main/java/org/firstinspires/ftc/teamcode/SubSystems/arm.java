@@ -62,6 +62,13 @@ public class arm {
         leftArm.setPosition(.75 + ofset);
         rightArm.setPosition(.75);
     }
+    public void highOuttake(){
+        double ofset;
+        ofset = -.012;
+
+        leftArm.setPosition(.22 + ofset);
+        rightArm.setPosition(.22);
+    }
     public void half(){
         double ofset;
         ofset = -.011;

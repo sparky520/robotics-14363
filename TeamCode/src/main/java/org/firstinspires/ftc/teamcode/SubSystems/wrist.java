@@ -36,6 +36,8 @@ public class wrist {
     public void autoOuttake(){
         wrist.setPosition(.63);
     }
-
+    public void highOuttake(){
+        wrist.setPosition(.79);
+    }
 
 }

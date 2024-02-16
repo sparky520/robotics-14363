@@ -157,7 +157,7 @@ public class longBluePark extends LinearOpMode {
                                                 robot.Arm.autoOuttake();
                                             }
                                         })
-                                        .lineToLinearHeading(new Pose2d(5,75,Math.toRadians(-90)))
+                                        .lineToConstantHeading(new Vector2d(5,75))
                                         .splineToConstantHeading(new Vector2d(29,105),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.board1;
