@@ -11,6 +11,11 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 public class finger {
     private Servo leftClaw, rightClaw;
     Telemetry tel;
+    public enum state{
+        opened,closed,
+    }
+    public state LClawState = state.opened;
+    public state RClawState = state.opened;
     public finger(HardwareMap hardwareMap, Telemetry telemetry)
     {
         tel = telemetry;
@@ -22,10 +27,14 @@ public class finger {
     public void setPosition(armState state){
         switch (state){
             case open:
+                RClawState = finger.state.opened;
+                LClawState = finger.state.opened;
                 leftClaw.setPosition(.66);
                 rightClaw.setPosition(.66);
                 break;
             case close:
+                RClawState = finger.state.closed;
+                LClawState = finger.state.closed;
                 leftClaw.setPosition(.99);
                 rightClaw.setPosition(.99);
                 break;
@@ -34,15 +43,19 @@ public class finger {
 
     //auto
     public void closeLeft(){
+        LClawState = finger.state.closed;
         leftClaw.setPosition(.99);
     }
     public void closeRight(){
+        RClawState = finger.state.closed;
         rightClaw.setPosition(.99);
     }
     public void openLeft(){
+        LClawState = finger.state.opened;
         leftClaw.setPosition(.7);
     }
     public void openRight(){
+        RClawState = finger.state.opened;
         rightClaw.setPosition(.7);
     }
     public void setTape(){

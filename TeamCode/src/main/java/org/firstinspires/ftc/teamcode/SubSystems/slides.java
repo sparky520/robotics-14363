@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class slides {
     DcMotorEx leftSlide, rightSlide;
     double power = 0.65;
+    public int driftOffset = 0;
     public slides(HardwareMap hardwareMap){
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftOuttakeSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightOuttakeSlide");
@@ -35,21 +36,9 @@ public class slides {
                 //positive goes up for left slide
             case etxending: {
                 switch (outtakeSlidesState) {
-                    case AUTO_LONG_HIGH:
-                        leftSlide.setTargetPosition(1200);
-                        rightSlide.setTargetPosition(-1200);
-
-                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                        leftSlide.setPower(power);
-                        rightSlide.setPower(power);
-
-                        extensionState = extensionState.extended;
-                        break;
                     case SHORT_AUTO:
-                        leftSlide.setTargetPosition(200);
-                        rightSlide.setTargetPosition(-200);
+                        leftSlide.setTargetPosition(200-driftOffset);
+                        rightSlide.setTargetPosition(-200+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -60,8 +49,8 @@ public class slides {
                         extensionState = extensionState.extended;
                         break;
                     case HIGHIN:
-                        leftSlide.setTargetPosition(1200);
-                        rightSlide.setTargetPosition(-1200);
+                        leftSlide.setTargetPosition(1200-driftOffset);
+                        rightSlide.setTargetPosition(-1200+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -72,8 +61,8 @@ public class slides {
                         extensionState = extensionState.extended;
                         break;
                     case MEDIUMIN:
-                        leftSlide.setTargetPosition(950);
-                        rightSlide.setTargetPosition(-950);
+                        leftSlide.setTargetPosition(950-driftOffset);
+                        rightSlide.setTargetPosition(-950+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -83,8 +72,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case AUTO1:
-                        leftSlide.setTargetPosition(350);
-                        rightSlide.setTargetPosition(-350);
+                        leftSlide.setTargetPosition(350-driftOffset);
+                        rightSlide.setTargetPosition(-350+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -94,19 +83,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case TOPSTACK:
-                        leftSlide.setTargetPosition(60);
-                        rightSlide.setTargetPosition(-60);
-
-                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.extended;
-
-                        leftSlide.setPower(power);
-                        rightSlide.setPower(power);
-                        break;
-                    case TOPSTACK2:
-                        leftSlide.setTargetPosition(10);
-                        rightSlide.setTargetPosition(-10);
+                        leftSlide.setTargetPosition(70-driftOffset);
+                        rightSlide.setTargetPosition(-70+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -116,8 +94,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case LOWIN:
-                        leftSlide.setTargetPosition(400);
-                        rightSlide.setTargetPosition(-400);
+                        leftSlide.setTargetPosition(400-driftOffset);
+                        rightSlide.setTargetPosition(-400+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -127,8 +105,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case STATION:
-                        leftSlide.setTargetPosition(30);
-                        rightSlide.setTargetPosition(30);
+                        leftSlide.setTargetPosition(30-driftOffset);
+                        rightSlide.setTargetPosition(30+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -138,8 +116,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case TELEOPSTATION:
-                        leftSlide.setTargetPosition(15);
-                        rightSlide.setTargetPosition(-15);
+                        leftSlide.setTargetPosition(25-driftOffset);
+                        rightSlide.setTargetPosition(-25+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

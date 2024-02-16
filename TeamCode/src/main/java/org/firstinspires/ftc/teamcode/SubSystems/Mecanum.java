@@ -85,7 +85,7 @@ public class Mecanum
         frontLeftMotor.setPower(frontLeftPower*slow_mode);
         backLeftMotor.setPower(backLeftPower*slow_mode);
         frontRightMotor.setPower(frontRightPower*slow_mode);
-        backRightMotor.setPower(backRightPower*.885*slow_mode);
+        backRightMotor.setPower(backRightPower*slow_mode);
     }
 
 

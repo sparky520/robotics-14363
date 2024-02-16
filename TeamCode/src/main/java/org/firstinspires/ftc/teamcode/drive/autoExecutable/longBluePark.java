@@ -184,7 +184,7 @@ public class longBluePark extends LinearOpMode {
                                                 robot.Arm.autoOuttake();
                                             }
                                         })
-                                        .lineToConstantHeading(new Vector2d(7,80))
+                                        .lineToConstantHeading(new Vector2d(5,75))
                                         .splineToConstantHeading(new Vector2d(29,105),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.board1;
@@ -200,7 +200,7 @@ public class longBluePark extends LinearOpMode {
                             if (yellowDetection.getLocation().equals("RIGHT")){
                                 board1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                                         .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(36, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                        .lineToConstantHeading(new Vector2d(aprilLoc - 1.5,91))
+                                        .lineToLinearHeading(new Pose2d(aprilLoc - 1.5,91, Math.toRadians(-90)))
                                         .build();
                             }
                             drive.followTrajectorySequenceAsync(board1);
@@ -229,7 +229,7 @@ public class longBluePark extends LinearOpMode {
                                     robot.wrist.topStack();
                                     robot.Arm.topStack();
                                 })
-                                .lineToConstantHeading(new Vector2d(7,80)).build();
+                                .lineToLinearHeading(new Pose2d(6,62,Math.toRadians(-90))).build();
                         drive.followTrajectorySequenceAsync(stack1);
                         currentState = state.wall2;
                     }
@@ -239,21 +239,21 @@ public class longBluePark extends LinearOpMode {
                         Pose2d wallReallign = new Pose2d(distanceSide,currentPose.getY(),Math.toRadians(-90));
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence wall2 = drive.trajectorySequenceBuilder(wallReallign)
-                                .lineToConstantHeading(new Vector2d(7,15))
-                                .splineToConstantHeading(new Vector2d(29,-5),Math.toRadians(280)).build();
+                                .lineToConstantHeading(new Vector2d(6,15))
+                                .splineToConstantHeading(new Vector2d(31,-8),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(wall2);
                         currentState = state.stack1;
                     }
                     break;
                 case stack1:
                     if (!drive.isBusy() && distanceFront < 60){
-                        //FOR FUTURE REFERENCE, switching center (0,0) to the corner piece. (0,0) is no longer the start position
                         Pose2d wallReallign = new Pose2d(distanceSide,distanceFront,Math.toRadians(-90));
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence stack2 = drive.trajectorySequenceBuilder(wallReallign)
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToLinearHeading(new Pose2d(42,0,Math.toRadians(-90))).build();
+                                .lineToLinearHeading(new Pose2d(27,0,Math.toRadians(-90))).build();
                         drive.followTrajectorySequenceAsync(stack2);
+                        telemetry.addLine(drive.getPoseEstimate().getX() + "  " + drive.getPoseEstimate().getY());
                         currentState = state.intakeStack;
                     }
                     break;
@@ -263,7 +263,7 @@ public class longBluePark extends LinearOpMode {
                         robot.Claw.setPosition(armState.close);
                         drive.setPoseEstimate(new Pose2d(distanceSide,distanceFront,Math.toRadians(-90)));
                         TrajectorySequence toStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(new Pose2d(7,30,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(6,30,Math.toRadians(-90)))
                                 .build();
                         drive.followTrajectorySequenceAsync(toStack);
                         currentState = state.truss1;
