@@ -126,6 +126,17 @@ public class slides {
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
                         break;
+                    case RESET:
+                        leftSlide.setTargetPosition(0-driftOffset);
+                        rightSlide.setTargetPosition(-0+driftOffset);
+
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        extensionState = extensionState.retracted;
+
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+                        break;
                 }
             }
             case extended:

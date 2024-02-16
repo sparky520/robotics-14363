@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.states;
 
 public enum outtakeStates {
-    AUTO_LONG_HIGH,
-    topStack,
+    RESET,
     SHORT_AUTO,
     HIGHIN,
     MEDIUMIN,
