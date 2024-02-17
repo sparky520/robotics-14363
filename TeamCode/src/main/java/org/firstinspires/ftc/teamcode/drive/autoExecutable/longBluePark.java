@@ -57,7 +57,7 @@ public class longBluePark extends LinearOpMode {
     String followingPath;
     double claw1Val,claw2Val,colorBoardVal;
     int curCycle = 0;
-    int boardColorThreshold = 600;
+    int boardColorThreshold = 300;
     SampleMecanumDrive drive;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
@@ -95,10 +95,10 @@ public class longBluePark extends LinearOpMode {
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(30,-5,Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
                     .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                     .build();
-            aprilLoc = 24;
+            aprilLoc = 20;
             drive.followTrajectorySequenceAsync(tape);
 
         }//else if(blueDetection.getLocation().equals("LEFT")){
@@ -169,14 +169,19 @@ public class longBluePark extends LinearOpMode {
                         drive.setPoseEstimate(boardReallign);
 
                         TrajectorySequence board1 = drive.trajectorySequenceBuilder(boardReallign)
-                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(aprilLoc,94)).build();
+                                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
+                                .lineToLinearHeading(new Pose2d(aprilLoc,94,Math.toRadians(-90))).build();
                         drive.followTrajectorySequenceAsync(board1);
-                        currentState = state.wall1;
+                        if (curCycle == 1){
+                            currentState = state.park;
+                        }
+                        else{
+                            currentState = state.wall1;
+                        }
                     }
                     break;
                 case wall1:
-                    if (colorBoardVal > boardColorThreshold || (curCycle == 1 && distanceBack < 10)){
+                    if (colorBoardVal > boardColorThreshold){
                         robot.Claw.setPosition(armState.open);
                         TrajectorySequence stack1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                                 .addTemporalMarker(.5,() -> {
@@ -201,7 +206,7 @@ public class longBluePark extends LinearOpMode {
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence wall2 = drive.trajectorySequenceBuilder(wallReallign)
                                 .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
-                                .splineToConstantHeading(new Vector2d(26,-13),Math.toRadians(280)).build();
+                                .splineToConstantHeading(new Vector2d(23,-13),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(wall2);
                         currentState = state.stack1;
                     }
@@ -212,18 +217,19 @@ public class longBluePark extends LinearOpMode {
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence stack2 = drive.trajectorySequenceBuilder(wallReallign)
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(17, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToConstantHeading(new Vector2d(28,0))
+                                .lineToConstantHeading(new Vector2d(28.5,0))
                                 .build();
                         drive.followTrajectorySequenceAsync(stack2);
                         currentState = state.intakeStack;
                     }
                     break;
                 case intakeStack:
-                    if (claw2Val > 600 || claw1Val > 600){
+                    if (claw2Val > 300 || claw1Val > 300){
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
                         robot.Claw.setPosition(armState.close);
                         drive.setPoseEstimate(new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading()));
                         TrajectorySequence toStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(new Pose2d(6,30,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(5,29,Math.toRadians(-90)))
                                 .build();
                         drive.followTrajectorySequenceAsync(toStack);
                         currentState = state.truss1;
@@ -231,7 +237,8 @@ public class longBluePark extends LinearOpMode {
                     }
                     break;
                 case park:
-                    if (!drive.isBusy()){
+                    if (distanceBack < 8.5){
+                        robot.Claw.setPosition(armState.open);
                         Pose2d boardReallign = new Pose2d(distanceSide,93-distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         robot.Arm.setPosition(armState.medium);
