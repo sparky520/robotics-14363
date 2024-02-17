@@ -66,8 +66,10 @@ public class arm {
         double ofset;
         ofset = -.012;
 
-        leftArm.setPosition(.22 + ofset);
-        rightArm.setPosition(.22);
+        //leftArm.setPosition(.22 + ofset);
+        //rightArm.setPosition(.22);
+        leftArm.setPosition(.2 + ofset);
+        rightArm.setPosition(.2);
     }
     public void half(){
         double ofset;
