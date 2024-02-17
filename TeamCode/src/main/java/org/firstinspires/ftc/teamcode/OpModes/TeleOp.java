@@ -67,6 +67,7 @@ public class TeleOp extends OpMode
 
         }
          */
+
         robot.drivetrain.fieldCentric(driver);
         sensor1Val = claw1.blue()+claw1.red()+claw1.green();
         sensor2Val = claw2.blue()+claw2.red()+claw2.green();

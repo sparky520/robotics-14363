@@ -14,4 +14,5 @@ public enum outtakeStates {
     etxending,
     retracted,
     extended,
+    HIGH_AUTO,
 }

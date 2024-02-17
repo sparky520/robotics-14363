@@ -51,6 +51,18 @@ public class slides {
 
                         extensionState = extensionState.extended;
                         break;
+                    case HIGH_AUTO:
+                        leftSlide.setTargetPosition(1200-driftOffset);
+                        rightSlide.setTargetPosition(-1200+driftOffset);
+
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+
+                        extensionState = extensionState.extended;
+                        break;
                     case HIGHIN:
                         leftSlide.setTargetPosition(1300-driftOffset);
                         rightSlide.setTargetPosition(-1300+driftOffset);
@@ -86,8 +98,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case TOPSTACK:
-                        leftSlide.setTargetPosition(70-driftOffset);
-                        rightSlide.setTargetPosition(-70+driftOffset);
+                        leftSlide.setTargetPosition(40-driftOffset);
+                        rightSlide.setTargetPosition(-40+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
