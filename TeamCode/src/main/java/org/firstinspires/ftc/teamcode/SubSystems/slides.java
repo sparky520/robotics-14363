@@ -65,7 +65,7 @@ public class slides {
                         break;
                     case HIGHIN:
                         leftSlide.setTargetPosition(1300-driftOffset);
-                        rightSlide.setTargetPosition(-1300+driftOffset);
+                        rightSlide.setTargetPosition(-1310+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -77,7 +77,7 @@ public class slides {
                         break;
                     case MEDIUMIN:
                         leftSlide.setTargetPosition(950-driftOffset);
-                        rightSlide.setTargetPosition(-950+driftOffset);
+                        rightSlide.setTargetPosition(-960+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -110,7 +110,7 @@ public class slides {
                         break;
                     case LOWIN:
                         leftSlide.setTargetPosition(400-driftOffset);
-                        rightSlide.setTargetPosition(-400+driftOffset);
+                        rightSlide.setTargetPosition(-410+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -123,7 +123,7 @@ public class slides {
                         leftSlide.setTargetPosition(30-driftOffset);
                         rightSlide.setTargetPosition(-30+driftOffset);
 
-                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        //leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         extensionState = extensionState.retracted;
 
@@ -134,7 +134,7 @@ public class slides {
                         leftSlide.setTargetPosition(15-driftOffset);
                         rightSlide.setTargetPosition(-15+driftOffset);
 
-                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                       // leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         extensionState = extensionState.retracted;
 
