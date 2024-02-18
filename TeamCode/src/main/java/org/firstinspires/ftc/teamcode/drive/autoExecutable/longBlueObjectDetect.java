@@ -16,7 +16,7 @@ public class longBlueObjectDetect extends OpenCvPipeline {
     private String location = "RIGHT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(160, 90),
+            new Point(160, 150),
             new Point(220, 220));
 
     /*static final Rect MIDDLE_ROI = new Rect(

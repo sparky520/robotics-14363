@@ -181,6 +181,18 @@ public class longBlue2_2 extends LinearOpMode {
                                     robot.Arm.topStack();
                                 })
                                 .lineToConstantHeading(new Vector2d(5,62)).build();
+                        if (followingPath.equals("RIGHT")){
+                            nextToWall = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                                    .addTemporalMarker(.5,() -> {
+                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+                                    })
+                                    .addTemporalMarker(1,() -> {
+                                        robot.wrist.topStack();
+                                        robot.Arm.topStack();
+                                    })
+                                    .lineToConstantHeading(new Vector2d(drive.getPoseEstimate().getX(),drive.getPoseEstimate().getY() - 6))
+                                    .lineToConstantHeading(new Vector2d(5,62)).build();
+                        }
                         if (curCycle == 1){
                             currentState = state.park;
                         }else{
