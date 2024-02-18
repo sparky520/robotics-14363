@@ -52,7 +52,7 @@ public class shortBlue2_2 extends LinearOpMode {
     String followingPath;
     double claw1Val,claw2Val,colorBoardVal;
     int curCycle = 0;
-    int boardColorThreshold = 300;
+    int boardColorThreshold = 500;
     SampleMecanumDrive drive;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
@@ -68,7 +68,7 @@ public class shortBlue2_2 extends LinearOpMode {
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
         //if (blueDetection.getLocation().equals("RIGHT"))
-        if (true)
+        if (false)
         {
             followingPath = "RIGHT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
@@ -81,22 +81,27 @@ public class shortBlue2_2 extends LinearOpMode {
                         robot.Arm.setPosition(armState.outtaking);
                     })
                     .lineToSplineHeading(new Pose2d(32,-5,Math.toRadians(-90)))
-                    .splineToConstantHeading(new Vector2d(25,30),Math.toRadians(280))
+                    .lineToConstantHeading(new Vector2d(25,30))
                     .build();
             aprilLoc = 34;
             drive.followTrajectorySequenceAsync(tape);
 
-        }else if(false)
+        }else if(true)
         {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
-                    .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
+                    .addTemporalMarker(2.5,() -> {
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                        robot.wrist.setPosition(armState.outtaking);
+                        robot.Arm.setPosition(armState.outtaking);
+                    })
+                    .lineToSplineHeading(new Pose2d(40,0,Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(25,30))
                     .build();
-            aprilLoc = 20;
+            aprilLoc = 27;
             drive.followTrajectorySequenceAsync(tape);
 
         }//else if(blueDetection.getLocation().equals("LEFT")){
@@ -114,7 +119,7 @@ public class shortBlue2_2 extends LinearOpMode {
         robot.Claw.setPosition(armState.close);
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.Arm.intake();
-        currentState = state.park;
+        currentState = state.toBoard;
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case throughTruss:

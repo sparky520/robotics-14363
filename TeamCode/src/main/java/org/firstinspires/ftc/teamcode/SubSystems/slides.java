@@ -41,7 +41,7 @@ public class slides {
                 switch (outtakeSlidesState) {
                     case SHORT_AUTO:
                         leftSlide.setTargetPosition(200-driftOffset);
-                        rightSlide.setTargetPosition(-200+driftOffset);
+                        rightSlide.setTargetPosition(200+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -53,7 +53,7 @@ public class slides {
                         break;
                     case HIGH_AUTO:
                         leftSlide.setTargetPosition(1200-driftOffset);
-                        rightSlide.setTargetPosition(-1200+driftOffset);
+                        rightSlide.setTargetPosition(1200+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -64,31 +64,31 @@ public class slides {
                         extensionState = extensionState.extended;
                         break;
                     case HIGHIN:
-                        leftSlide.setTargetPosition(1310-driftOffset);
-                        rightSlide.setTargetPosition(-1300+driftOffset);
+                        leftSlide.setTargetPosition(1340-driftOffset);
+                        rightSlide.setTargetPosition(1300+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                        leftSlide.setPower(power);
+                        //leftSlide.setPower(power);
                         rightSlide.setPower(power);
 
                         extensionState = extensionState.extended;
                         break;
                     case MEDIUMIN:
-                        leftSlide.setTargetPosition(960-driftOffset);
-                        rightSlide.setTargetPosition(-950+driftOffset);
+                        leftSlide.setTargetPosition(990-driftOffset);
+                        rightSlide.setTargetPosition(950+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         extensionState = extensionState.extended;
 
-                        leftSlide.setPower(power);
+                        //leftSlide.setPower(power);
                         rightSlide.setPower(power);
                         break;
                     case AUTO1:
                         leftSlide.setTargetPosition(350-driftOffset);
-                        rightSlide.setTargetPosition(-350+driftOffset);
+                        rightSlide.setTargetPosition(350+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -99,7 +99,7 @@ public class slides {
                         break;
                     case TOPSTACK:
                         leftSlide.setTargetPosition(45-driftOffset);
-                        rightSlide.setTargetPosition(-45+driftOffset);
+                        rightSlide.setTargetPosition(45+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -109,8 +109,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case LOWIN:
-                        leftSlide.setTargetPosition(410-driftOffset);
-                        rightSlide.setTargetPosition(-400+driftOffset);
+                        leftSlide.setTargetPosition(440-driftOffset);
+                        rightSlide.setTargetPosition(400+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -121,7 +121,7 @@ public class slides {
                         break;
                     case STATION:
                         leftSlide.setTargetPosition(30-driftOffset);
-                        rightSlide.setTargetPosition(-30+driftOffset);
+                        rightSlide.setTargetPosition(30+driftOffset);
 
                         //leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -132,18 +132,18 @@ public class slides {
                         break;
                     case TELEOPSTATION:
                         leftSlide.setTargetPosition(15-driftOffset);
-                        rightSlide.setTargetPosition(-15+driftOffset);
+                        rightSlide.setTargetPosition(15+driftOffset);
 
                        // leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         extensionState = extensionState.retracted;
 
-                        leftSlide.setPower(power);
+                        //leftSlide.setPower(power);
                         rightSlide.setPower(power);
                         break;
                     case RESET:
                         leftSlide.setTargetPosition(0-driftOffset);
-                        rightSlide.setTargetPosition(-0+driftOffset);
+                        rightSlide.setTargetPosition(0+driftOffset);
 
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
