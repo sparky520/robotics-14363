@@ -23,8 +23,8 @@ public class longBlueObjectDetect extends OpenCvPipeline {
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(140, 50),
-            new Point(200, 110));
+            new Point(200, 50),
+            new Point(260, 110));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.2;
     public longBlueObjectDetect(Telemetry t) { telemetry = t; }
@@ -61,8 +61,8 @@ public class longBlueObjectDetect extends OpenCvPipeline {
             // TSE = team scoring element
         }
         else if (TSERight){
-            location = "LEFT";
-            telemetry.addData("TSE Location", "LEFT");
+            location = "RIGHT";
+            telemetry.addData("TSE Location", "RIGHT");
         }
         telemetry.update();
 
