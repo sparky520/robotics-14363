@@ -16,17 +16,17 @@ public class shortBlueObjectDetect extends OpenCvPipeline {
     private String location = "RIGHT";
 
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(250, 110),
-            new Point(310, 180));
+            new Point(180, 140),
+            new Point(240, 210));
 
     /*static final Rect MIDDLE_ROI = new Rect(
             new Point(0, 110),
             new Point(60, 150));*/
     static final Rect RIGHT_ROI = new Rect(
-            new Point(100, 100),
-            new Point(160, 230));
+            new Point(180, 0),
+            new Point(240, 50));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
-    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.2;
+    static double LEFT_PERCENT_COLOR_THRESHOLD = 0.1;
     public shortBlueObjectDetect(Telemetry t) { telemetry = t; }
 
     @Override
