@@ -1,21 +1,16 @@
 package org.firstinspires.ftc.teamcode.drive.autoExecutable;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.autoTests.yelllow;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
@@ -29,8 +24,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "short Blue Park", group = "Auto")
-public class shortBluePark extends LinearOpMode {
+@Autonomous(name = "short Blue 2 + 2", group = "Auto")
+public class shortBlue2_2 extends LinearOpMode {
 
     boolean tagFound = false;
     Robot robot;
@@ -61,7 +56,7 @@ public class shortBluePark extends LinearOpMode {
     SampleMecanumDrive drive;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-        drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap, false);
         drive.setPoseEstimate(start);
 
         initHardware();

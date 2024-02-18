@@ -43,7 +43,7 @@ public class stackSensorTest extends LinearOpMode {
     Pose2d strafePos;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, false );
         drive.setPoseEstimate(currentPose);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
         distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");

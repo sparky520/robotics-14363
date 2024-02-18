@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class slides {
     DcMotorEx leftSlide, rightSlide;
-    double power = 0.65;
+    double power = 1;
     public int driftOffset = 0;
     public slides(HardwareMap hardwareMap){
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftOuttakeSlide");

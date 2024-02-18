@@ -55,7 +55,7 @@ public class aprilTagTest extends LinearOpMode {
     boolean armRaised = false;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, false);
         drive.setPoseEstimate(start);
 
         Trajectory tape = drive.trajectoryBuilder(start).lineToConstantHeading(new Vector2d(0,1.1)).build();

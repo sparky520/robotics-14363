@@ -49,7 +49,7 @@ public class yellowDetectTest extends LinearOpMode {
     boolean armRaised = false;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap,false);
         drive.setPoseEstimate(start);
 
         initColorDetection();
