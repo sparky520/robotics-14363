@@ -68,22 +68,20 @@ public class longBlue2_2 extends LinearOpMode {
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
         //if (blueDetection.getLocation().equals("RIGHT"))
-        if (false)
+        if (true)
         {
             followingPath = "RIGHT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
-                    .addTemporalMarker(2,() -> {
+                    .addTemporalMarker(1,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToConstantHeading(new Vector2d(40,-8))
-                    .lineToConstantHeading(new Vector2d(53,-8))
-                    .turn(Math.toRadians(90))
-                    .lineToLinearHeading(new Pose2d(54,65,Math.toRadians(-70)))
+                    .lineToLinearHeading(new Pose2d(25,-10,Math.toRadians(0)))
+                    .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                     .build();
-            aprilLoc = 29.5;
+            aprilLoc = 41;
             drive.followTrajectorySequenceAsync(tape);
 
-        }else if(true)
+        }else if(false)
         {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
@@ -93,25 +91,28 @@ public class longBlue2_2 extends LinearOpMode {
                     .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
                     .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                     .build();
-            aprilLoc = 20;
+            aprilLoc = 25;
             drive.followTrajectorySequenceAsync(tape);
 
         }//else if(blueDetection.getLocation().equals("LEFT")){
         else if (false){
             followingPath = "LEFT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
-                    .addTemporalMarker(1,() -> {
+                    .addTemporalMarker(1.7,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToSplineHeading(new Pose2d(28,6,Math.toRadians(90))).build();
-            aprilLoc = 20;
+                    .lineToLinearHeading(new Pose2d(29,5,Math.toRadians(-270)))
+                    .lineToLinearHeading(new Pose2d(29,8.5,Math.toRadians(90)))
+                    .lineToSplineHeading(new Pose2d(5,-5,Math.toRadians(-90)))
+                    .build();
+            aprilLoc = 27;
             drive.followTrajectorySequenceAsync(tape);
         }
 
         robot.Claw.setPosition(armState.close);
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.Arm.intake();
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.RESET);
         currentState = state.throughTruss;
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
@@ -146,7 +147,7 @@ public class longBlue2_2 extends LinearOpMode {
                                             }
                                         })
                                         .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
-                                        .splineToConstantHeading(new Vector2d(29,105),Math.toRadians(280)).build();
+                                        .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.toBoard;
                     }
@@ -179,7 +180,7 @@ public class longBlue2_2 extends LinearOpMode {
                                     robot.wrist.topStack();
                                     robot.Arm.topStack();
                                 })
-                                .lineToConstantHeading(new Vector2d(0,62)).build();
+                                .lineToConstantHeading(new Vector2d(5,62)).build();
                         if (curCycle == 1){
                             currentState = state.park;
                         }else{

@@ -52,7 +52,7 @@ public class shortBlue2_2 extends LinearOpMode {
     String followingPath;
     double claw1Val,claw2Val,colorBoardVal;
     int curCycle = 0;
-    int boardColorThreshold = 500;
+    int boardColorThreshold = 600;
     SampleMecanumDrive drive;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
@@ -90,7 +90,7 @@ public class shortBlue2_2 extends LinearOpMode {
         {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
-                    .addTemporalMarker(1,() -> {
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
                     .addTemporalMarker(2.5,() -> {
@@ -98,21 +98,31 @@ public class shortBlue2_2 extends LinearOpMode {
                         robot.wrist.setPosition(armState.outtaking);
                         robot.Arm.setPosition(armState.outtaking);
                     })
-                    .lineToSplineHeading(new Pose2d(40,0,Math.toRadians(-90)))
+                    .lineToSplineHeading(new Pose2d(41,3,Math.toRadians(-90)))
                     .lineToConstantHeading(new Vector2d(25,30))
                     .build();
-            aprilLoc = 27;
+            aprilLoc = 25;
             drive.followTrajectorySequenceAsync(tape);
 
         }//else if(blueDetection.getLocation().equals("LEFT")){
         else if (false){
             followingPath = "LEFT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
-                    .addTemporalMarker(1,() -> {
+                    .addTemporalMarker(2,() -> {
                         robot.Claw.setTape();
                     })
-                    .lineToSplineHeading(new Pose2d(28,6,Math.toRadians(90))).build();
-            aprilLoc = 20;
+                    .addTemporalMarker(2.5,() -> {
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                        robot.wrist.setPosition(armState.outtaking);
+                        robot.Arm.setPosition(armState.outtaking);
+                    })
+                    .addTemporalMarker(3,() -> {
+                        robot.Claw.closeLeft();
+                    })
+                    .lineToSplineHeading(new Pose2d(32,12,Math.toRadians(-90)))
+                    .lineToConstantHeading(new Vector2d(25,30))
+                    .build();
+            aprilLoc = 15.5;
             drive.followTrajectorySequenceAsync(tape);
         }
 
@@ -132,8 +142,9 @@ public class shortBlue2_2 extends LinearOpMode {
                                 })
                                 .addTemporalMarker(2,()->{
                                     if (curCycle == 0){
-                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.SHORT_AUTO);
                                     }else{
+                                        robot.Claw.closeLeft();
                                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
                                     }
                                 })
@@ -153,7 +164,7 @@ public class shortBlue2_2 extends LinearOpMode {
                                     }
                                 })
                                 .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
-                                .splineToConstantHeading(new Vector2d(29,105),Math.toRadians(280)).build();
+                                .splineToConstantHeading(new Vector2d(23,105),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.toBoard;
                     }
@@ -165,13 +176,13 @@ public class shortBlue2_2 extends LinearOpMode {
 
                         TrajectorySequence board = drive.trajectorySequenceBuilder(boardReallign)
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToLinearHeading(new Pose2d(aprilLoc,94,Math.toRadians(-90))).build();
+                                .lineToLinearHeading(new Pose2d(aprilLoc,90,Math.toRadians(-90))).build();
                         drive.followTrajectorySequenceAsync(board);
                         if (curCycle == 1){
                             currentState = state.park;
                         }
                         else{
-                            currentState = state.park;
+                            currentState = state.goNextToWall;
                         }
                     }
                     break;
@@ -235,7 +246,7 @@ public class shortBlue2_2 extends LinearOpMode {
                         currentState = state.throughTruss;
                         curCycle += 1;
                         if (followingPath.equals("MIDDLE") || followingPath.equals("LEFT")){
-                            aprilLoc = 29;
+                            aprilLoc = 15;
                         }else{
                             aprilLoc = 16;
                             robot.Claw.closeRight();

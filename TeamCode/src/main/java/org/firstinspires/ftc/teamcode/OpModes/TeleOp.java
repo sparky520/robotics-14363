@@ -43,10 +43,10 @@ public class TeleOp extends OpMode
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.Arm.setPosition(armState.low);
         robot.Claw.setPosition(armState.open);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
         color1 = hardwareMap.get(ColorRangeSensor.class, "colorBoard");
         claw1 = hardwareMap.get(ColorRangeSensor.class, "claw1");
         claw2 = hardwareMap.get(ColorRangeSensor.class, "claw2");
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
     }
     @Override
     public void loop() {

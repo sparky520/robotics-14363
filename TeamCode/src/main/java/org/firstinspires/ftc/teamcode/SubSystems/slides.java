@@ -97,6 +97,17 @@ public class slides {
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
                         break;
+                    case LOW_AUTO:
+                        leftSlide.setTargetPosition(250-driftOffset);
+                        rightSlide.setTargetPosition(250+driftOffset);
+
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        extensionState = extensionState.extended;
+
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+                        break;
                     case TOPSTACK:
                         leftSlide.setTargetPosition(45-driftOffset);
                         rightSlide.setTargetPosition(45+driftOffset);

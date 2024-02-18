@@ -30,25 +30,28 @@ public class finger {
                 RClawState = finger.state.opened;
                 LClawState = finger.state.opened;
                 leftClaw.setPosition(.66);
-                rightClaw.setPosition(.66);
+                rightClaw.setPosition(.18);
                 break;
             case close:
                 RClawState = finger.state.closed;
                 LClawState = finger.state.closed;
                 leftClaw.setPosition(.99);
-                rightClaw.setPosition(.99);
+                rightClaw.setPosition(.51);
                 break;
         }
     }
 
-    //auto
+    public void test(double pos){
+        leftClaw.setPosition(pos);
+        rightClaw.setPosition(pos);
+    }
     public void closeLeft(){
         LClawState = finger.state.closed;
         leftClaw.setPosition(.99);
     }
     public void closeRight(){
         RClawState = finger.state.closed;
-        rightClaw.setPosition(.99);
+        rightClaw.setPosition(.51);
     }
     public void openLeft(){
         LClawState = finger.state.opened;
@@ -56,13 +59,13 @@ public class finger {
     }
     public void openRight(){
         RClawState = finger.state.opened;
-        rightClaw.setPosition(.7);
+        rightClaw.setPosition(.18);
     }
     public void setTape(){
-        rightClaw.setPosition(.72);
+        rightClaw.setPosition(.51);
     }
     public void afterTape(){
-        rightClaw.setPosition(1);
+        rightClaw.setPosition(.51);
     }
     //auto
     public void dropBoard(){
