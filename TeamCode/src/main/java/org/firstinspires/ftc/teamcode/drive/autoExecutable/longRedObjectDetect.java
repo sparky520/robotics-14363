@@ -15,16 +15,16 @@ public class longRedObjectDetect extends OpenCvPipeline {
 
     private String location = "LEFT";
 
-    static final Rect MIDDLE_ROI = new Rect(
-            new Point(190, 10),
-            new Point(250, 140));
+    static final Rect RIGHT_ROI = new Rect(
+            new Point(190, 0),
+            new Point(250, 50));
 
     /*static final Rect MIDDLE_ROI = new Rect(
             new Point(0, 110),
             new Point(60, 150));*/
-    static final Rect RIGHT_ROI = new Rect(
-            new Point(0, 10),
-            new Point(60, 140));
+    static final Rect MIDDLE_ROI = new Rect(
+            new Point(190, 140),
+            new Point(250, 200));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.1;
     public longRedObjectDetect(Telemetry t) { telemetry = t; }

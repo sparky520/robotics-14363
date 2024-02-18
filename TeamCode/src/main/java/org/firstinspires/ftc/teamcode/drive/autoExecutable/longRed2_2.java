@@ -52,7 +52,7 @@ public class longRed2_2 extends LinearOpMode {
     SampleMecanumDrive drive;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-        drive = new SampleMecanumDrive(hardwareMap, true);
+        drive = new SampleMecanumDrive(hardwareMap, false);
         drive.setPoseEstimate(start);
 
         initHardware();
@@ -63,8 +63,7 @@ public class longRed2_2 extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        //if (blueDetection.getLocation().equals("RIGHT"))
-        if (false)
+        if (blueDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
@@ -79,7 +78,7 @@ public class longRed2_2 extends LinearOpMode {
             aprilLoc = 29.5;
             drive.followTrajectorySequenceAsync(tape);
 
-        }else if(true)
+        }else if(blueDetection.getLocation().equals("MIDDLE"))
         {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
@@ -87,13 +86,13 @@ public class longRed2_2 extends LinearOpMode {
                         robot.Claw.setTape();
                     })
                     .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
-                    .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
+                    .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(90)))
                     .build();
             aprilLoc = 20;
             drive.followTrajectorySequenceAsync(tape);
 
-        }//else if(blueDetection.getLocation().equals("LEFT")){
-        else if (false){
+        }
+        else if (blueDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
@@ -141,7 +140,7 @@ public class longRed2_2 extends LinearOpMode {
                                         robot.Arm.autoOuttake();
                                     }
                                 })
-                                .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
+                                .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(90)))
                                 .splineToConstantHeading(new Vector2d(29,105),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.toBoard;
@@ -154,7 +153,7 @@ public class longRed2_2 extends LinearOpMode {
 
                         TrajectorySequence board = drive.trajectorySequenceBuilder(boardReallign)
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToLinearHeading(new Pose2d(aprilLoc,90,Math.toRadians(-90))).build();
+                                .lineToLinearHeading(new Pose2d(aprilLoc,90,Math.toRadians(90))).build();
                         drive.followTrajectorySequenceAsync(board);
                         if (curCycle == 1){
                             currentState = state.park;
@@ -189,7 +188,7 @@ public class longRed2_2 extends LinearOpMode {
                         Pose2d wallReallign = new Pose2d(distanceSide,drive.getPoseEstimate().getY(),drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(wallReallign)
-                                .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
+                                .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(90)))
                                 .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.goToStack;
@@ -217,7 +216,7 @@ public class longRed2_2 extends LinearOpMode {
 
                         drive.setPoseEstimate(new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading()));
                         TrajectorySequence goToWall = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(new Pose2d(5,29,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(5,29,Math.toRadians(90)))
                                 .build();
 
                         drive.followTrajectorySequenceAsync(goToWall);
