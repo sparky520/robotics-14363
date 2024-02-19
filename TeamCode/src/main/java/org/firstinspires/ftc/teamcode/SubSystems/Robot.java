@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Robot {
     public Mecanum drivetrain;
     public slides slide;
+    public slidesV2 slidev2;
     public finger Claw;
     public airplane Airplane;
     public wrist wrist;
@@ -16,6 +17,7 @@ public class Robot {
         drivetrain = new Mecanum(hardwareMap);
         Arm = new arm(hardwareMap, telemtry);
         slide = new slides(hardwareMap);
+        slidev2 = new slidesV2(hardwareMap);
         Claw = new finger(hardwareMap, telemtry);
         Airplane = new airplane(hardwareMap);
         wrist = new wrist(hardwareMap);
@@ -23,7 +25,6 @@ public class Robot {
 
     public void initialize(){
         Arm.setPosition(armState.low);
-        slide.setOuttakeSlidePosition(outtakeStates.etxending, outtakeStates.STATION);
         Claw.setPosition(armState.outtaking);
     }
 

@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import org.firstinspires.ftc.teamcode.states.outtakeStates;
+
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class slides {
-    DcMotorEx leftSlide, rightSlide;
-    double power = 1;
+    public DcMotorEx leftSlide, rightSlide;
+    double power = .3;
     public int driftOffset = 0;
+    public outtakeStates currentSlideState = outtakeStates.TELEOPSTATION;
+    public boolean goingUp = false;
     public slides(HardwareMap hardwareMap){
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftOuttakeSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightOuttakeSlide");
@@ -17,17 +21,13 @@ public class slides {
         leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         leftSlide.setTargetPosition(0);
         rightSlide.setTargetPosition(0);
-
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftSlide.setPower(0.6);
-        rightSlide.setPower(0.6);
+        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
     }
@@ -36,137 +36,170 @@ public class slides {
         switch (extensionState) {
             case retracted:
                 break;
-                //positive goes up for left slide
             case etxending: {
                 switch (outtakeSlidesState) {
                     case SHORT_AUTO:
                         leftSlide.setTargetPosition(200-driftOffset);
-                        rightSlide.setTargetPosition(200+driftOffset);
-
+                        rightSlide.setTargetPosition(200-driftOffset);
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
-
+                        currentSlideState = outtakeStates.SHORT_AUTO;
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
                         extensionState = extensionState.extended;
                         break;
                     case HIGH_AUTO:
                         leftSlide.setTargetPosition(1200-driftOffset);
-                        rightSlide.setTargetPosition(1200+driftOffset);
-
+                        rightSlide.setTargetPosition(1200-driftOffset);
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
-
+                        currentSlideState = outtakeStates.HIGH_AUTO;
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
                         extensionState = extensionState.extended;
                         break;
                     case HIGHIN:
-                        leftSlide.setTargetPosition(1340-driftOffset);
-                        rightSlide.setTargetPosition(1300+driftOffset);
-
+                        leftSlide.setTargetPosition(1300-driftOffset);
+                        rightSlide.setTargetPosition(1300-driftOffset);
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                        //leftSlide.setPower(power);
+                        leftSlide.setPower(power);
                         rightSlide.setPower(power);
-
+                        currentSlideState = outtakeStates.HIGHIN;
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
                         extensionState = extensionState.extended;
                         break;
                     case MEDIUMIN:
-                        leftSlide.setTargetPosition(990-driftOffset);
-                        rightSlide.setTargetPosition(950+driftOffset);
-
+                        leftSlide.setTargetPosition(950-driftOffset);
+                        rightSlide.setTargetPosition(950-driftOffset);
+                        extensionState = extensionState.extended;
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.extended;
-
-                        //leftSlide.setPower(power);
+                        leftSlide.setPower(power);
                         rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.MEDIUMIN;
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
                         break;
                     case AUTO1:
                         leftSlide.setTargetPosition(350-driftOffset);
-                        rightSlide.setTargetPosition(350+driftOffset);
-
+                        rightSlide.setTargetPosition(350-driftOffset);
+                        extensionState = extensionState.extended;
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.extended;
-
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.AUTO1;
                         break;
                     case LOW_AUTO:
                         leftSlide.setTargetPosition(250-driftOffset);
-                        rightSlide.setTargetPosition(250+driftOffset);
-
+                        rightSlide.setTargetPosition(250-driftOffset);
+                        extensionState = extensionState.extended;
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.extended;
-
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.LOW_AUTO;
                         break;
                     case TOPSTACK:
                         leftSlide.setTargetPosition(45-driftOffset);
-                        rightSlide.setTargetPosition(45+driftOffset);
-
+                        rightSlide.setTargetPosition(45-driftOffset);
+                        extensionState = extensionState.extended;
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.extended;
-
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.TOPSTACK;
                         break;
                     case LOWIN:
-                        leftSlide.setTargetPosition(440-driftOffset);
-                        rightSlide.setTargetPosition(400+driftOffset);
-
+                        leftSlide.setTargetPosition(400-driftOffset);
+                        rightSlide.setTargetPosition(400-driftOffset);
+                        extensionState = extensionState.extended;
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.extended;
-
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
-                        break;
-                    case STATION:
-                        leftSlide.setTargetPosition(30-driftOffset);
-                        rightSlide.setTargetPosition(30+driftOffset);
-
-                        //leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.retracted;
-
-                        leftSlide.setPower(power);
-                        rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.LOWIN;
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
                         break;
                     case TELEOPSTATION:
-                        leftSlide.setTargetPosition(15-driftOffset);
-                        rightSlide.setTargetPosition(15+driftOffset);
-
-                       // leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        leftSlide.setTargetPosition(100-driftOffset);
+                        rightSlide.setTargetPosition(100-driftOffset);
                         extensionState = extensionState.retracted;
-
-                        //leftSlide.setPower(power);
-                        rightSlide.setPower(power);
-                        break;
-                    case RESET:
-                        leftSlide.setTargetPosition(0-driftOffset);
-                        rightSlide.setTargetPosition(0+driftOffset);
-
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        extensionState = extensionState.retracted;
-
+                        currentSlideState = outtakeStates.TELEOPSTATION;
                         leftSlide.setPower(power);
                         rightSlide.setPower(power);
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
+                        break;
+                    case RESET:
+                        leftSlide.setTargetPosition(1-driftOffset);
+                        rightSlide.setTargetPosition(1-driftOffset);
+                        extensionState = extensionState.retracted;
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.RESET;
                         break;
                 }
             }
             case extended:
                 break;
+
         }
     }
+
+    public boolean checkSlidePos(){
+        switch (currentSlideState){
+            case TELEOPSTATION:
+                if (goingUp && leftSlide.getCurrentPosition() > 100){
+                    leftSlide.setPower(.001);
+                    rightSlide.setPower(.001);
+                    return true;
+                }
+                break;
+            case MEDIUMIN:
+                if (goingUp && leftSlide.getCurrentPosition() > 950){
+                    leftSlide.setPower(.001);
+                    rightSlide.setPower(.001);
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
 }

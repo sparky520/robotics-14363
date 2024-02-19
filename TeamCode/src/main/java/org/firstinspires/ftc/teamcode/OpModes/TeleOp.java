@@ -25,17 +25,15 @@ public class TeleOp extends OpMode
     enum state{
         autoOuttake,manualOuttake
     }
-    state outtakeType = state.manualOuttake;
     boolean outtaking = false;
     DistanceSensor distanceSensor3,distanceSensor2;
     boolean autoOuttake = false;
     double backDistance, sideDistance;
     boolean switchedOuttakeTypeThisLoop = false;
+    outtakeStates currentSlideState = outtakeStates.TELEOPSTATION;
     @Override
     public void init()
     {
-        distanceSensor3 = hardwareMap.get(DistanceSensor.class, "distanceSensor3");
-        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
         telemetry.setMsTransmissionInterval(50);
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
@@ -43,18 +41,20 @@ public class TeleOp extends OpMode
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.Arm.setPosition(armState.low);
         robot.Claw.setPosition(armState.open);
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
+        //robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
         color1 = hardwareMap.get(ColorRangeSensor.class, "colorBoard");
         claw1 = hardwareMap.get(ColorRangeSensor.class, "claw1");
         claw2 = hardwareMap.get(ColorRangeSensor.class, "claw2");
     }
     @Override
     public void loop() {
-        backDistance = distanceSensor3.getDistance(DistanceUnit.INCH);
-        sideDistance = distanceSensor2.getDistance(DistanceUnit.INCH);
-
         driver.readButtons();
         operator.readButtons();
+
+        telemetry.addData("LSlide pos", robot.slidev2.leftSlide.getCurrentPosition());
+        telemetry.addData("RSlide pos", robot.slidev2.rightSlide.getCurrentPosition());
+        telemetry.addData("going up", robot.slidev2.goingUp);
+        telemetry.addData("state", robot.slidev2.currentSlideState);
         /*
         if (backDistance < 50){
             double powerLevel = backDistance*backDistance/2500;
@@ -73,11 +73,7 @@ public class TeleOp extends OpMode
         sensor1Val = claw1.blue()+claw1.red()+claw1.green();
         sensor2Val = claw2.blue()+claw2.red()+claw2.green();
         sensor3Val = color1.blue()+color1.red()+color1.green();
-        telemetry.addData("claw1",  sensor1Val);
-        telemetry.addData("claw2", sensor2Val);
-        telemetry.addData("colorBoard", sensor3Val);
-        telemetry.addData("back distance", backDistance);
-        telemetry.addData("side distance", sideDistance);
+
 
         if (gamepad2.right_trigger > 0 && sensor3Val > 200 && outtaking && backDistance < 5){
             robot.Claw.setPosition(armState.open);
@@ -108,6 +104,8 @@ public class TeleOp extends OpMode
         if (gamepad2.dpad_up){
 
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
+            //robot.slidev2.isGoingUp(1100);
+            //robot.slidev2.currentSlideState = outtakeStates.MEDIUMIN;
         }
         if (gamepad2.dpad_left){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LOWIN);
@@ -121,6 +119,8 @@ public class TeleOp extends OpMode
 
         if (gamepad2.dpad_down){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TELEOPSTATION);
+            //robot.slidev2.isGoingUp(100);
+            //robot.slidev2.currentSlideState = outtakeStates.LOWIN;
         }
         if (gamepad2.left_bumper){
             robot.slide.driftOffset += 10;
@@ -146,7 +146,7 @@ public class TeleOp extends OpMode
             robot.Claw.openRight();
         }
 
-        switchedOuttakeTypeThisLoop = false;
+        //robot.slidev2.setSlidePos();
         telemetry.update();
     }
 }
