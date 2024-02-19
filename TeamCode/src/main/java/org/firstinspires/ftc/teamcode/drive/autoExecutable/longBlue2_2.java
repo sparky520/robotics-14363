@@ -117,6 +117,39 @@ public class longBlue2_2 extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case throughTruss:
+                    if (drive.isBusy() && distanceSide < 5){
+                        Pose2d atWall = new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading());
+                        drive.setPoseEstimate(atWall);
+                        TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(atWall)
+                                .addTemporalMarker(.1,() -> {
+                                    robot.Arm.half();
+                                })
+                                .addTemporalMarker(2,()->{
+                                    if (curCycle == 0){
+                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                                    }else{
+                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
+                                    }
+                                })
+                                .addTemporalMarker(3,() -> {
+                                    if (curCycle == 0){
+                                        robot.wrist.setPosition(armState.outtaking);
+                                    }else{
+                                        robot.wrist.autoOuttake();
+                                    }
+                                    robot.Claw.afterTape();
+                                })
+                                .addTemporalMarker(3.25,() -> {
+                                    if (curCycle == 0){
+                                        robot.Arm.setPosition(armState.outtaking);
+                                    }else{
+                                        robot.Arm.autoOuttake();
+                                    }
+                                })
+                                .lineToConstantHeading(new Vector2d(7.5, atWall.getY()))
+                                .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
+                                .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
+                    }
                     if (!drive.isBusy()){
                         Pose2d atWall = new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(atWall);
@@ -148,6 +181,37 @@ public class longBlue2_2 extends LinearOpMode {
                                         })
                                         .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
                                         .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
+                        if (distanceSide < 5 || distanceSide > 10){
+                            throughTruss = drive.trajectorySequenceBuilder(atWall)
+                                    .addTemporalMarker(.1,() -> {
+                                        robot.Arm.half();
+                                    })
+                                    .addTemporalMarker(2,()->{
+                                        if (curCycle == 0){
+                                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                                        }else{
+                                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
+                                        }
+                                    })
+                                    .addTemporalMarker(3,() -> {
+                                        if (curCycle == 0){
+                                            robot.wrist.setPosition(armState.outtaking);
+                                        }else{
+                                            robot.wrist.autoOuttake();
+                                        }
+                                        robot.Claw.afterTape();
+                                    })
+                                    .addTemporalMarker(3.25,() -> {
+                                        if (curCycle == 0){
+                                            robot.Arm.setPosition(armState.outtaking);
+                                        }else{
+                                            robot.Arm.autoOuttake();
+                                        }
+                                    })
+                                    .lineToConstantHeading(new Vector2d(7.5, atWall.getY()))
+                                    .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
+                                    .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
+                        }
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.toBoard;
                     }
@@ -202,12 +266,32 @@ public class longBlue2_2 extends LinearOpMode {
                     }
                     break;
                 case backThroughTruss:
+                    //UNTESTED
+                    if (drive.isBusy() && distanceSide < 5){
+                        Pose2d wallReallign = new Pose2d(distanceSide,drive.getPoseEstimate().getY(),drive.getPoseEstimate().getHeading());
+                        drive.setPoseEstimate(wallReallign);
+                        TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(wallReallign)
+                                .lineToConstantHeading(new Vector2d(7.5, wallReallign.getY()))
+                                .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
+                                .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
+                        drive.followTrajectorySequenceAsync(throughTruss);
+                        currentState = state.goToStack;
+                    }
+                    //UNTESTED
                     if (!drive.isBusy()){
                         Pose2d wallReallign = new Pose2d(distanceSide,drive.getPoseEstimate().getY(),drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(wallReallign)
                                 .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
                                 .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
+                        //UNTESTED
+                        if (distanceSide < 5 || distanceSide > 10){
+                            throughTruss = drive.trajectorySequenceBuilder(wallReallign)
+                                    .lineToConstantHeading(new Vector2d(7.5, wallReallign.getY()))
+                                    .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
+                                    .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
+                        }
+                        //UNTESTED
                         drive.followTrajectorySequenceAsync(throughTruss);
                         currentState = state.goToStack;
                     }
@@ -231,8 +315,8 @@ public class longBlue2_2 extends LinearOpMode {
                     if (claw2Val > 300 || claw1Val > 300){
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
                         robot.Claw.setPosition(armState.close);
-
-                        drive.setPoseEstimate(new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading()));
+                        //NOTE: RE-MEASURE STACK POS RELATIVE TO SENSORS
+                        drive.setPoseEstimate(new Pose2d(29.5,0,drive.getPoseEstimate().getHeading()));
                         TrajectorySequence goToWall = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                                 .lineToLinearHeading(new Pose2d(5,29,Math.toRadians(-90)))
                                 .build();
