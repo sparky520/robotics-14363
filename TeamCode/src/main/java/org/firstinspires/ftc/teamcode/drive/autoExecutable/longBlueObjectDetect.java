@@ -64,7 +64,6 @@ public class longBlueObjectDetect extends OpenCvPipeline {
             location = "RIGHT";
             telemetry.addData("TSE Location", "RIGHT");
         }
-        telemetry.update();
 
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 
