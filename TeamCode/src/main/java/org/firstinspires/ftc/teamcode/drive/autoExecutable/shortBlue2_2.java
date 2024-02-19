@@ -73,7 +73,7 @@ public class shortBlue2_2 extends LinearOpMode {
             followingPath = "RIGHT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .addTemporalMarker(2.5,() -> {
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
@@ -91,7 +91,7 @@ public class shortBlue2_2 extends LinearOpMode {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .addTemporalMarker(2.5,() -> {
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
@@ -109,7 +109,7 @@ public class shortBlue2_2 extends LinearOpMode {
             followingPath = "LEFT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .addTemporalMarker(2.5,() -> {
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
@@ -154,7 +154,7 @@ public class shortBlue2_2 extends LinearOpMode {
                                     }else{
                                         robot.wrist.autoOuttake();
                                     }
-                                    robot.Claw.afterTape();
+                                    robot.Claw.closeLeft();
                                 })
                                 .addTemporalMarker(3.25,() -> {
                                     if (curCycle == 0){

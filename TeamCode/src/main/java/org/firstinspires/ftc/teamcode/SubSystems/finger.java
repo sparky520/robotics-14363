@@ -29,14 +29,14 @@ public class finger {
             case open:
                 RClawState = finger.state.opened;
                 LClawState = finger.state.opened;
-                leftClaw.setPosition(.66);
-                rightClaw.setPosition(.18);
+                leftClaw.setPosition(.15);
+                rightClaw.setPosition(.15);
                 break;
             case close:
                 RClawState = finger.state.closed;
                 LClawState = finger.state.closed;
-                leftClaw.setPosition(.99);
-                rightClaw.setPosition(.51);
+                leftClaw.setPosition(.455);
+                rightClaw.setPosition(.515);
                 break;
         }
     }
@@ -47,42 +47,19 @@ public class finger {
     }
     public void closeLeft(){
         LClawState = finger.state.closed;
-        leftClaw.setPosition(.99);
+        leftClaw.setPosition(.455);
     }
     public void closeRight(){
         RClawState = finger.state.closed;
-        rightClaw.setPosition(.51);
+        rightClaw.setPosition(.515);
     }
     public void openLeft(){
         LClawState = finger.state.opened;
-        leftClaw.setPosition(.7);
+        leftClaw.setPosition(.15);
     }
     public void openRight(){
         RClawState = finger.state.opened;
-        rightClaw.setPosition(.18);
-    }
-    public void setTape(){
-        rightClaw.setPosition(.51);
-    }
-    public void afterTape(){
-        rightClaw.setPosition(.51);
-    }
-    //auto
-    public void dropBoard(){
-        leftClaw.setPosition(.72);
-    }
-    public void maxClose(){
-        leftClaw.setPosition(1);
-        rightClaw.setPosition(1);
-    }
-    public void stack()
-    {
-        double test = DriveConstants.MAX_ANG_VEL;
-        double test2 = DriveConstants.MAX_ANG_ACCEL;
-        leftClaw.setPosition(1);
-        //.84
-        //.97
-        rightClaw.setPosition(.7);
+        rightClaw.setPosition(.15);
     }
 
 }

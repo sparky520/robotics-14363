@@ -67,45 +67,45 @@ public class longBlue2_2 extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        //if (blueDetection.getLocation().equals("RIGHT"))
-        if (true)
+        if (blueDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .lineToLinearHeading(new Pose2d(25,-10,Math.toRadians(0)))
                     .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                     .build();
-            aprilLoc = 41;
+            aprilLoc = 32;
             drive.followTrajectorySequenceAsync(tape);
 
-        }else if(false)
+        }else if(blueDetection.getLocation().equals("MIDDLE"))
         {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
                     .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                     .build();
-            aprilLoc = 25;
+            aprilLoc = 27;
             drive.followTrajectorySequenceAsync(tape);
 
-        }//else if(blueDetection.getLocation().equals("LEFT")){
-        else if (false){
+        }
+        else if (blueDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1.7,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
-                    .lineToLinearHeading(new Pose2d(29,5,Math.toRadians(-270)))
-                    .lineToLinearHeading(new Pose2d(29,8.5,Math.toRadians(90)))
-                    .lineToSplineHeading(new Pose2d(5,-5,Math.toRadians(-90)))
+                    .lineToLinearHeading(new Pose2d(29,0,Math.toRadians(-270)))
+                    .lineToConstantHeading(new Vector2d(29,5))
+                    .splineToConstantHeading(new Vector2d(29,0),Math.toRadians(290))
+                    .lineToSplineHeading(new Pose2d(7,0,Math.toRadians(270)))
                     .build();
-            aprilLoc = 27;
+            aprilLoc = 22;
             drive.followTrajectorySequenceAsync(tape);
         }
 
@@ -117,39 +117,6 @@ public class longBlue2_2 extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case throughTruss:
-                    if (drive.isBusy() && distanceSide < 5){
-                        Pose2d atWall = new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading());
-                        drive.setPoseEstimate(atWall);
-                        TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(atWall)
-                                .addTemporalMarker(.1,() -> {
-                                    robot.Arm.half();
-                                })
-                                .addTemporalMarker(2,()->{
-                                    if (curCycle == 0){
-                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
-                                    }else{
-                                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
-                                    }
-                                })
-                                .addTemporalMarker(3,() -> {
-                                    if (curCycle == 0){
-                                        robot.wrist.setPosition(armState.outtaking);
-                                    }else{
-                                        robot.wrist.autoOuttake();
-                                    }
-                                    robot.Claw.afterTape();
-                                })
-                                .addTemporalMarker(3.25,() -> {
-                                    if (curCycle == 0){
-                                        robot.Arm.setPosition(armState.outtaking);
-                                    }else{
-                                        robot.Arm.autoOuttake();
-                                    }
-                                })
-                                .lineToConstantHeading(new Vector2d(7.5, atWall.getY()))
-                                .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
-                                .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
-                    }
                     if (!drive.isBusy()){
                         Pose2d atWall = new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(atWall);
@@ -170,7 +137,7 @@ public class longBlue2_2 extends LinearOpMode {
                                             }else{
                                                 robot.wrist.autoOuttake();
                                             }
-                                            robot.Claw.afterTape();
+                                            robot.Claw.closeLeft();
                                         })
                                         .addTemporalMarker(3.25,() -> {
                                             if (curCycle == 0){
@@ -179,9 +146,10 @@ public class longBlue2_2 extends LinearOpMode {
                                                 robot.Arm.autoOuttake();
                                             }
                                         })
-                                        .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
+                                        .lineToSplineHeading(new Pose2d(5,75,Math.toRadians(-90)))
                                         .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
-                        if (distanceSide < 5 || distanceSide > 10){
+                        if (distanceSide < 2 || distanceSide > 6){
+                            telemetry.addLine("#2");
                             throughTruss = drive.trajectorySequenceBuilder(atWall)
                                     .addTemporalMarker(.1,() -> {
                                         robot.Arm.half();
@@ -199,7 +167,7 @@ public class longBlue2_2 extends LinearOpMode {
                                         }else{
                                             robot.wrist.autoOuttake();
                                         }
-                                        robot.Claw.afterTape();
+                                        robot.Claw.closeLeft();
                                     })
                                     .addTemporalMarker(3.25,() -> {
                                         if (curCycle == 0){
@@ -208,8 +176,8 @@ public class longBlue2_2 extends LinearOpMode {
                                             robot.Arm.autoOuttake();
                                         }
                                     })
-                                    .lineToConstantHeading(new Vector2d(7.5, atWall.getY()))
-                                    .lineToSplineHeading(new Pose2d(8,75,Math.toRadians(-90)))
+                                    .lineToConstantHeading(new Vector2d(5, atWall.getY()))
+                                    .lineToSplineHeading(new Pose2d(5,75,Math.toRadians(-90)))
                                     .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
                         }
                         drive.followTrajectorySequenceAsync(throughTruss);
@@ -220,10 +188,10 @@ public class longBlue2_2 extends LinearOpMode {
                     if (!drive.isBusy()){
                         Pose2d boardReallign = new Pose2d(distanceSide, 93 - distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
-
+                        robot.Claw.closeLeft();
                         TrajectorySequence board = drive.trajectorySequenceBuilder(boardReallign)
                                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                                .lineToLinearHeading(new Pose2d(aprilLoc,90,Math.toRadians(-90))).build();
+                                .lineToLinearHeading(new Pose2d(aprilLoc,93,Math.toRadians(-90))).build();
                         drive.followTrajectorySequenceAsync(board);
                         if (curCycle == 1){
                             currentState = state.park;
@@ -234,6 +202,7 @@ public class longBlue2_2 extends LinearOpMode {
                     }
                     break;
                 case goNextToWall:
+                    colorBoardVal = colorBoard.red() + colorBoard.green() + colorBoard.blue();
                     if (colorBoardVal > boardColorThreshold){
                         robot.Claw.setPosition(armState.open);
                         TrajectorySequence nextToWall = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
@@ -255,7 +224,7 @@ public class longBlue2_2 extends LinearOpMode {
                                         robot.Arm.topStack();
                                     })
                                     .lineToConstantHeading(new Vector2d(drive.getPoseEstimate().getX(),drive.getPoseEstimate().getY() - 6))
-                                    .lineToConstantHeading(new Vector2d(5,62)).build();
+                                    .lineToConstantHeading(new Vector2d(1,62)).build();
                         }
                         if (curCycle == 1){
                             currentState = state.park;
@@ -266,29 +235,17 @@ public class longBlue2_2 extends LinearOpMode {
                     }
                     break;
                 case backThroughTruss:
-                    //UNTESTED
-                    if (drive.isBusy() && distanceSide < 5){
-                        Pose2d wallReallign = new Pose2d(distanceSide,drive.getPoseEstimate().getY(),drive.getPoseEstimate().getHeading());
-                        drive.setPoseEstimate(wallReallign);
-                        TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(wallReallign)
-                                .lineToConstantHeading(new Vector2d(7.5, wallReallign.getY()))
-                                .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
-                                .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
-                        drive.followTrajectorySequenceAsync(throughTruss);
-                        currentState = state.goToStack;
-                    }
-                    //UNTESTED
                     if (!drive.isBusy()){
                         Pose2d wallReallign = new Pose2d(distanceSide,drive.getPoseEstimate().getY(),drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence throughTruss = drive.trajectorySequenceBuilder(wallReallign)
-                                .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
+                                .lineToSplineHeading(new Pose2d(4,15,Math.toRadians(-90)))
                                 .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
                         //UNTESTED
-                        if (distanceSide < 5 || distanceSide > 10){
+                        if (distanceSide < 2 || distanceSide > 6){
                             throughTruss = drive.trajectorySequenceBuilder(wallReallign)
-                                    .lineToConstantHeading(new Vector2d(7.5, wallReallign.getY()))
-                                    .lineToSplineHeading(new Pose2d(7,15,Math.toRadians(-90)))
+                                    .lineToConstantHeading(new Vector2d(4, wallReallign.getY()))
+                                    .lineToSplineHeading(new Pose2d(4,15,Math.toRadians(-90)))
                                     .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
                         }
                         //UNTESTED
@@ -309,6 +266,8 @@ public class longBlue2_2 extends LinearOpMode {
                     }
                     break;
                 case intakeStackAndReset:
+                    claw1Val = claw1.blue()+claw1.red()+claw1.green();
+                    claw2Val = claw2.blue()+claw2.red()+claw2.green();
                     if (distanceFront < 2.5){
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
                     }
@@ -324,12 +283,8 @@ public class longBlue2_2 extends LinearOpMode {
                         drive.followTrajectorySequenceAsync(goToWall);
                         currentState = state.throughTruss;
                         curCycle += 1;
-                        if (followingPath.equals("MIDDLE") || followingPath.equals("LEFT")){
-                            aprilLoc = 29;
-                        }else{
-                            aprilLoc = 16;
-                            robot.Claw.closeRight();
-                        }
+                        aprilLoc = 22;
+
                     }
                     break;
                 case park:
@@ -359,28 +314,12 @@ public class longBlue2_2 extends LinearOpMode {
             distanceFront = distanceSensor.getDistance(DistanceUnit.INCH);
             distanceSide = distanceSensor2.getDistance(DistanceUnit.INCH);
             distanceBack = distanceSensor3.getDistance(DistanceUnit.INCH);
-            claw1Val = claw1.blue()+claw1.red()+claw1.green();
-            claw2Val = claw2.blue()+claw2.red()+claw2.green();
-            colorBoardVal = colorBoard.red() + colorBoard.green() + colorBoard.blue();
             updateTelemetry();
             telemetry.update();
             drive.update();
         }
     }
-    void detectTags() {
-        ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-        if (currentDetections.size() != 0) {
-            tagFound = false;
-            for (AprilTagDetection tag : currentDetections) {
-                if (tag.id == 2 || tag.id == 2 || tag.id == 2) {
-                    tagOfInterest = tag;
-                    tagFound = true;
-                    break;
-                }
-            }
-        }
 
-    }
     private void initColorDetection() {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());

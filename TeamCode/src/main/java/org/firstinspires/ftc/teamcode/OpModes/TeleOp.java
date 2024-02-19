@@ -26,11 +26,12 @@ public class TeleOp extends OpMode
         autoOuttake,manualOuttake
     }
     boolean outtaking = false;
-    DistanceSensor distanceSensor3,distanceSensor2;
+    DistanceSensor distanceSensor3,distanceSensor2, distanceSensor;
     boolean autoOuttake = false;
     double backDistance, sideDistance;
     boolean switchedOuttakeTypeThisLoop = false;
     outtakeStates currentSlideState = outtakeStates.TELEOPSTATION;
+    double distanceFront, distanceSide, distanceBack;
     @Override
     public void init()
     {
@@ -45,6 +46,7 @@ public class TeleOp extends OpMode
         color1 = hardwareMap.get(ColorRangeSensor.class, "colorBoard");
         claw1 = hardwareMap.get(ColorRangeSensor.class, "claw1");
         claw2 = hardwareMap.get(ColorRangeSensor.class, "claw2");
+        initDistance();
     }
     @Override
     public void loop() {
@@ -147,6 +149,20 @@ public class TeleOp extends OpMode
         }
 
         //robot.slidev2.setSlidePos();
+        distanceTelem();
         telemetry.update();
+    }
+    public void initDistance(){
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
+        distanceSensor3 = hardwareMap.get(DistanceSensor.class, "distanceSensor3");
+    }
+    public void distanceTelem(){
+        distanceFront = distanceSensor.getDistance(DistanceUnit.INCH);
+        distanceSide = distanceSensor2.getDistance(DistanceUnit.INCH);
+        distanceBack = distanceSensor3.getDistance(DistanceUnit.INCH);
+        telemetry.addData("side distance", distanceSide);
+        telemetry.addData("front distance", distanceFront);
+        telemetry.addData("back distance", distanceBack);
     }
 }

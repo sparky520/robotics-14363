@@ -68,7 +68,7 @@ public class longRed2_2 extends LinearOpMode {
             followingPath = "RIGHT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(2,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .lineToConstantHeading(new Vector2d(40,-8))
                     .lineToConstantHeading(new Vector2d(53,-8))
@@ -83,7 +83,7 @@ public class longRed2_2 extends LinearOpMode {
             followingPath = "MIDDLE";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
                     .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(90)))
@@ -96,7 +96,7 @@ public class longRed2_2 extends LinearOpMode {
             followingPath = "LEFT";
             TrajectorySequence tape = drive.trajectorySequenceBuilder(start)
                     .addTemporalMarker(1,() -> {
-                        robot.Claw.setTape();
+                        robot.Claw.openLeft();
                     })
                     .lineToSplineHeading(new Pose2d(28,6,Math.toRadians(90))).build();
             aprilLoc = 20;
@@ -131,7 +131,7 @@ public class longRed2_2 extends LinearOpMode {
                                     }else{
                                         robot.wrist.autoOuttake();
                                     }
-                                    robot.Claw.afterTape();
+                                    robot.Claw.closeLeft();
                                 })
                                 .addTemporalMarker(3.25,() -> {
                                     if (curCycle == 0){
