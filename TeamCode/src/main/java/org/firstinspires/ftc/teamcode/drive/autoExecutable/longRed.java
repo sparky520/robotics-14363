@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.autoExecutable;
 
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -19,15 +20,15 @@ import org.firstinspires.ftc.teamcode.states.*;
 import org.firstinspires.ftc.teamcode.SubSystems.*;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "short blue", group = "Auto")
-public class shortBlue extends LinearOpMode {
+@Autonomous(name = "long red", group = "Auto")
+public class longRed extends LinearOpMode {
     Robot robot;
     DistanceSensor distanceSensor, distanceSensor2, distanceSensor3;
     ElapsedTime timer = new ElapsedTime();
     Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
     OpenCvCamera camera;
     double aprilLoc;
-    shortBlueObjectDetect blueDetection;
+    longRedObjectDetect redDetection;
     String parkType = "FAR";
     state currentState = state.IDLE;
     enum state{
@@ -41,13 +42,13 @@ public class shortBlue extends LinearOpMode {
     int boardColorThreshold = 300;
     int pauseDuration = 0;
     SampleMecanumDrive drive;
-    bluePaths pathCreator;
+    redPaths pathCreator;
     String pathType = "2+2";
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         drive = new SampleMecanumDrive(hardwareMap, false);
         drive.setPoseEstimate(start);
-        pathCreator = new bluePaths();
+        pathCreator = new redPaths();
 
         initHardware();
         initColorDetection();
@@ -73,37 +74,37 @@ public class shortBlue extends LinearOpMode {
             telemetry.addData("Park Location", parkType);
             telemetry.addData("Pause time", pauseDuration);
             telemetry.addData("Path type", pathType);
-            telemetry.addData("TSE location", blueDetection.getLocation());
+            telemetry.addData("TSE location", redDetection.getLocation());
             telemetry.update();
         }
         waitForStart();
         camera.stopStreaming();
 
         if (isStopRequested()) return;
-        telemetry.addLine(blueDetection.getLocation() + "");
+        telemetry.addLine(redDetection.getLocation() + "");
         telemetry.update();
-        if (blueDetection.getLocation().equals("RIGHT"))
+        if (redDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
             aprilLoc = 32;
 
-        }else if(blueDetection.getLocation().equals("MIDDLE"))
+        }else if(redDetection.getLocation().equals("MIDDLE"))
         {
             followingPath = "MIDDLE";
             aprilLoc = 27;
         }
-        else if (blueDetection.getLocation().equals("LEFT")){
+        else if (redDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
-            aprilLoc = 18;
+            aprilLoc = 20;
         }
-        TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "SHORT");
+        TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "LONG");
         drive.followTrajectorySequenceAsync(tape);
-        currentState = state.toBoard;
+        currentState = state.throughTruss;
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case throughTruss:
                     if (!drive.isBusy()){
-                        Pose2d atWall = new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading());
+                        Pose2d atWall = new Pose2d(distanceSide,-distanceFront,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(atWall);
                         TrajectorySequence throughTruss = pathCreator.throughTruss(robot,drive,atWall,distanceSide,curCycle);
                         drive.followTrajectorySequenceAsync(throughTruss);
@@ -111,8 +112,10 @@ public class shortBlue extends LinearOpMode {
                     }
                     break;
                 case toBoard:
-                    if (!drive.isBusy()){
-                        Pose2d boardReallign = new Pose2d(distanceSide, 93 - distanceBack,drive.getPoseEstimate().getHeading());
+                    telemetry.addLine("waiting");
+                    if (!drive.isBusy() && distanceBack < 50 && distanceSide < 50){
+                        telemetry.addLine("GO");
+                        Pose2d boardReallign = new Pose2d(distanceSide, -93 + distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         TrajectorySequence board = pathCreator.toBoard(robot,drive,boardReallign,aprilLoc);
                         drive.followTrajectorySequenceAsync(board);
@@ -148,7 +151,7 @@ public class shortBlue extends LinearOpMode {
                     break;
                 case goToStack:
                     if (!drive.isBusy()){
-                        Pose2d wallReallign = new Pose2d(distanceSide,distanceFront,drive.getPoseEstimate().getHeading());
+                        Pose2d wallReallign = new Pose2d(distanceSide,- distanceFront,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(wallReallign);
                         TrajectorySequence toStack = pathCreator.goToStack(robot,drive,wallReallign);
                         drive.followTrajectorySequenceAsync(toStack);
@@ -174,7 +177,7 @@ public class shortBlue extends LinearOpMode {
                     break;
                 case park:
                     if (distanceBack < 8.5){
-                        Pose2d boardReallign = new Pose2d(distanceSide,93-distanceBack,drive.getPoseEstimate().getHeading());
+                        Pose2d boardReallign = new Pose2d(distanceSide,-93+distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         TrajectorySequence park = pathCreator.park(robot,drive,boardReallign,"FAR");
                         drive.followTrajectorySequenceAsync(park);
@@ -198,9 +201,9 @@ public class shortBlue extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        blueDetection = new shortBlueObjectDetect(telemetry);
+        redDetection = new longRedObjectDetect(telemetry);
 
-        camera.setPipeline(blueDetection);
+        camera.setPipeline(redDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -215,7 +218,7 @@ public class shortBlue extends LinearOpMode {
     }
     public void initHardware(){
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
+        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor4");
         distanceSensor3 = hardwareMap.get(DistanceSensor.class, "distanceSensor3");
         colorBoard = hardwareMap.get(ColorRangeSensor.class, "colorBoard");
         claw1 = hardwareMap.get(ColorRangeSensor.class, "claw1");

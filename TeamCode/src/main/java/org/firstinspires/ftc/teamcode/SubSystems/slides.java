@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class slides {
     public DcMotorEx leftSlide, rightSlide;
-    double power = .3;
+    double power = .75;
     public int driftOffset = 0;
     public outtakeStates currentSlideState = outtakeStates.TELEOPSTATION;
     public boolean goingUp = false;
@@ -38,9 +38,26 @@ public class slides {
                 break;
             case etxending: {
                 switch (outtakeSlidesState) {
+
                     case SHORT_AUTO:
                         leftSlide.setTargetPosition(200-driftOffset);
                         rightSlide.setTargetPosition(200-driftOffset);
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+                        currentSlideState = outtakeStates.SHORT_AUTO;
+                        if (leftSlide.getCurrentPosition() < 200){
+                            goingUp = true;
+                        }
+                        else{
+                            goingUp = false;
+                        }
+                        extensionState = extensionState.extended;
+                        break;
+                    case MEDIUM_AUTO:
+                        leftSlide.setTargetPosition(350-driftOffset);
+                        rightSlide.setTargetPosition(350-driftOffset);
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         leftSlide.setPower(power);
