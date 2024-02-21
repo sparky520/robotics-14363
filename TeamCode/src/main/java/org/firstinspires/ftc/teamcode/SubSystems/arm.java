@@ -52,8 +52,8 @@ public class arm {
     public void intake(){
         double ofset;
         ofset = -.011;
-        leftArm.setPosition(.837 + ofset);
-        rightArm.setPosition(.837);
+        leftArm.setPosition(.845 + ofset);
+        rightArm.setPosition(.845);
     }
     public void medium(){
         double ofset;
@@ -65,9 +65,6 @@ public class arm {
     public void highOuttake(){
         double ofset;
         ofset = -.012;
-
-        //leftArm.setPosition(.22 + ofset);
-        //rightArm.setPosition(.22);
         leftArm.setPosition(.2 + ofset);
         rightArm.setPosition(.2);
     }
@@ -77,11 +74,6 @@ public class arm {
 
         leftArm.setPosition(.7 + ofset);
         rightArm.setPosition(.7);
-    }
-    public void stackDrop(){
-        double offset = -.023;
-        leftArm.setPosition(.24 + offset);
-        rightArm.setPosition(.24);
     }
     public void topStack(){
         double ofset;

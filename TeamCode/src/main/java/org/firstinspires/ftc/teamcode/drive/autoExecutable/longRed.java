@@ -86,18 +86,18 @@ public class longRed extends LinearOpMode {
         if (redDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
-            aprilLoc = 20;
+            aprilLoc = 10;
 
         }else if(redDetection.getLocation().equals("MIDDLE"))
         {
             followingPath = "MIDDLE";
-            aprilLoc = 27;
+            aprilLoc = 20.5;
         }
         else if (redDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
-            aprilLoc = 32;
+            aprilLoc = 30;
         }
-        followingPath = "MIDDLE";
+
         TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "LONG");
         drive.followTrajectorySequenceAsync(tape);
         currentState = state.throughTruss;
@@ -152,7 +152,7 @@ public class longRed extends LinearOpMode {
                     if (!drive.isBusy()){
                         Pose2d wallReallign = new Pose2d(distanceSide,- distanceFront,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(wallReallign);
-                        TrajectorySequence toStack = pathCreator.goToStack(robot,drive,wallReallign);
+                        TrajectorySequence toStack = pathCreator.goToStack(robot,drive,wallReallign, distanceSide);
                         drive.followTrajectorySequenceAsync(toStack);
                         currentState = state.intakeStackAndReset;
                     }
@@ -170,12 +170,12 @@ public class longRed extends LinearOpMode {
                         drive.followTrajectorySequenceAsync(goToWall);
                         currentState = state.throughTruss;
                         curCycle += 1;
-                        aprilLoc = 22;
+                        aprilLoc = 16;
 
                     }
                     break;
                 case park:
-                    if (distanceBack < 5){
+                    if (distanceBack < 9.7){
                         Pose2d boardReallign = new Pose2d(distanceSide,-93+distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         TrajectorySequence park = pathCreator.park(robot,drive,boardReallign,"FAR");

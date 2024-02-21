@@ -252,7 +252,7 @@ public class bluePaths {
                         robot.Arm.setPosition(armState.low);
                     })
                     .lineToConstantHeading(new Vector2d(20,84))
-                    .lineToLinearHeading(new Pose2d(40,84,Math.toRadians(0))).build();
+                    .lineToLinearHeading(new Pose2d(50,84,Math.toRadians(0))).build();
         }
         return returnSequence;
     }

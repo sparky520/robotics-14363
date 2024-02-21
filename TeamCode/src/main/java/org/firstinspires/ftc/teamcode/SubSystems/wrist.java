@@ -15,16 +15,12 @@ public class wrist {
     public void setPosition(armState state){
         switch (state){
             case intakingCLAW:
-                wrist.setPosition(.525);
+                wrist.setPosition(.53);
                 break;
             case outtaking:
                 wrist.setPosition(.76);
                 break;
         }
-    }
-    public void auto(){
-        double test = DriveConstants.MAX_ANG_ACCEL;
-        wrist.setPosition(.52);
     }
 
     public void test(double pos){
