@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.autoExecutable;
+package org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;

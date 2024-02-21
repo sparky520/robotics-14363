@@ -35,7 +35,7 @@ public class finger {
             case close:
                 RClawState = finger.state.closed;
                 LClawState = finger.state.closed;
-                leftClaw.setPosition(.455);
+                leftClaw.setPosition(.47);
                 rightClaw.setPosition(.515);
                 break;
         }
@@ -47,7 +47,7 @@ public class finger {
     }
     public void closeLeft(){
         LClawState = finger.state.closed;
-        leftClaw.setPosition(.455);
+        leftClaw.setPosition(.47);
     }
     public void closeRight(){
         RClawState = finger.state.closed;

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections.shortBlueObjectDetect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -159,7 +160,7 @@ public class shortBlue extends LinearOpMode {
                     claw1Val = claw1.blue()+claw1.red()+claw1.green();
                     claw2Val = claw2.blue()+claw2.red()+claw2.green();
                     if (distanceFront < 2.5){
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.INTAKE_STACK);
                     }
                     if (claw2Val > 300 || claw1Val > 300){
                         Pose2d stackReallign = new Pose2d(29.5,0,drive.getPoseEstimate().getHeading());

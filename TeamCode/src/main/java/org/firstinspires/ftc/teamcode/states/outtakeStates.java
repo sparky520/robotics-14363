@@ -1,19 +1,19 @@
 package org.firstinspires.ftc.teamcode.states;
 
 public enum outtakeStates {
-    RESET,
+    ZERO,
     SHORT_AUTO,
-    HIGHIN,
-    MEDIUMIN,
-    LOWIN,
-    AUTO1,
+    HIGH,
+    MEDIUM,
+    LOW,
+    LONG_AUTO,
     TOPSTACK,
-    MEDIUM_AUTO,
-    TELEOPSTATION,
+    INBETWEEN_SHORT_AND_LONG_AUTO,
     STATION,
+    INTAKE_STACK,
+    LOW_AUTO,
     etxending,
     retracted,
     extended,
-    HIGH_AUTO,
-    LOW_AUTO,
+    TWO_PLUS_TWO_OUTTAKE,
 }

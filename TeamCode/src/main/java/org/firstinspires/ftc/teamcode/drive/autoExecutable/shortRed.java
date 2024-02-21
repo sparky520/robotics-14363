@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections.longRedObjectDetect;
+import org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections.shortRedObjectDetect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -20,15 +21,15 @@ import org.firstinspires.ftc.teamcode.states.*;
 import org.firstinspires.ftc.teamcode.SubSystems.*;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "long red", group = "Auto")
-public class longRed extends LinearOpMode {
+@Autonomous(name = "short red", group = "Auto")
+public class shortRed extends LinearOpMode {
     Robot robot;
     DistanceSensor distanceSensor, distanceSensor2, distanceSensor3;
     ElapsedTime timer = new ElapsedTime();
     Pose2d start = new Pose2d(0, 0, Math.toRadians(180));
     OpenCvCamera camera;
     double aprilLoc;
-    longRedObjectDetect redDetection;
+    shortRedObjectDetect redDetection;
     String parkType = "FAR";
     state currentState = state.IDLE;
     enum state{
@@ -75,6 +76,7 @@ public class longRed extends LinearOpMode {
             telemetry.addData("Pause time", pauseDuration);
             telemetry.addData("Path type", pathType);
             telemetry.addData("TSE location", redDetection.getLocation());
+            updateTelemetry();
             telemetry.update();
         }
         waitForStart();
@@ -97,10 +99,9 @@ public class longRed extends LinearOpMode {
             followingPath = "LEFT";
             aprilLoc = 32;
         }
-        followingPath = "MIDDLE";
         TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "LONG");
         drive.followTrajectorySequenceAsync(tape);
-        currentState = state.throughTruss;
+        currentState = state.toBoard;
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case throughTruss:
@@ -175,7 +176,7 @@ public class longRed extends LinearOpMode {
                     }
                     break;
                 case park:
-                    if (distanceBack < 5){
+                    if (distanceBack < 8.5){
                         Pose2d boardReallign = new Pose2d(distanceSide,-93+distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         TrajectorySequence park = pathCreator.park(robot,drive,boardReallign,"FAR");
@@ -200,7 +201,7 @@ public class longRed extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        redDetection = new longRedObjectDetect(telemetry);
+        redDetection = new shortRedObjectDetect(telemetry);
 
         camera.setPipeline(redDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {

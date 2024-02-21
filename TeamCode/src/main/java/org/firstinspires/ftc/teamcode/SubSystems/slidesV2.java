@@ -11,7 +11,7 @@ public class slidesV2 {
     double power = .3;
     public int driftOffset = 0;
     public boolean goingUp;
-    public outtakeStates currentSlideState = outtakeStates.TELEOPSTATION;
+    public outtakeStates currentSlideState = outtakeStates.STATION;
 
     public slidesV2(HardwareMap hardwareMap) {
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftOuttakeSlide");
@@ -32,7 +32,7 @@ public class slidesV2 {
 
     public boolean setSlidePos(){
         switch (currentSlideState){
-            case LOWIN:
+            case LOW:
                 if (goingUp){
                     if (leftSlide.getCurrentPosition() > 100){
                         setSlidePower(.001);
@@ -47,7 +47,7 @@ public class slidesV2 {
                     setSlidePower(-power);
                 }
                 return false;
-            case MEDIUMIN:
+            case MEDIUM:
                 if (goingUp){
                     if (leftSlide.getCurrentPosition() > 1100){
                         setSlidePower(.001);

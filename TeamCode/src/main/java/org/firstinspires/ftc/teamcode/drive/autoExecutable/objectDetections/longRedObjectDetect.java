@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.autoExecutable;
+package org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
@@ -9,27 +9,31 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class shortBlueObjectDetect extends OpenCvPipeline {
+public class longRedObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
     private String location = "LEFT";
 
-    static final Rect MIDDLE_ROI = new Rect(
-            new Point(180, 140),
-            new Point(240, 210));
     static final Rect RIGHT_ROI = new Rect(
-            new Point(180, 0),
-            new Point(240, 50));
+            new Point(190, 0),
+            new Point(250, 50));
+
+    /*static final Rect MIDDLE_ROI = new Rect(
+            new Point(0, 110),
+            new Point(60, 150));*/
+    static final Rect MIDDLE_ROI = new Rect(
+            new Point(190, 140),
+            new Point(250, 200));
     static double MIDDLE_PERCENT_COLOR_THRESHOLD = 0.1;
     static double LEFT_PERCENT_COLOR_THRESHOLD = 0.1;
-    public shortBlueObjectDetect(Telemetry t) { telemetry = t; }
+    public longRedObjectDetect(Telemetry t) { telemetry = t; }
 
     @Override
     public Mat processFrame(Mat input){
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(100, 150, 0);
-        Scalar highHSV = new Scalar(140, 255,255);
+        Scalar lowHSV = new Scalar(0, 128, 100);
+        Scalar highHSV = new Scalar(20, 255, 255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);
@@ -57,8 +61,8 @@ public class shortBlueObjectDetect extends OpenCvPipeline {
             // TSE = team scoring element
         }
         else if (TSERight){
-            location = "LEFT";
-            telemetry.addData("TSE Location", "LEFT");
+            location = "RIGHT";
+            telemetry.addData("TSE Location", "RIGHT");
         }
         telemetry.update();
 

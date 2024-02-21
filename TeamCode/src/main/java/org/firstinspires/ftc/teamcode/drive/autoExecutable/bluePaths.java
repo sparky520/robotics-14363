@@ -19,7 +19,7 @@ public class bluePaths {
         robot.Claw.setPosition(armState.close);
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.Arm.intake();
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.RESET);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.ZERO);
         TrajectorySequence returnSequence;
         if (quadrant.equals("LONG")){
             //LONGLEFT
@@ -57,7 +57,7 @@ public class bluePaths {
                         robot.Claw.openLeft();
                     })
                     .addTemporalMarker(2,() -> {
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUM_AUTO);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.INBETWEEN_SHORT_AND_LONG_AUTO);
                         robot.wrist.setPosition(armState.outtaking);
                         robot.Arm.setPosition(armState.outtaking);
                     })
@@ -106,9 +106,9 @@ public class bluePaths {
                 })
                 .addTemporalMarker(2,()->{
                     if (curCycle == 0){
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LONG_AUTO);
                     }else{
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUM);
                     }
                 })
                 .addTemporalMarker(3,() -> {
@@ -128,16 +128,16 @@ public class bluePaths {
                 })
                 .lineToSplineHeading(new Pose2d(5,75,Math.toRadians(-90)))
                 .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
-        if (distanceSide < 2 || distanceSide > 6){
+        if (distanceSide < 3 || distanceSide > 6){
             returnSequence = drive.trajectorySequenceBuilder(startPose)
                     .addTemporalMarker(.1,() -> {
                         robot.Arm.half();
                     })
                     .addTemporalMarker(2,()->{
                         if (curCycle == 0){
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.AUTO1);
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LONG_AUTO);
                         }else{
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUMIN);
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUM);
                         }
                     })
                     .addTemporalMarker(3,() -> {
@@ -221,7 +221,7 @@ public class bluePaths {
         return returnSequence;
     }
     public TrajectorySequence intakeStackAndReset(Robot robot, SampleMecanumDrive drive, Pose2d startPose) {
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.INTAKE_STACK);
         robot.Claw.setPosition(armState.close);
         TrajectorySequence returnSequence = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(5,29,Math.toRadians(-90)))
@@ -233,7 +233,7 @@ public class bluePaths {
         TrajectorySequence returnSequence = drive.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(.5,()->{
                     robot.Arm.setPosition(armState.medium);
-                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.RESET);
+                    robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.ZERO);
                     robot.wrist.setPosition(armState.intakingCLAW);
                 })
                 .addTemporalMarker(2,() -> {
@@ -245,7 +245,7 @@ public class bluePaths {
             returnSequence = drive.trajectorySequenceBuilder(startPose)
                     .addTemporalMarker(.5,()->{
                         robot.Arm.setPosition(armState.medium);
-                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.RESET);
+                        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.ZERO);
                         robot.wrist.setPosition(armState.intakingCLAW);
                     })
                     .addTemporalMarker(2,() -> {

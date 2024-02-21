@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.SubSystems.*;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "yellow detect test", group = "Auto")
 public class yellowDetectTest extends LinearOpMode {
 
     boolean tagFound = false;
