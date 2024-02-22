@@ -91,6 +91,7 @@ public class TeleOp extends OpMode
         if (gamepad2.triangle){
             currentState = state.outtaking;
             robot.Arm.setPosition(armState.medium);
+            robot.wrist.setPosition(armState.intakingCLAW);
             armPos = arm.medium;
         }
         if (gamepad2.square){
