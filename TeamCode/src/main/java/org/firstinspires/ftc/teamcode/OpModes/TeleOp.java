@@ -24,12 +24,11 @@ public class TeleOp extends OpMode
     enum state{
         outtaking,intaking
     }
-    boolean outtaking = false;
+    enum arm{
+        low,medium,high
+    }
+    arm armPos = arm.low;
     DistanceSensor distanceSensor3,distanceSensor2, distanceSensor,distanceSensor4;
-    boolean autoOuttake = false;
-    double backDistance, sideDistance;
-    boolean switchedOuttakeTypeThisLoop = false;
-    outtakeStates currentSlideState = outtakeStates.STATION;
     double distanceFront, distanceLeftSide, distanceBack, distanceRightSide;
     state currentState = state.intaking;
     @Override
@@ -48,28 +47,23 @@ public class TeleOp extends OpMode
         claw2 = hardwareMap.get(ColorRangeSensor.class, "claw2");
         distanceSensor3 = hardwareMap.get(DistanceSensor.class, "distanceSensor3");
         touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
-        initDistance();
     }
     @Override
     public void loop() {
         driver.readButtons();
         operator.readButtons();
-        distanceTelem();
-        telemetry.addData("LSlide pos", robot.slidev2.leftSlide.getCurrentPosition());
-        telemetry.addData("RSlide pos", robot.slidev2.rightSlide.getCurrentPosition());
-        telemetry.addData("is touched", touchSensor.isPressed());
-
         robot.drivetrain.fieldCentric(driver);
+
         switch (currentState){
             case intaking:
                 sensor1Val = claw1.blue()+claw1.red()+claw1.green();
                 sensor2Val = claw2.blue()+claw2.red()+claw2.green();
-                if (sensor1Val > 175 && !outtaking){
+                if (sensor2Val > 175){
                     robot.Claw.closeRight();
                 }else{
                     robot.Claw.openRight();
                 }
-                if (sensor2Val > 175 && !outtaking){
+                if (sensor1Val > 175){
                     robot.Claw.closeLeft();
                 }else{
                     robot.Claw.openLeft();
@@ -78,7 +72,7 @@ public class TeleOp extends OpMode
             case outtaking:
                 distanceBack = distanceSensor3.getDistance(DistanceUnit.INCH);
                 sensor3Val = color1.blue()+color1.red()+color1.green();
-                if (gamepad2.right_trigger > 0 && sensor3Val > 200 && outtaking && backDistance < 5){
+                if (gamepad2.right_trigger > 0 && sensor3Val > 200){
                     robot.Claw.setPosition(armState.open);
                 }
                 break;
@@ -92,28 +86,32 @@ public class TeleOp extends OpMode
             currentState = state.outtaking;
             robot.Arm.setPosition(armState.outtaking);
             robot.wrist.setPosition(armState.outtaking);
+            armPos = arm.high;
         }
         if (gamepad2.triangle){
-            currentState = state.intaking;
+            currentState = state.outtaking;
             robot.Arm.setPosition(armState.medium);
+            armPos = arm.medium;
         }
         if (gamepad2.square){
             currentState = state.intaking;
             robot.Arm.setPosition(armState.low);
             robot.wrist.setPosition(armState.intakingCLAW);
             robot.Claw.setPosition(armState.open);
+            armPos = arm.low;
         }
-        if (gamepad2.dpad_up){
+        if (gamepad2.dpad_up && armPos != arm.medium){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUM);
         }
-        if (gamepad2.dpad_left){
+        if (gamepad2.dpad_left && armPos != arm.medium){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LOW);
         }
-        if (gamepad2.dpad_right){
+        if (gamepad2.dpad_right && armPos != arm.medium){
             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.HIGH);
             currentState = state.outtaking;
             robot.Arm.highOuttake();
             robot.wrist.highOuttake();
+            armPos = arm.high;
         }
 
         if (gamepad2.dpad_down){

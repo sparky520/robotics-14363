@@ -129,7 +129,7 @@ public class longRed extends LinearOpMode {
                 case goNextToWall:
                     colorBoardVal = colorBoard.red() + colorBoard.green() + colorBoard.blue();
                     if (colorBoardVal > boardColorThreshold){
-                        TrajectorySequence nextToWall = pathCreator.goNextToWall(robot,drive,drive.getPoseEstimate(),followingPath,parkType,pathType);
+                        TrajectorySequence nextToWall = pathCreator.goNextToWall(robot,drive,drive.getPoseEstimate(),followingPath,parkType,pathType,"LONG");
                         if (pathType.equals("PARK")){
                             currentState = state.IDLE;
                         }
@@ -170,7 +170,7 @@ public class longRed extends LinearOpMode {
                         drive.followTrajectorySequenceAsync(goToWall);
                         currentState = state.throughTruss;
                         curCycle += 1;
-                        aprilLoc = 16;
+                        aprilLoc = 18;
 
                     }
                     break;

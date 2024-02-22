@@ -116,8 +116,8 @@ public class slides {
                         rightSlide.setPower(power);
                         break;
                     case STATION:
-                        leftSlide.setTargetPosition(-5);
-                        rightSlide.setTargetPosition(-5);
+                        leftSlide.setTargetPosition(-10);
+                        rightSlide.setTargetPosition(-10);
                         extensionState = extensionState.retracted;
                         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);

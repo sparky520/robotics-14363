@@ -65,7 +65,7 @@ public class bluePaths {
                         robot.Claw.closeLeft();
                     })
                     .lineToSplineHeading(new Pose2d(26,15,Math.toRadians(-90)))
-                    .splineToConstantHeading(new Vector2d(23,30), Math.toRadians(90))
+                    .lineToConstantHeading(new Vector2d(23,30))
                     .waitSeconds(.5)
                     .build();
             if (TSEloc.equals("RIGHT")){
@@ -216,7 +216,7 @@ public class bluePaths {
     public TrajectorySequence goToStack(Robot robot, SampleMecanumDrive drive, Pose2d startPose){
         TrajectorySequence returnSequence = drive.trajectorySequenceBuilder(startPose)
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(21, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH))
-                .lineToConstantHeading(new Vector2d(29.5,0))
+                .lineToConstantHeading(new Vector2d(27,0))
                 .build();
         return returnSequence;
     }

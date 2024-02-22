@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections.longRedObjectDetect;
 import org.firstinspires.ftc.teamcode.drive.autoExecutable.objectDetections.shortRedObjectDetect;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -53,6 +54,7 @@ public class shortRed extends LinearOpMode {
 
         initHardware();
         initColorDetection();
+        DriveConstants.MAX_ACCEL = 60;
         while (!opModeIsActive() && !isStopRequested()){
             if (gamepad1.dpad_left){
                 parkType = "FAR";
@@ -84,10 +86,11 @@ public class shortRed extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(redDetection.getLocation() + "");
         telemetry.update();
+        redDetection.location = "MIDDLE";
         if (redDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
-            aprilLoc = 15;
+            aprilLoc = 19;
 
         }else if(redDetection.getLocation().equals("MIDDLE"))
         {
@@ -96,7 +99,7 @@ public class shortRed extends LinearOpMode {
         }
         else if (redDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
-            aprilLoc = 25;
+            aprilLoc = 33;
         }
 
         TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "SHORT");
@@ -130,7 +133,7 @@ public class shortRed extends LinearOpMode {
                 case goNextToWall:
                     colorBoardVal = colorBoard.red() + colorBoard.green() + colorBoard.blue();
                     if (colorBoardVal > boardColorThreshold){
-                        TrajectorySequence nextToWall = pathCreator.goNextToWall(robot,drive,drive.getPoseEstimate(),followingPath,parkType,pathType);
+                        TrajectorySequence nextToWall = pathCreator.goNextToWall(robot,drive,drive.getPoseEstimate(),followingPath,parkType,pathType,"SHORT");
                         if (pathType.equals("PARK")){
                             currentState = state.IDLE;
                         }
@@ -171,7 +174,7 @@ public class shortRed extends LinearOpMode {
                         drive.followTrajectorySequenceAsync(goToWall);
                         currentState = state.throughTruss;
                         curCycle += 1;
-                        aprilLoc = 16;
+                        aprilLoc = 18;
 
                     }
                     break;
