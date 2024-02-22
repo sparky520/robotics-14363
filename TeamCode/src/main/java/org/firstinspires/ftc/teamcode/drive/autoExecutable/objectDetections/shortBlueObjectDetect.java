@@ -13,7 +13,7 @@ public class shortBlueObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
-    private String location = "LEFT";
+    public String location = "LEFT";
 
     static final Rect MIDDLE_ROI = new Rect(
             new Point(180, 140),

@@ -13,7 +13,7 @@ public class longRedObjectDetect extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
 
-    private String location = "LEFT";
+    public String location = "LEFT";
 
     static final Rect RIGHT_ROI = new Rect(
             new Point(190, 0),

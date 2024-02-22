@@ -83,11 +83,11 @@ public class shortBlue extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        //followingPath = "RIGHT";
+        blueDetection.location = "LEFT";
         if (blueDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
-            aprilLoc = 32;
+            aprilLoc = 36;
 
         }else if(blueDetection.getLocation().equals("MIDDLE"))
         {
@@ -96,7 +96,7 @@ public class shortBlue extends LinearOpMode {
         }
         else if (blueDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
-            aprilLoc = 22;
+            aprilLoc = 18;
         }
         TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "SHORT");
         drive.followTrajectorySequenceAsync(tape);

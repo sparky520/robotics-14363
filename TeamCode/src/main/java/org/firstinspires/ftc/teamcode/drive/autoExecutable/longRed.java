@@ -83,19 +83,20 @@ public class longRed extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(redDetection.getLocation() + "");
         telemetry.update();
+        redDetection.location = "RIGHT";
         if (redDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
-            aprilLoc = 10;
+            aprilLoc = 15;
 
         }else if(redDetection.getLocation().equals("MIDDLE"))
         {
             followingPath = "MIDDLE";
-            aprilLoc = 20.5;
+            aprilLoc = 25;
         }
         else if (redDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
-            aprilLoc = 30;
+            aprilLoc = 37;
         }
 
         TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "LONG");

@@ -27,7 +27,7 @@ public class redPaths {
                     .addTemporalMarker(1,() -> {
                         robot.Claw.openLeft();
                     })
-                    .lineToLinearHeading(new Pose2d(25,4,Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(25,7,Math.toRadians(0)))
                     .lineToSplineHeading(new Pose2d(-1,0,Math.toRadians(90)))
                     .turn(Math.toRadians(-10))
                     .build();
@@ -47,7 +47,7 @@ public class redPaths {
                         .addTemporalMarker(1,() -> {
                             robot.Claw.openLeft();
                         })
-                        .lineToLinearHeading(new Pose2d(32,0,Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(31,0,Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(-1,0,Math.toRadians(90)))
                         .turn(Math.toRadians(-10))
                         .build();
@@ -67,7 +67,7 @@ public class redPaths {
                         robot.Claw.setPosition(armState.close);
                     })
                     .lineToLinearHeading(new Pose2d(31,5,Math.toRadians(90)))
-                    .lineToConstantHeading(new Vector2d(31,10))
+                    .lineToConstantHeading(new Vector2d(31,9))
                     .lineToSplineHeading(new Pose2d(23,-23,Math.toRadians(90)))
                     .build();
             if (TSEloc.equals("RIGHT")){
@@ -99,7 +99,7 @@ public class redPaths {
                             robot.Arm.setPosition(armState.outtaking);
                             robot.Claw.setPosition(armState.close);
                         })
-                        .lineToLinearHeading(new Pose2d(43,-3,Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(39,-3,Math.toRadians(90)))
                         .lineToSplineHeading(new Pose2d(23,-23,Math.toRadians(90)))
                         .build();
             }

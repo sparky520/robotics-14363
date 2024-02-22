@@ -37,7 +37,7 @@ public class bluePaths {
                         .addTemporalMarker(1,() -> {
                             robot.Claw.openLeft();
                         })
-                        .lineToLinearHeading(new Pose2d(25,-10,Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(23,-8.5,Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                         .build();
             }else if (TSEloc.equals("MIDDLE")){
@@ -45,7 +45,7 @@ public class bluePaths {
                         .addTemporalMarker(1,() -> {
                             robot.Claw.openLeft();
                         })
-                        .lineToLinearHeading(new Pose2d(28,-2,Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(29,1,Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                         .build();
             }
@@ -64,7 +64,7 @@ public class bluePaths {
                     .addTemporalMarker(2.5,() -> {
                         robot.Claw.closeLeft();
                     })
-                    .lineToSplineHeading(new Pose2d(26,15,Math.toRadians(-90)))
+                    .lineToSplineHeading(new Pose2d(30,15,Math.toRadians(-90)))
                     .lineToConstantHeading(new Vector2d(23,30))
                     .waitSeconds(.5)
                     .build();
@@ -78,7 +78,7 @@ public class bluePaths {
                             robot.wrist.setPosition(armState.outtaking);
                             robot.Arm.setPosition(armState.outtaking);
                         })
-                        .lineToSplineHeading(new Pose2d(32,-5,Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(32,-6,Math.toRadians(-90)))
                         .lineToConstantHeading(new Vector2d(25,30))
                         .build();
             }else if (TSEloc.equals("MIDDLE")){
@@ -91,7 +91,7 @@ public class bluePaths {
                             robot.wrist.setPosition(armState.outtaking);
                             robot.Arm.setPosition(armState.outtaking);
                         })
-                        .lineToSplineHeading(new Pose2d(39,3,Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(41,3,Math.toRadians(-90)))
                         .lineToConstantHeading(new Vector2d(25,30))
                         .build();
             }
