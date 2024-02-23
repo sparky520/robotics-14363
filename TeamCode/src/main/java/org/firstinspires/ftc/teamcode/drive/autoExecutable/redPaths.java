@@ -36,9 +36,9 @@ public class redPaths {
                         .addTemporalMarker(1.7,() -> {
                             robot.Claw.openLeft();
                         })
-                        .lineToLinearHeading(new Pose2d(28,0,Math.toRadians(-90)))
-                        .lineToConstantHeading(new Vector2d(28,-7))
-                        .splineToConstantHeading(new Vector2d(28,1),Math.toRadians(270))
+                        .lineToLinearHeading(new Pose2d(30,0,Math.toRadians(-90)))
+                        .lineToConstantHeading(new Vector2d(30,-7))
+                        .splineToConstantHeading(new Vector2d(30,1),Math.toRadians(270))
                         .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(90)))
                         .turn(Math.toRadians(-10))
                         .build();
@@ -47,7 +47,7 @@ public class redPaths {
                         .addTemporalMarker(1,() -> {
                             robot.Claw.openLeft();
                         })
-                        .lineToLinearHeading(new Pose2d(31,0,Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(31,2,Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(-1,0,Math.toRadians(90)))
                         .turn(Math.toRadians(-10))
                         .build();

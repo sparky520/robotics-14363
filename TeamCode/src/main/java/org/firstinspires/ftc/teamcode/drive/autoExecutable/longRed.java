@@ -83,11 +83,11 @@ public class longRed extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(redDetection.getLocation() + "");
         telemetry.update();
-        redDetection.location = "RIGHT";
+        redDetection.location = "LEFT";
         if (redDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
-            aprilLoc = 15;
+            aprilLoc = 16.5;
 
         }else if(redDetection.getLocation().equals("MIDDLE"))
         {

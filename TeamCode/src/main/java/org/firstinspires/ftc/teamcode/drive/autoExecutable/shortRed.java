@@ -86,7 +86,7 @@ public class shortRed extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(redDetection.getLocation() + "");
         telemetry.update();
-        redDetection.location = "LEFT";
+        redDetection.location = "RIGHT";
         if (redDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
@@ -95,7 +95,7 @@ public class shortRed extends LinearOpMode {
         }else if(redDetection.getLocation().equals("MIDDLE"))
         {
             followingPath = "MIDDLE";
-            aprilLoc = 24.5;
+            aprilLoc = 26;
         }
         else if (redDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
