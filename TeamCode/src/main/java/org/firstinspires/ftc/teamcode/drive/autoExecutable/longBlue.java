@@ -83,7 +83,6 @@ public class longBlue extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addLine(blueDetection.getLocation() + "");
         telemetry.update();
-        blueDetection.location = "LEFT";
         if (blueDetection.getLocation().equals("RIGHT"))
         {
             followingPath = "RIGHT";
@@ -96,7 +95,7 @@ public class longBlue extends LinearOpMode {
         }
         else if (blueDetection.getLocation().equals("LEFT")){
             followingPath = "LEFT";
-            aprilLoc = 17.5;
+            aprilLoc = 22;
         }
         TrajectorySequence tape = pathCreator.tape(robot,drive,start,followingPath, "LONG");
         drive.followTrajectorySequenceAsync(tape);
@@ -175,7 +174,7 @@ public class longBlue extends LinearOpMode {
                     }
                     break;
                 case park:
-                    if (distanceBack < 8.5){
+                    if (distanceBack < 10){
                         Pose2d boardReallign = new Pose2d(distanceSide,93-distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         TrajectorySequence park = pathCreator.park(robot,drive,boardReallign,"FAR");

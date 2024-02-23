@@ -28,11 +28,11 @@ public class finger {
         switch (state){
             case open:
                 leftClaw.setPosition(.45);
-                rightClaw.setPosition(.45);
+                rightClaw.setPosition(.47);
                 break;
             case close:
-                leftClaw.setPosition(.13);
-                rightClaw.setPosition(.11);
+                leftClaw.setPosition(.12);
+                rightClaw.setPosition(.16);
                 break;
         }
     }
@@ -43,11 +43,11 @@ public class finger {
     }
     public void closeLeft(){
         LClawState = finger.state.closed;
-        leftClaw.setPosition(.13);
+        leftClaw.setPosition(.12);
     }
     public void closeRight(){
         RClawState = finger.state.closed;
-        rightClaw.setPosition(.11);
+        rightClaw.setPosition(.16);
     }
     public void openLeft(){
         LClawState = finger.state.opened;
@@ -55,7 +55,7 @@ public class finger {
     }
     public void openRight(){
         RClawState = finger.state.opened;
-        rightClaw.setPosition(.45);
+        rightClaw.setPosition(.47);
     }
 
 }

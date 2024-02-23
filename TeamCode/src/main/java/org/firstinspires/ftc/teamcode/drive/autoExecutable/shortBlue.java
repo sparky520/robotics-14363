@@ -175,7 +175,7 @@ public class shortBlue extends LinearOpMode {
                     }
                     break;
                 case park:
-                    if (distanceBack < 8.5){
+                    if (distanceBack < 10){
                         Pose2d boardReallign = new Pose2d(distanceSide,93-distanceBack,drive.getPoseEstimate().getHeading());
                         drive.setPoseEstimate(boardReallign);
                         TrajectorySequence park = pathCreator.park(robot,drive,boardReallign,"FAR");

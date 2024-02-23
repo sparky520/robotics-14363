@@ -78,8 +78,8 @@ public class arm {
     public void topStack(){
         double ofset;
         ofset = -.014;
-        leftArm.setPosition(.815 + ofset);
-        rightArm.setPosition(.815);
+        leftArm.setPosition(.82 + ofset);
+        rightArm.setPosition(.82);
     }
 
     public void autoOuttake(){

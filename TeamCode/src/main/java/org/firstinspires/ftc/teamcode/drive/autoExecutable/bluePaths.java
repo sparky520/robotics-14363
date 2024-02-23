@@ -30,7 +30,7 @@ public class bluePaths {
                     .lineToLinearHeading(new Pose2d(29,0,Math.toRadians(-270)))
                     .lineToConstantHeading(new Vector2d(29,5))
                     .splineToConstantHeading(new Vector2d(29,0),Math.toRadians(290))
-                    .lineToSplineHeading(new Pose2d(7,0,Math.toRadians(270)))
+                    .lineToSplineHeading(new Pose2d(8,0,Math.toRadians(270)))
                     .build();
             if (TSEloc.equals("RIGHT")){
                 returnSequence = drive.trajectorySequenceBuilder(startPose)
@@ -45,7 +45,7 @@ public class bluePaths {
                         .addTemporalMarker(1,() -> {
                             robot.Claw.openLeft();
                         })
-                        .lineToLinearHeading(new Pose2d(29,1,Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(32,1,Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
                         .build();
             }
@@ -66,7 +66,6 @@ public class bluePaths {
                     })
                     .lineToSplineHeading(new Pose2d(30,15,Math.toRadians(-90)))
                     .lineToConstantHeading(new Vector2d(23,30))
-                    .waitSeconds(.5)
                     .build();
             if (TSEloc.equals("RIGHT")){
                 returnSequence = drive.trajectorySequenceBuilder(startPose)
@@ -111,7 +110,7 @@ public class bluePaths {
                         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUM);
                     }
                 })
-                .addTemporalMarker(3,() -> {
+                .addTemporalMarker(3.1,() -> {
                     if (curCycle == 0){
                         robot.wrist.setPosition(armState.outtaking);
                     }else{
@@ -119,7 +118,7 @@ public class bluePaths {
                     }
                     robot.Claw.closeLeft();
                 })
-                .addTemporalMarker(3.25,() -> {
+                .addTemporalMarker(3.1,() -> {
                     if (curCycle == 0){
                         robot.Arm.setPosition(armState.outtaking);
                     }else{
@@ -128,7 +127,7 @@ public class bluePaths {
                 })
                 .lineToSplineHeading(new Pose2d(5,75,Math.toRadians(-90)))
                 .splineToConstantHeading(new Vector2d(25,105),Math.toRadians(280)).build();
-        if (distanceSide < 3 || distanceSide > 6){
+        if (distanceSide < 2 || distanceSide > 6){
             returnSequence = drive.trajectorySequenceBuilder(startPose)
                     .addTemporalMarker(.1,() -> {
                         robot.Arm.half();
@@ -137,7 +136,7 @@ public class bluePaths {
                         if (curCycle == 0){
                             robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LONG_AUTO);
                         }else{
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.MEDIUM);
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.LOW);
                         }
                     })
                     .addTemporalMarker(3,() -> {
@@ -175,24 +174,24 @@ public class bluePaths {
             if (TSEloc.equals("RIGHT")){
                 returnSequence = drive.trajectorySequenceBuilder(startPose)
                         .addTemporalMarker(.5,() -> {
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.INTAKE_STACK);
                         })
                         .addTemporalMarker(1,() -> {
                             robot.wrist.topStack();
                             robot.Arm.topStack();
                         })
                         .lineToConstantHeading(new Vector2d(drive.getPoseEstimate().getX(),drive.getPoseEstimate().getY() - 6))
-                        .lineToConstantHeading(new Vector2d(1,62)).build();
+                        .lineToConstantHeading(new Vector2d(1,59)).build();
             }else{
                 returnSequence = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .addTemporalMarker(.5,() -> {
-                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.TOPSTACK);
+                            robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.INTAKE_STACK);
                         })
                         .addTemporalMarker(1,() -> {
                             robot.wrist.topStack();
                             robot.Arm.topStack();
                         })
-                        .lineToConstantHeading(new Vector2d(5,62)).build();
+                        .lineToConstantHeading(new Vector2d(7,59)).build();
             }
         }else {
             returnSequence = park(robot,drive,startPose,parkType);
@@ -203,12 +202,12 @@ public class bluePaths {
     public TrajectorySequence backThroughTruss(Robot robot, SampleMecanumDrive drive, Pose2d startPose,Double distanceSide){
         TrajectorySequence returnSequence = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(5.5,15,Math.toRadians(-90)))
-                .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
+                .splineToConstantHeading(new Vector2d(27,-13),Math.toRadians(280)).build();
         if (distanceSide < 2 || distanceSide > 6){
             returnSequence = drive.trajectorySequenceBuilder(startPose)
                     .lineToConstantHeading(new Vector2d(4.5, startPose.getY()))
                     .lineToSplineHeading(new Pose2d(4,15,Math.toRadians(-90)))
-                    .splineToConstantHeading(new Vector2d(25,-13),Math.toRadians(280)).build();
+                    .splineToConstantHeading(new Vector2d(27,-13),Math.toRadians(280)).build();
         }
         return returnSequence;
     }
@@ -221,10 +220,10 @@ public class bluePaths {
         return returnSequence;
     }
     public TrajectorySequence intakeStackAndReset(Robot robot, SampleMecanumDrive drive, Pose2d startPose) {
-        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.INTAKE_STACK);
+        robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
         robot.Claw.setPosition(armState.close);
         TrajectorySequence returnSequence = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(5,29,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(8,29,Math.toRadians(-90)))
                 .build();
         return returnSequence;
     }

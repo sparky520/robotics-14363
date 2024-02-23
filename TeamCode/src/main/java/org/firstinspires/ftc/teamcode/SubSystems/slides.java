@@ -39,7 +39,15 @@ public class slides {
                 break;
             case etxending: {
                 switch (outtakeSlidesState) {
-
+                    case INTAKE_STACK:
+                        leftSlide.setTargetPosition(10);
+                        rightSlide.setTargetPosition(10);
+                        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        leftSlide.setPower(power);
+                        rightSlide.setPower(power);
+                        extensionState = extensionState.extended;
+                        break;
                     case SHORT_AUTO:
                         leftSlide.setTargetPosition(200);
                         rightSlide.setTargetPosition(200);
