@@ -40,13 +40,16 @@ public class TeleOp extends OpMode
         robot = new Robot(hardwareMap, telemetry);
         robot.wrist.setPosition(armState.intakingCLAW);
         robot.Arm.setPosition(armState.low);
-        robot.Claw.setPosition(armState.open);
+        robot.Claw.openRight();
+        robot.Claw.openLeft();
+        robot.Airplane.setPosition(armState.airplaneInit);
         robot.slide.setOuttakeSlidePosition(outtakeStates.etxending,outtakeStates.STATION);
         color1 = hardwareMap.get(ColorRangeSensor.class, "colorBoard");
         claw1 = hardwareMap.get(ColorRangeSensor.class, "claw1");
         claw2 = hardwareMap.get(ColorRangeSensor.class, "claw2");
         distanceSensor3 = hardwareMap.get(DistanceSensor.class, "distanceSensor3");
         touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
+
     }
     @Override
     public void loop() {
@@ -58,12 +61,12 @@ public class TeleOp extends OpMode
             case intaking:
                 sensor1Val = claw1.blue()+claw1.red()+claw1.green();
                 sensor2Val = claw2.blue()+claw2.red()+claw2.green();
-                if (sensor2Val > 175){
+                if (sensor1Val > 150){
                     robot.Claw.closeRight();
                 }else{
                     robot.Claw.openRight();
                 }
-                if (sensor1Val > 175){
+                if (sensor2Val > 150){
                     robot.Claw.closeLeft();
                 }else{
                     robot.Claw.openLeft();
@@ -73,7 +76,8 @@ public class TeleOp extends OpMode
                 distanceBack = distanceSensor3.getDistance(DistanceUnit.INCH);
                 sensor3Val = color1.blue()+color1.red()+color1.green();
                 if (gamepad2.right_trigger > 0 && sensor3Val > 200){
-                    robot.Claw.setPosition(armState.open);
+                    robot.Claw.openRight();
+                    robot.Claw.openLeft();
                 }
                 break;
         }

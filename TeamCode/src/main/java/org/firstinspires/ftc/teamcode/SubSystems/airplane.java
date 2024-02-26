@@ -14,11 +14,14 @@ public class airplane {
     public void setPosition(armState state){
         switch (state){
             case airplaneInit:
-                airplane.setPosition(.22);
-                break;
-            case airplaneLaunch:
                 airplane.setPosition(.4);
                 break;
+            case airplaneLaunch:
+                airplane.setPosition(.8);
+                break;
         }
+    }
+    public void test(double pos){
+        airplane.setPosition(pos);
     }
 }
