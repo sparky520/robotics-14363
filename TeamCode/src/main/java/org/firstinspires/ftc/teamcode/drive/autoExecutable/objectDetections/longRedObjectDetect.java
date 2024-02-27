@@ -35,7 +35,6 @@ public class longRedObjectDetect extends OpenCvPipeline {
         Scalar lowHSV = new Scalar(0, 128, 100);
         Scalar highHSV = new Scalar(20, 255, 255);
 
-
         Core.inRange(mat, lowHSV, highHSV, mat);
 
         Mat right = mat.submat(RIGHT_ROI);
